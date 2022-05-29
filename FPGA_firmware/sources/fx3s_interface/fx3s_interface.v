@@ -61,7 +61,7 @@ module fx3s_interface #(
     input clk,                      // Master clock for this module (64 MHz 0-degree)
     input rst,                      // Synchronous reset (active high)
     output rdy,                     // Indicate that the system is ready for data
-    // output fifo_rdy,
+    output reg dbg,
 
     // Data to send out (FPGA -> FX3S)
     input [15:0] d_in,              // Input data to send to FX3S
@@ -203,6 +203,7 @@ module fx3s_interface #(
         rst_3d <= 1;
         rst_dd <= 1;
         rst_d <= 1;
+		dbg <= 0;
     end
 
     //************************************************************
@@ -319,6 +320,7 @@ module fx3s_interface #(
                 state_start_read:
                 begin
                     SLRD <= 0;
+					dbg <= 1;
                     master_state <= state_read_pre1;
                 end
 

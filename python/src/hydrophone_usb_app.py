@@ -49,13 +49,14 @@ if __name__ == '__main__':
     reccount = 0
     print( 'Start acquisition' )
     f = open( 'data.bin', 'wb' )
+    hp.sent_dsp_param( 0.001, 1)
     hp.release_soft_reset()
     hp.set_function_enable_pin()
     while( True ):
         try:
             seq, timestamp, sig = hp.get_pulse_data( 5000 )
             if( len(sig) == 0):
-                print( 'Missing a pulse for 5 seconds now' )
+                print( 'Unable to get valid data for a while' )
             else:
                 print( f'Got sequence {seq} with time {timestamp} and data length {len(sig)}' )
                 if reccount < MaxRec:
