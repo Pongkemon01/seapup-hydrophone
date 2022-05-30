@@ -5,6 +5,7 @@ import numpy as np
 import struct
 import os
 import sys
+import time
 
 # This file is the core library to communicate with the hydrophone DSP board.
 
@@ -465,6 +466,7 @@ class hydrophone_usb:
       raise ValueError('Device not found')
     # Issue the command
     size = data.size
+    print( 'sending control with size ', size, 'wValue=', (size & 0xFFFF), 'wIndex=', (size >> 16))
     self.dev.ctrl_transfer( (ZEABUS_USB_REQ_TYPE | usb.util.CTRL_OUT ),
       ZEABUS_USB_REQ_SEND_FPGA_DATA, wValue=(size & 0xFFFF), wIndex=(size >> 16),
       data_or_wLength=data, timeout=1000 )
@@ -538,6 +540,9 @@ class hydrophone_usb:
 
     # Send the buffer to FPGA through control endpoint
     self.send_control_to_fpga( buffer )
+
+    # Delay a bit for FX3S to process the request
+    time.sleep(0.005)
 
   def get_pulse_data( self, timeout ):
     # Loop for 10 times reading

@@ -3,6 +3,7 @@ import _thread
 import sys
 from hydrophone_usb import hydrophone_usb, bit_brv_conv
 import usb.core
+import time
 
 def logging_thread( id ):
     # Open log files
@@ -49,8 +50,8 @@ if __name__ == '__main__':
     reccount = 0
     print( 'Start acquisition' )
     f = open( 'data.bin', 'wb' )
-    hp.sent_dsp_param( 0.001, 1)
     hp.release_soft_reset()
+    hp.sent_dsp_param( 0.001, 1)
     hp.set_function_enable_pin()
     while( True ):
         try:
