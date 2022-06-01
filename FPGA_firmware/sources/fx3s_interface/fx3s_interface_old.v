@@ -230,43 +230,23 @@ module fx3s_interface #(
      * ------------------------------------------------------------------------------------
      *     State     | Input condition                 |  Next State | Action
      * ------------------------------------------------------------------------------------
-     *     idle      | !rx_full && FLAGA               | start_read  | is_outgoing = 0, SLCS = 0, SLOE = 0, A0 = 0
+     *     idle      | is_writing && FLAGB && tx_empty |             |
+     *               |                 && !sending     | zlp         | is_outgoing = 1, SLCS = 0, PEND = 0
+     *               | !rx_full && FLAGA               | start_read  | is_outgoing = 0, SLCS = 0, SLOE = 0
+     *               | !tx_empty && FLAGB              | start_write | is_outgoing = 1, SLCS = 0, SLWR = 0, tx_rd_en = 1, is_writing = 1
      * ------------------------------------------------------------------------------------
      *  start_read   | 1                               | read_pre1   | SLRD = 0
      * ------------------------------------------------------------------------------------
-     *  read_pre1    | 1                               | read_pre2   | -
+     *  read_pre1    | 1                               | read_pre2   |
      * ------------------------------------------------------------------------------------
      *  read_pre2    | !FLAGA                          | idle        | SLCS = 1, SLRD = 1, SLOE = 1
-     *               | else                            | read_loop   | rx_wr_en = 1
-     * ------------------------------------------------------------------------------------
-     *  read_loop    | !FLAGA || rx_full               | idle        | SLCS = 1, SLRD = 1, SLOE = 1, rx_wr_en = 0
-     *               | else                            | read_loop   | -
-     * ------------------------------------------------------------------------------------
-     *  write_wait1  | 1                               | write_wait2 |
-     * ------------------------------------------------------------------------------------
-
-     *  stop_write   | 1                               | stop_write_2| PKTEND = 1, SLWR = 1 (then wait 3 clocks)
-     * ------------------------------------------------------------------------------------
-     *  stop_write_2 | 1                               | stop_wriet_3|
-     * ------------------------------------------------------------------------------------
-     *  stop_write_3 | 1                               | stop_wriet_4|
-     * ------------------------------------------------------------------------------------
-     *  stop_write_4 | 1                               | idle        | SLCS = 1, sending = 0, is_outgoing = 0
-
-
-
-
-     *     idle      | is_writing && FLAGB && tx_empty |             |
-     *               |                 && !sending     | zlp         | is_outgoing = 1, SLCS = 0, PEND = 0
-     *               | 
-     *               | !tx_empty && FLAGB              | start_write | is_outgoing = 1, SLCS = 0, SLWR = 0, tx_rd_en = 1, is_writing = 1
+     *               | else                            | read_pre3   | rx_buf_dd = rx_data
      * ------------------------------------------------------------------------------------
      *  read_pre3    | !FLAGA                          | idle        | SLCS = 1, SLRD = 1, SLOE = 1
      *               | else                            | read_loop   | rx_buf_d = rx_data, rx_wr_en = 1
      * ------------------------------------------------------------------------------------
-     *  zlp          | 1                               | zlp_wait1   | PEND = 1 (then wait 3 clocks)
-     * ------------------------------------------------------------------------------------
-     *  zlp_wait3    | 1                               | idle        | SLCS = 1, is_outgoing = 0, is_writing = 0, u16WrCounter = FX3S_DMA_Size
+     *  read_loop    | !FLAGA || rx_full               | idle        | SLCS = 1, SLRD = 1, SLOE = 1, rx_wr_en = 0
+     *               | else                            | read_loop   | rx_buf_dd = rx_buf_d, rx_buf_d = rx_data
      * ------------------------------------------------------------------------------------
      *  start_write  | !FLAGB || tx_empty              | idle        | SLCS = 1, SLWR = 1, tx_rd_en = 0, is_outgoing = 0
      *               | else { u16WrCounter == 0 }      | write_wait1 | u16WrCounter = u16WrCounter - 1, SLCS = 1,
@@ -277,6 +257,14 @@ module fx3s_interface #(
      *  write_wait2  | 1                               | write_wait3 |
      * ------------------------------------------------------------------------------------
      *  write_wait3  | 1                               | idle        | is_outgoing = 0, u16WrCounter = FX3S_DMA_Size
+     * ------------------------------------------------------------------------------------
+     *  zlp          | 1                               | zlp_wait1   | PEND = 1 (then wait 3 clocks)
+     * ------------------------------------------------------------------------------------
+     *  zlp_wait1    | 1                               | zlp_wait2   |
+     * ------------------------------------------------------------------------------------
+     *  zlp_wait2    | 1                               | zlp_wait3   |
+     * ------------------------------------------------------------------------------------
+     *  zlp_wait3    | 1                               | idle        | SLCS = 1, is_outgoing = 0, is_writing = 0, u16WrCounter = FX3S_DMA_Size
      * ------------------------------------------------------------------------------------
      * ------------------------------------------------------------------------------------
 
