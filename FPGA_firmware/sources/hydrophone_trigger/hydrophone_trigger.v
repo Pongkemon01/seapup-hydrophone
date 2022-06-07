@@ -83,7 +83,7 @@ module hydrophone_trigger
 	assign rst_internal = fifo_rst_internal | rst_6d | rst_7d | rst_8d;
 	assign strb_all = strb_ch1 & strb_ch2 & strb_ch3 & strb_ch4;
 	assign output_strobe = strb_d & ~strb_dd & ~rst_internal;
-	assign fifo_wr_en = output_strobe & ~rst_internal;
+	assign fifo_wr_en = output_strobe;
 	assign fifo_rd_en = (rd_en | almost_full) & output_strobe & ~rst_internal ;		// Enable read when FIFO almost full too.
 	
 	assign rdy = ~rst_internal;

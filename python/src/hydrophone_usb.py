@@ -558,6 +558,10 @@ class hydrophone_usb:
           return seq, timestamp, raw
           
       _err_count = _err_count + 1   # Reaching here means the packet is invalid
+      if(len(buffer) == 0):
+        print('Got an empty packet')
+      else:
+        print(f'Got an incorrect packet with id {buffer[0]:X}, and {buffer[1]:X}')
 
     # If reach here, the error count have reached 100
     # We return empty signal with sequence number and time stamp equal to 0

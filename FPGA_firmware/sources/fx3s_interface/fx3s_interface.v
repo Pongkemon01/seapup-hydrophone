@@ -37,12 +37,11 @@ module fx3s_interface #(
     parameter   FX3S_DMA_Size = 4096    // Size of FX3S receiving DMA buffer (in 16-bit words)
     ) (
     // Debug signals
-    // output [3:0] state,
-    // output TxEmpty, TxFull, RxEmpty, RxFull,
-    // output TxWrEn, TxRdEn, RxWrEn, RxRdEn,
-    // output [15:0] d_data,
-    // output is_outgoing,
-    // output [15:0] u_counter,
+    output [3:0] state,
+    output reg [2:0] decision,
+    output TxEmpty, TxFull, RxEmpty, RxFull,
+    output TxWrEn, TxRdEn, RxWrEn, RxRdEn,
+    output outgoing, pkt_end_out, is_sending,
 
     // Device pins
     output ifclk_out,               // Communication clock from FPGA -> FX3S (FPGA controlled)
@@ -67,7 +66,8 @@ module fx3s_interface #(
     input [15:0] d_in,              // Input data to send to FX3S
     input input_strobe,             // Indicates that the d_in value is valid
     output input_full,              // Flag to indicate that the buffer for departure data is full
-    input sending,                  // Signal is still in the middle of sending mode
+    input pkt_end_in,               // 1 = current data word is the last word of current packet
+    input trigged,                  // Is on-trigged (from trigger unit)
 
     // Arrival data (FX3S -> FPGA)
     output [15:0] d_out,            // Output data
@@ -83,20 +83,14 @@ module fx3s_interface #(
     localparam state_idle = 4'b0000;
 
     localparam state_start_read = 4'b0001;
-    localparam state_read_pre1 = 4'b0010;
-    localparam state_read_pre2 = 4'b0011;
-    localparam state_read_pre3 = 4'b0100;
+    localparam state_read_pre_1 = 4'b0010;
+    localparam state_read_pre_2 = 4'b0011;
     localparam state_read_loop = 4'b0101;
 
-    localparam state_start_write = 4'b1000;
-    localparam state_write_wait1 = 4'b1001;
-    localparam state_write_wait2 = 4'b1010;
-    localparam state_write_wait3 = 4'b1011;
-
-    localparam state_zlp = 4'b1100;
-    localparam state_zlp_wait1 = 4'b1101;
-    localparam state_zlp_wait2 = 4'b1110;
-    localparam state_zlp_wait3 = 4'b1111;
+    localparam state_stop_write_1 = 4'b0110;
+    localparam state_stop_write_2 = 4'b0111;
+    localparam state_stop_write_3 = 4'b1000;
+    localparam state_stop_write_4 = 4'b1001;
 
     // This module use FIFO to store incoming and outgoing data
     // The FIFO size for arrival data is 32 16-bit words.
@@ -107,43 +101,47 @@ module fx3s_interface #(
     reg     tx_rd_en;
     wire    tx_wr_en;
     reg     rx_wr_en;               // FIFO write enable controlled by state machine
-    reg     is_outgoing;             // Indicate current data direction: 0 = FX3S -> FPGA, 1 = FPGA -> FX3S
+    reg     is_outgoing;            // Indicate current data direction: 0 = FX3S -> FPGA, 1 = FPGA -> FX3S
+    reg     sending;                // Indicate whether a packet is opened (need to be closed)
     reg     [3:0] master_state;     // State of the interface
-    reg     is_writing;             // Indicate whether the writing process has started
-    reg     [15:0] rx_buf_d;
-    reg     [15:0] rx_buf_dd;        // pre-buffer for reading as FLAGA has 2 clocks delay.
-    reg     [15:0] u16WrCounter;     // Counter for DMA sending words
+    wire    pkt_end;                 // Current data in FIFO is the last word
+    reg     A0;                      // Address of the operation
+    reg     [5:0] trigged_d;         // Trigged delay line
+    wire    internal_trigged_line;   // Trigged with delayed end
 
     // Reset signals for 5 clks delay
     reg rst_d, rst_dd, rst_3d, rst_4d, rst_5d, rst_6d, rst_7d, rst_8d, rst_9d;  // Delay line for reset signal to make the internal reset time greater than 5 clk
     wire rst_internal, fifo_rst_internal;           // Internal reset signal
     wire output_strobe_internal;
+    wire rx_wr_en_internal;
 
     //************************************************************
     // Combination logic for debug
     //************************************************************
-    // assign state = master_state;
-    // assign TxFull = input_full;
-    // assign TxEmpty = tx_empty;
-    // assign RxFull = rx_full;
-    // assign RxEmpty = rx_empty;
-    // assign TxWrEn = tx_wr_en;
-    // assign TxRdEn = tx_rd_en;
-    // assign RxWrEn = rx_wr_en;
-    // assign RxRdEn = output_strobe;
-    // assign d_data = tx_data;
-    // assign is_outgoing = is_outgoing;
-    // assign u_counter = u16WrCounter;
+    assign state = master_state;
+    assign TxFull = input_full;
+    assign TxEmpty = tx_empty;
+    assign RxFull = rx_full;
+    assign RxEmpty = rx_empty;
+    assign TxWrEn = tx_wr_en;
+    assign TxRdEn = tx_rd_en;
+    assign RxWrEn = rx_wr_en;
+    assign RxRdEn = output_strobe;
+    assign outgoing = is_outgoing;
+    assign pkt_end_out = pkt_end;
+    assign is_sending = sending;
 
     assign fifo_rst_internal = rst | rst_d | rst_dd | rst_3d | rst_4d | rst_5d;
     assign rst_internal = fifo_rst_internal | rst_6d | rst_7d | rst_8d | rst_9d;
     assign output_strobe_internal = output_strobe & ~rst_internal;
+    assign internal_trigged_line = trigged | trigged_d[0] | trigged_d[1] | trigged_d[2] | trigged_d[3] | trigged_d[4] | trigged_d[5];
+    assign rx_wr_en_internal = rx_wr_en & FLAGA;
 
     assign ifclk_out = clk;     // Slave FIFO interface operates at 64 MHz
 
     // Reset and ready signals
-    assign A[1] = 0;                // A[1] is always 0. We use only A[0] bit
-    assign A[0] = is_outgoing;       // Data direction bit is designed to be equal to A[0]
+    assign A[1] = 0;            // A[1] is always 0. We use only A[0] bit
+    assign A[0] = A0;           // Data direction bit is designed to be equal to A[0]
     assign rdy = ~rst_internal;
     //assign fifo_rdy = ~fifo_rst_internal;
     assign tx_wr_en = input_strobe & ~rst_internal;
@@ -152,32 +150,6 @@ module fx3s_interface #(
     // MUX and DEMUX DQ pins with 2 internal sub-systems
     assign rx_data = DQ;
     assign DQ = (is_outgoing) ? tx_data : 16'bz;
-
-    //-- Modified on 23 March 2022 to use Xilinx primitive IOBUF
-
-    // IOBUF: Single-ended Bi-directional Buffer
-//    genvar k;
-//    generate
-//        for( k = 0;k <= 15;k = k + 1 )
-//        begin
-
-//            // All devices
-//            // Xilinx HDL Language Template, version 2020.1_versal_lib
-//            IOBUF #(
-//                .DRIVE(12),                 // Specify the output drive strength
-//                .IBUF_LOW_PWR("TRUE"),      // Low Power - "TRUE", High Performance = "FALSE"
-//                .IOSTANDARD("LVCMOS33"),    // Specify the I/O standard
-//                .SLEW("SLOW")               // Specify the output slew rate
-//            ) IOBUF_inst (
-//                .O(rx_data[k]),             // Buffer output
-//                .IO(DQ[k]),                 // Buffer inout port (connect directly to top-level port)
-//                .I(tx_data[k]),             // Buffer input
-//                .T(is_outgoing)              // 3-state enable input, high=input, low=output
-//            );
-//            // End of IOBUF_inst instantiation
-
-//        end
-//    endgenerate
 
     //************************************************************
     // Initialization
@@ -191,9 +163,15 @@ module fx3s_interface #(
         is_outgoing <= 1'b0;
         rx_wr_en <= 1'b0;
         tx_rd_en <= 1'b0;
-        is_writing <= 1'b0;
+        sending <= 1'b0;
+        A0 <= addr_read;
         master_state <= state_idle;
-        u16WrCounter <= FX3S_DMA_Size;
+        trigged_d[0] <= 0;
+        trigged_d[1] <= 0;
+        trigged_d[2] <= 0;
+        trigged_d[3] <= 0;
+        trigged_d[4] <= 0;
+        trigged_d[5] <= 0;
         rst_9d <= 1;
         rst_8d <= 1;
         rst_7d <= 1;
@@ -223,65 +201,58 @@ module fx3s_interface #(
         rst_d <= rst;
     end
 
+    // Trigged delay line
+    always @(negedge clk)
+    begin
+        trigged_d[5] <= trigged_d[4];
+        trigged_d[4] <= trigged_d[3];
+        trigged_d[3] <= trigged_d[2];
+        trigged_d[2] <= trigged_d[1];
+        trigged_d[1] <= trigged_d[0];
+        trigged_d[0] <= trigged;
+    end
+
 
     // Main process
     /*
      * State transition table (FLAGA and FLAGB are active low)
      * ------------------------------------------------------------------------------------
-     *     State     | Input condition                 |  Next State | Action
+     *     State     | Condition                       |  Next State | Action
      * ------------------------------------------------------------------------------------
-     *     idle      | !rx_full && FLAGA               | start_read  | is_outgoing = 0, SLCS = 0, SLOE = 0, A0 = 0
+     *     idle      | !rx_full && FLAGA               | start_read  | is_outgoing = 0, SLCS = 0, SLWR = 1, SLOE = 0, 
+     *               |                                 |             |       A0 = addr_read, tx_rd_en = 0
+     *               | !tx_empty && FLAGB, !pkt_end    | idle        | is_outgoing = 1, SLCS = 0, SLWR = 0, SLOE = 1, 
+     *               |                                 |             |       A0 = addr_write, tx_rd_en = 1, PKTEND = 1, sending = 1
+     *               | !tx_empty && FLAGB, pkt_end     | stop_write_1| is_outgoing = 1, SLCS = 0, SLWR = 0, SLOE = 1, 
+     *               |                                 |             |       A0 = addr_write, tx_rd_en = 1, PKTEND = 0
+     *               | (tx_empty && trigged) || !FLAGB | idle        | is_outgoing = 0, SLCS = 1, SLWR = 1, tx_rd_en = 0
+     *               | tx_empty && !trigged && sending | stop_write_1| is_outgoing = 1, SLCS = 0, SLWR = 1, SLOE = 1, 
+     *               |                                 |             |       A0 = addr_write, tx_rd_en = 0, PKTEND = 0
+     *               | else                            | idle        | -
      * ------------------------------------------------------------------------------------
-     *  start_read   | 1                               | read_pre1   | SLRD = 0
+     *  start_read   | 1                               | read_pre_1  | SLRD = 0
      * ------------------------------------------------------------------------------------
-     *  read_pre1    | 1                               | read_pre2   | -
+     *  read_pre_1   | 1                               | read_pre_2  | -
      * ------------------------------------------------------------------------------------
-     *  read_pre2    | !FLAGA                          | idle        | SLCS = 1, SLRD = 1, SLOE = 1
+     *  read_pre_2   | !FLAGA                          | idle        | SLCS = 1, SLRD = 1, SLOE = 1
      *               | else                            | read_loop   | rx_wr_en = 1
      * ------------------------------------------------------------------------------------
      *  read_loop    | !FLAGA || rx_full               | idle        | SLCS = 1, SLRD = 1, SLOE = 1, rx_wr_en = 0
      *               | else                            | read_loop   | -
      * ------------------------------------------------------------------------------------
-     *  write_wait1  | 1                               | write_wait2 |
+     *  stop_write_1 | 1                               | stop_write_2| PKTEND = 1, tx,rd_en = 0, SLWR = 1 (then wait 3 clocks), 
+     *               |                                 |             |       sending = 0
      * ------------------------------------------------------------------------------------
-
-     *  stop_write   | 1                               | stop_write_2| PKTEND = 1, SLWR = 1 (then wait 3 clocks)
+     *  stop_write_2 | 1                               | stop_wriet_3| -
      * ------------------------------------------------------------------------------------
-     *  stop_write_2 | 1                               | stop_wriet_3|
+     *  stop_write_3 | 1                               | stop_wriet_4| -
      * ------------------------------------------------------------------------------------
-     *  stop_write_3 | 1                               | stop_wriet_4|
-     * ------------------------------------------------------------------------------------
-     *  stop_write_4 | 1                               | idle        | SLCS = 1, sending = 0, is_outgoing = 0
-
-
-
-
-     *     idle      | is_writing && FLAGB && tx_empty |             |
-     *               |                 && !sending     | zlp         | is_outgoing = 1, SLCS = 0, PEND = 0
-     *               | 
-     *               | !tx_empty && FLAGB              | start_write | is_outgoing = 1, SLCS = 0, SLWR = 0, tx_rd_en = 1, is_writing = 1
-     * ------------------------------------------------------------------------------------
-     *  read_pre3    | !FLAGA                          | idle        | SLCS = 1, SLRD = 1, SLOE = 1
-     *               | else                            | read_loop   | rx_buf_d = rx_data, rx_wr_en = 1
-     * ------------------------------------------------------------------------------------
-     *  zlp          | 1                               | zlp_wait1   | PEND = 1 (then wait 3 clocks)
-     * ------------------------------------------------------------------------------------
-     *  zlp_wait3    | 1                               | idle        | SLCS = 1, is_outgoing = 0, is_writing = 0, u16WrCounter = FX3S_DMA_Size
-     * ------------------------------------------------------------------------------------
-     *  start_write  | !FLAGB || tx_empty              | idle        | SLCS = 1, SLWR = 1, tx_rd_en = 0, is_outgoing = 0
-     *               | else { u16WrCounter == 0 }      | write_wait1 | u16WrCounter = u16WrCounter - 1, SLCS = 1,
-     *                                                               |     SLWR = 1, tx_rd_en = 0 (then wait 3 clocks)
-     * ------------------------------------------------------------------------------------
-     *  write_wait1  | 1                               | write_wait2 |
-     * ------------------------------------------------------------------------------------
-     *  write_wait2  | 1                               | write_wait3 |
-     * ------------------------------------------------------------------------------------
-     *  write_wait3  | 1                               | idle        | is_outgoing = 0, u16WrCounter = FX3S_DMA_Size
+     *  stop_write_4 | 1                               | idle        | SLCS = 1, is_outgoing = 0
      * ------------------------------------------------------------------------------------
      * ------------------------------------------------------------------------------------
 
      */
-    always @(posedge clk)
+    always @(negedge clk)
     begin
         if( rst_internal )
         begin
@@ -290,42 +261,79 @@ module fx3s_interface #(
             SLRD <= 1;
             SLOE <= 1;
             PKTEND <= 1;
+            sending <= 0;
+            A0 <= addr_read;
             is_outgoing <= 0;
-            is_writing <= 0;
             rx_wr_en <= 0;
             tx_rd_en <= 0;
             master_state <= state_idle;
+            decision <= 3'b000;
         end
         else
         begin
             case( master_state )
                 state_idle:
                 begin
-                    if( is_writing && FLAGB && tx_empty && !sending )
-                    begin
-                        is_outgoing <= 1;
-                        SLCS <= 0;
-                        PKTEND <= 0;
-                        master_state <= state_zlp;
-                    end
-
+                    // As writing is performed by FIFO state machine, "state_idle" just setup writing states
                     if( !rx_full && FLAGA )
                     begin
+                        decision <= 3'b001;
+                        // Have something to read, then read them first
                         is_outgoing <= 0;
                         SLCS <= 0;
+                        SLWR <= 1;
                         SLOE <= 0;
+                        A0 <= addr_read;
+                        tx_rd_en = 0;
                         master_state <= state_start_read;
                     end
-
-                    if( !tx_empty && FLAGB )
+                    else if( !tx_empty && FLAGB )
                     begin
+                        decision <= 3'b010;
+                        // Have something to send, then send them
                         is_outgoing <= 1;
                         SLCS <= 0;
                         SLWR <= 0;
+                        SLOE <= 1;
+                        A0 <= addr_write;
                         tx_rd_en <= 1;
-                        is_writing <= 1;
-                        master_state <= state_start_write;
+                        if( !pkt_end )
+                        begin
+                            PKTEND <= 1;
+                            sending <= 1;
+                            master_state <= state_idle;
+                        end
+                        else
+                        begin
+                            PKTEND <= 0;
+                            master_state <= state_stop_write_1;
+                        end
                     end
+                    else if( (tx_empty && internal_trigged_line) || !FLAGB )
+                    begin
+                        decision <= 3'b011;
+                        // Not ending the sending but having to wait for next data
+                        is_outgoing <= 0;
+                        SLCS <= 1;
+                        SLWR <= 1;
+                        tx_rd_en <= 0;
+                        master_state <= state_idle;
+                    end
+                    else if( tx_empty && !internal_trigged_line && sending )
+                    begin
+                        decision <= 3'b100;
+                        // Still in sending but nothing more to send then send ZLP
+                        is_outgoing <= 1;
+                        SLCS <= 0;
+                        SLWR <= 1;
+                        SLOE <= 1;
+                        A0 <= addr_write;
+                        tx_rd_en <= 0;
+                        PKTEND <= 0;
+                        master_state <= state_stop_write_1;
+                    end
+                    else
+                        decision <= 3'b111;
                 end
 
                 // FX3S -> FPGA states
@@ -333,15 +341,15 @@ module fx3s_interface #(
                 begin
                     SLRD <= 0;
 					dbg <= 1;
-                    master_state <= state_read_pre1;
+                    master_state <= state_read_pre_2;
                 end
 
-                state_read_pre1:
+                state_read_pre_1:
                 begin
-                    master_state <= state_read_pre2;
+                    master_state <= state_read_pre_2;
                 end
 
-                state_read_pre2:
+                state_read_pre_2:
                 begin
                     if( !FLAGA )
                     begin
@@ -352,24 +360,6 @@ module fx3s_interface #(
                     end
                     else
                     begin
-                        rx_buf_dd <= rx_data;
-                        master_state <= state_read_pre3;
-                    end
-                end
-
-                state_read_pre3:
-                begin
-                    if( !FLAGA )
-                    begin
-                        SLCS <= 1;
-                        SLRD <= 1;
-                        SLOE <= 1;
-                        rx_wr_en <= 0;
-                        master_state <= state_idle;
-                    end
-                    else
-                    begin
-                        rx_buf_d <= rx_data;
                         rx_wr_en <= 1;
                         master_state <= state_read_loop;
                     end
@@ -385,78 +375,32 @@ module fx3s_interface #(
                         rx_wr_en <= 0;
                         master_state <= state_idle;
                     end
-                    else
-                    begin
-                        rx_buf_dd = rx_buf_d;
-                        rx_buf_d = rx_data;
-                        /* stay at state_read_loop */
-                    end
                 end
 
-                // FPGA -> FX3S states
-                state_start_write:
-                begin
-                    u16WrCounter = u16WrCounter - 1;
-                    if( u16WrCounter == 0 ) /* End of a chunk */
-                    begin
-                        SLCS <= 1;
-                        SLWR <= 1;
-                        tx_rd_en <= 0;
-                        is_outgoing <= 0;
-                        master_state <= state_write_wait1;
-                    end
-                    else
-                    begin
-                        if( !FLAGB || tx_empty )
-                        begin
-                            SLCS <= 1;
-                            SLWR <= 1;
-                            tx_rd_en <= 0;
-                            is_outgoing <= 0;
-                            master_state <= state_idle;
-                       end
-                    end
-                end
-
-                state_write_wait1:
-                begin
-                    master_state <= state_write_wait2;
-                end
-
-                state_write_wait2:
-                begin
-                    master_state <= state_write_wait3;
-                end
-
-                state_write_wait3:
-                begin
-                    u16WrCounter <= FX3S_DMA_Size;
-                    master_state <= state_idle;
-                end
-
-                // FPGA -> FX3S with zero-length packet states
-                state_zlp:
+                // FPGA -> FX3S finalizing writing process
+                state_stop_write_1:
                 begin
                     PKTEND <= 1;
-                    master_state <= state_zlp_wait1;
+                    tx_rd_en <= 0;
+                    SLWR <= 1;
+                    sending <= 0;
+                    master_state <= state_stop_write_2;
                 end
 
-                state_zlp_wait1:
+                state_stop_write_2:
                 begin
-                    master_state <= state_zlp_wait2;
+                    master_state <= state_stop_write_3;
                 end
 
-                state_zlp_wait2:
+                state_stop_write_3:
                 begin
-                    master_state <= state_zlp_wait3;
+                    master_state <= state_stop_write_4;
                 end
 
-                state_zlp_wait3:
+                state_stop_write_4:
                 begin
                     SLCS <= 1;
-                    is_writing <= 0;
                     is_outgoing <= 0;
-                    u16WrCounter <= FX3S_DMA_Size;
                     master_state <= state_idle;
                 end
 
@@ -468,7 +412,7 @@ module fx3s_interface #(
                     SLOE <= 1;
                     PKTEND <= 1;
                     is_outgoing <= 0;
-                    is_writing <= 0;
+                    sending <= 0;
                     rx_wr_en <= 0;
                     tx_rd_en <= 0;
                     master_state <= state_idle; // Go back to idle
@@ -486,8 +430,8 @@ module fx3s_interface #(
 
     FIFO36E1 #(
         .ALMOST_EMPTY_OFFSET(13'h0080),    // Sets the almost empty threshold
-        .ALMOST_FULL_OFFSET(13'd2000),     // Sets almost full threshold to 2000 entries
-        .DATA_WIDTH(18),                   // Sets data width to 4-72 (18-bit by 2k-depth)
+        .ALMOST_FULL_OFFSET(13'd1000),     // Sets almost full threshold to 1000 entries
+        .DATA_WIDTH(36),                   // Sets data width to 4-72 (18-bit by 2k-depth) (36-bit by 1k-depth)
         .DO_REG(1),                        // Enable output register (1-0) Must be 1 if EN_SYN = FALSE
         .EN_ECC_READ("FALSE"),             // Enable ECC decoder, FALSE, TRUE
         .EN_ECC_WRITE("FALSE"),            // Enable ECC encoder, FALSE, TRUE
@@ -504,7 +448,7 @@ module fx3s_interface #(
         .ECCPARITY(),                  // 8-bit output: Generated error correction parity
         .SBITERR(),                    // 1-bit output: Single bit error status
         // Read Data: 64-bit (each) output: Read output data
-        .DO(tx_data),                  // 64-bit output: Data output
+        .DO({ pkt_end, tx_data }),     // 64-bit output: (Data output + pkt_end associated with that word)
         .DOP(),                        // 8-bit output: Parity data output
         // Status: 1-bit (each) output: Flags and other FIFO status outputs
         .ALMOSTEMPTY(),                // 1-bit output: Almost empty flag
@@ -519,7 +463,7 @@ module fx3s_interface #(
         .INJECTDBITERR(1'b0),              // 1-bit input: Inject a double bit error input
         .INJECTSBITERR(1'b0),
         // Read Control Signals: 1-bit (each) input: Read clock, enable and reset input signals
-        .RDCLK(~clk),                  // 1-bit input: Read clock
+        .RDCLK(clk),                  // 1-bit input: Read clock
         .RDEN(tx_rd_en),               // 1-bit input: Read enable
         .REGCE(1'b1),                  // 1-bit input: Clock enable
         .RST(fifo_rst_internal),       // 1-bit input: Reset
@@ -528,7 +472,7 @@ module fx3s_interface #(
         .WRCLK(clk),                   // 1-bit input: Rising edge write clock.
         .WREN(tx_wr_en),               // 1-bit input: Write enable
         // Write Data: 64-bit (each) input: Write input data
-        .DI(d_in),                     // 64-bit input: Data input
+        .DI({pkt_end_in, d_in }),     // 64-bit input: ( Data input + Packet ending signal)
         .DIP(2'b0)                     // 2-bit input: Parity input
     );
 
@@ -580,9 +524,9 @@ module fx3s_interface #(
         .RSTREG(1'b0),                 // 1-bit input: Output register set/reset
         // Write Control Signals: 1-bit (each) input: Write clock and enable input signals
         .WRCLK(clk),                   // 1-bit input: Rising edge write clock.
-        .WREN(rx_wr_en),               // 1-bit input: Write enable
+        .WREN(rx_wr_en_internal),      // 1-bit input: Write enable
         // Write Data: 64-bit (each) input: Write input data
-        .DI(rx_buf_dd),                // 64-bit input: Data input
+        .DI(rx_data),                   // 64-bit input: Data input
         .DIP(2'b0)                     // 2-bit input: Parity input
     );
     // End of FIFO36E1_inst instantiation
