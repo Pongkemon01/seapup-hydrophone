@@ -1,7 +1,7 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-// Date        : Tue Jun  7 16:09:25 2022
+// Date        : Wed Jun  8 13:37:15 2022
 // Host        : Seapup-dell running 64-bit Ubuntu 20.04.4 LTS
 // Command     : write_verilog -mode funcsim -nolib -force -file
 //               /home/stp/seapup/zeabus_hydrophone/FPGA_firmware/hydrophone_dsp.sim/sim_fx3s_interface/synth/func/xsim/fx3_interface_tb_func_synth.v
@@ -84,11 +84,11 @@ module adc_filter
   wire FIFO36E1_inst_i_11_n_1;
   wire FIFO36E1_inst_i_11_n_2;
   wire FIFO36E1_inst_i_11_n_3;
-  wire FIFO36E1_inst_i_23_n_0;
-  wire FIFO36E1_inst_i_7_n_3;
-  wire FIFO36E1_inst_i_8_n_0;
-  wire FIFO36E1_inst_i_8_n_1;
-  wire FIFO36E1_inst_i_8_n_2;
+  wire FIFO36E1_inst_i_12_n_0;
+  wire FIFO36E1_inst_i_12_n_1;
+  wire FIFO36E1_inst_i_12_n_2;
+  wire FIFO36E1_inst_i_12_n_3;
+  wire FIFO36E1_inst_i_24_n_0;
   wire FIFO36E1_inst_i_8_n_3;
   wire FIFO36E1_inst_i_9_n_0;
   wire FIFO36E1_inst_i_9_n_1;
@@ -183,9 +183,9 @@ module adc_filter
   wire \t_counter_reg[15]_i_93_n_2 ;
   wire \t_counter_reg[15]_i_93_n_3 ;
   wire [2:0]\trigger_level_reg[15] ;
-  wire [1:0]NLW_FIFO36E1_inst_i_11_O_UNCONNECTED;
-  wire [3:1]NLW_FIFO36E1_inst_i_7_CO_UNCONNECTED;
-  wire [3:2]NLW_FIFO36E1_inst_i_7_O_UNCONNECTED;
+  wire [1:0]NLW_FIFO36E1_inst_i_12_O_UNCONNECTED;
+  wire [3:1]NLW_FIFO36E1_inst_i_8_CO_UNCONNECTED;
+  wire [3:2]NLW_FIFO36E1_inst_i_8_O_UNCONNECTED;
 
   (* ADDER_THRESHOLD = "35" *) 
   CARRY4 FIFO36E1_inst_i_10
@@ -193,45 +193,45 @@ module adc_filter
         .CO({FIFO36E1_inst_i_10_n_0,FIFO36E1_inst_i_10_n_1,FIFO36E1_inst_i_10_n_2,FIFO36E1_inst_i_10_n_3}),
         .CYINIT(1'b0),
         .DI({1'b0,1'b0,1'b0,1'b0}),
+        .O(d_round[9:6]),
+        .S(d_out[13:10]));
+  (* ADDER_THRESHOLD = "35" *) 
+  CARRY4 FIFO36E1_inst_i_11
+       (.CI(FIFO36E1_inst_i_12_n_0),
+        .CO({FIFO36E1_inst_i_11_n_0,FIFO36E1_inst_i_11_n_1,FIFO36E1_inst_i_11_n_2,FIFO36E1_inst_i_11_n_3}),
+        .CYINIT(1'b0),
+        .DI({1'b0,1'b0,1'b0,1'b0}),
         .O(d_round[5:2]),
         .S(d_out[9:6]));
   (* ADDER_THRESHOLD = "35" *) 
-  CARRY4 FIFO36E1_inst_i_11
+  CARRY4 FIFO36E1_inst_i_12
        (.CI(1'b0),
-        .CO({FIFO36E1_inst_i_11_n_0,FIFO36E1_inst_i_11_n_1,FIFO36E1_inst_i_11_n_2,FIFO36E1_inst_i_11_n_3}),
+        .CO({FIFO36E1_inst_i_12_n_0,FIFO36E1_inst_i_12_n_1,FIFO36E1_inst_i_12_n_2,FIFO36E1_inst_i_12_n_3}),
         .CYINIT(1'b0),
         .DI({1'b0,1'b0,d_out[3],1'b0}),
-        .O({d_round[1:0],NLW_FIFO36E1_inst_i_11_O_UNCONNECTED[1:0]}),
-        .S({d_out[5:4],FIFO36E1_inst_i_23_n_0,d_out[2]}));
+        .O({d_round[1:0],NLW_FIFO36E1_inst_i_12_O_UNCONNECTED[1:0]}),
+        .S({d_out[5:4],FIFO36E1_inst_i_24_n_0,d_out[2]}));
   LUT1 #(
     .INIT(2'h1)) 
-    FIFO36E1_inst_i_23
+    FIFO36E1_inst_i_24
        (.I0(d_out[3]),
-        .O(FIFO36E1_inst_i_23_n_0));
-  (* ADDER_THRESHOLD = "35" *) 
-  CARRY4 FIFO36E1_inst_i_7
-       (.CI(FIFO36E1_inst_i_8_n_0),
-        .CO({NLW_FIFO36E1_inst_i_7_CO_UNCONNECTED[3:1],FIFO36E1_inst_i_7_n_3}),
-        .CYINIT(1'b0),
-        .DI({1'b0,1'b0,1'b0,1'b0}),
-        .O({NLW_FIFO36E1_inst_i_7_O_UNCONNECTED[3:2],d_round[15:14]}),
-        .S({1'b0,1'b0,d_out[19:18]}));
+        .O(FIFO36E1_inst_i_24_n_0));
   (* ADDER_THRESHOLD = "35" *) 
   CARRY4 FIFO36E1_inst_i_8
        (.CI(FIFO36E1_inst_i_9_n_0),
-        .CO({FIFO36E1_inst_i_8_n_0,FIFO36E1_inst_i_8_n_1,FIFO36E1_inst_i_8_n_2,FIFO36E1_inst_i_8_n_3}),
+        .CO({NLW_FIFO36E1_inst_i_8_CO_UNCONNECTED[3:1],FIFO36E1_inst_i_8_n_3}),
         .CYINIT(1'b0),
         .DI({1'b0,1'b0,1'b0,1'b0}),
-        .O(d_round[13:10]),
-        .S(d_out[17:14]));
+        .O({NLW_FIFO36E1_inst_i_8_O_UNCONNECTED[3:2],d_round[15:14]}),
+        .S({1'b0,1'b0,d_out[19:18]}));
   (* ADDER_THRESHOLD = "35" *) 
   CARRY4 FIFO36E1_inst_i_9
        (.CI(FIFO36E1_inst_i_10_n_0),
         .CO({FIFO36E1_inst_i_9_n_0,FIFO36E1_inst_i_9_n_1,FIFO36E1_inst_i_9_n_2,FIFO36E1_inst_i_9_n_3}),
         .CYINIT(1'b0),
         .DI({1'b0,1'b0,1'b0,1'b0}),
-        .O(d_round[9:6]),
-        .S(d_out[13:10]));
+        .O(d_round[13:10]),
+        .S(d_out[17:14]));
   avg64_binning_10 avg_binning1
        (.CO(\t_counter_reg[15]_i_90_n_0 ),
         .DI({avg_binning1_n_0,avg_binning1_n_1,avg_binning1_n_2,avg_binning1_n_3}),
@@ -552,11 +552,7 @@ module adc_filter_1
 
   wire [2:0]DI;
   wire [0:0]E;
-  wire FIFO36E1_inst_i_22_n_0;
-  wire FIFO36E1_inst_i_2_n_3;
-  wire FIFO36E1_inst_i_3_n_0;
-  wire FIFO36E1_inst_i_3_n_1;
-  wire FIFO36E1_inst_i_3_n_2;
+  wire FIFO36E1_inst_i_23_n_0;
   wire FIFO36E1_inst_i_3_n_3;
   wire FIFO36E1_inst_i_4_n_0;
   wire FIFO36E1_inst_i_4_n_1;
@@ -570,6 +566,10 @@ module adc_filter_1
   wire FIFO36E1_inst_i_6_n_1;
   wire FIFO36E1_inst_i_6_n_2;
   wire FIFO36E1_inst_i_6_n_3;
+  wire FIFO36E1_inst_i_7_n_0;
+  wire FIFO36E1_inst_i_7_n_1;
+  wire FIFO36E1_inst_i_7_n_2;
+  wire FIFO36E1_inst_i_7_n_3;
   wire [0:0]Q;
   wire adc_strb_4;
   wire avg_binning1_n_0;
@@ -687,55 +687,55 @@ module adc_filter_1
   wire \t_counter_reg[15]_i_75_n_2 ;
   wire \t_counter_reg[15]_i_75_n_3 ;
   wire [0:0]\trigger_level_reg[0] ;
-  wire [3:1]NLW_FIFO36E1_inst_i_2_CO_UNCONNECTED;
-  wire [3:2]NLW_FIFO36E1_inst_i_2_O_UNCONNECTED;
-  wire [1:0]NLW_FIFO36E1_inst_i_6_O_UNCONNECTED;
+  wire [3:1]NLW_FIFO36E1_inst_i_3_CO_UNCONNECTED;
+  wire [3:2]NLW_FIFO36E1_inst_i_3_O_UNCONNECTED;
+  wire [1:0]NLW_FIFO36E1_inst_i_7_O_UNCONNECTED;
 
-  (* ADDER_THRESHOLD = "35" *) 
-  CARRY4 FIFO36E1_inst_i_2
-       (.CI(FIFO36E1_inst_i_3_n_0),
-        .CO({NLW_FIFO36E1_inst_i_2_CO_UNCONNECTED[3:1],FIFO36E1_inst_i_2_n_3}),
-        .CYINIT(1'b0),
-        .DI({1'b0,1'b0,1'b0,1'b0}),
-        .O({NLW_FIFO36E1_inst_i_2_O_UNCONNECTED[3:2],d_round[15:14]}),
-        .S({1'b0,1'b0,avg_binning1_n_23,avg_binning1_n_24}));
   LUT1 #(
     .INIT(2'h1)) 
-    FIFO36E1_inst_i_22
+    FIFO36E1_inst_i_23
        (.I0(avg_binning1_n_39),
-        .O(FIFO36E1_inst_i_22_n_0));
+        .O(FIFO36E1_inst_i_23_n_0));
   (* ADDER_THRESHOLD = "35" *) 
   CARRY4 FIFO36E1_inst_i_3
        (.CI(FIFO36E1_inst_i_4_n_0),
-        .CO({FIFO36E1_inst_i_3_n_0,FIFO36E1_inst_i_3_n_1,FIFO36E1_inst_i_3_n_2,FIFO36E1_inst_i_3_n_3}),
+        .CO({NLW_FIFO36E1_inst_i_3_CO_UNCONNECTED[3:1],FIFO36E1_inst_i_3_n_3}),
         .CYINIT(1'b0),
         .DI({1'b0,1'b0,1'b0,1'b0}),
-        .O(d_round[13:10]),
-        .S({avg_binning1_n_25,avg_binning1_n_26,avg_binning1_n_27,avg_binning1_n_28}));
+        .O({NLW_FIFO36E1_inst_i_3_O_UNCONNECTED[3:2],d_round[15:14]}),
+        .S({1'b0,1'b0,avg_binning1_n_23,avg_binning1_n_24}));
   (* ADDER_THRESHOLD = "35" *) 
   CARRY4 FIFO36E1_inst_i_4
        (.CI(FIFO36E1_inst_i_5_n_0),
         .CO({FIFO36E1_inst_i_4_n_0,FIFO36E1_inst_i_4_n_1,FIFO36E1_inst_i_4_n_2,FIFO36E1_inst_i_4_n_3}),
         .CYINIT(1'b0),
         .DI({1'b0,1'b0,1'b0,1'b0}),
-        .O(d_round[9:6]),
-        .S({avg_binning1_n_29,avg_binning1_n_30,avg_binning1_n_31,avg_binning1_n_32}));
+        .O(d_round[13:10]),
+        .S({avg_binning1_n_25,avg_binning1_n_26,avg_binning1_n_27,avg_binning1_n_28}));
   (* ADDER_THRESHOLD = "35" *) 
   CARRY4 FIFO36E1_inst_i_5
        (.CI(FIFO36E1_inst_i_6_n_0),
         .CO({FIFO36E1_inst_i_5_n_0,FIFO36E1_inst_i_5_n_1,FIFO36E1_inst_i_5_n_2,FIFO36E1_inst_i_5_n_3}),
         .CYINIT(1'b0),
         .DI({1'b0,1'b0,1'b0,1'b0}),
+        .O(d_round[9:6]),
+        .S({avg_binning1_n_29,avg_binning1_n_30,avg_binning1_n_31,avg_binning1_n_32}));
+  (* ADDER_THRESHOLD = "35" *) 
+  CARRY4 FIFO36E1_inst_i_6
+       (.CI(FIFO36E1_inst_i_7_n_0),
+        .CO({FIFO36E1_inst_i_6_n_0,FIFO36E1_inst_i_6_n_1,FIFO36E1_inst_i_6_n_2,FIFO36E1_inst_i_6_n_3}),
+        .CYINIT(1'b0),
+        .DI({1'b0,1'b0,1'b0,1'b0}),
         .O(d_round[5:2]),
         .S({avg_binning1_n_33,avg_binning1_n_34,avg_binning1_n_35,avg_binning1_n_36}));
   (* ADDER_THRESHOLD = "35" *) 
-  CARRY4 FIFO36E1_inst_i_6
+  CARRY4 FIFO36E1_inst_i_7
        (.CI(1'b0),
-        .CO({FIFO36E1_inst_i_6_n_0,FIFO36E1_inst_i_6_n_1,FIFO36E1_inst_i_6_n_2,FIFO36E1_inst_i_6_n_3}),
+        .CO({FIFO36E1_inst_i_7_n_0,FIFO36E1_inst_i_7_n_1,FIFO36E1_inst_i_7_n_2,FIFO36E1_inst_i_7_n_3}),
         .CYINIT(1'b0),
         .DI({1'b0,1'b0,avg_binning1_n_39,1'b0}),
-        .O({d_round[1:0],NLW_FIFO36E1_inst_i_6_O_UNCONNECTED[1:0]}),
-        .S({avg_binning1_n_37,avg_binning1_n_38,FIFO36E1_inst_i_22_n_0,avg_binning1_n_40}));
+        .O({d_round[1:0],NLW_FIFO36E1_inst_i_7_O_UNCONNECTED[1:0]}),
+        .S({avg_binning1_n_37,avg_binning1_n_38,FIFO36E1_inst_i_23_n_0,avg_binning1_n_40}));
   avg64_binning avg_binning1
        (.CO(\t_counter_reg[15]_i_68_n_0 ),
         .DI({avg_binning1_n_0,avg_binning1_n_1,avg_binning1_n_2,avg_binning1_n_3}),
@@ -1057,10 +1057,6 @@ module adc_filter_21
 
   wire [2:0]DI;
   wire [0:0]E;
-  wire FIFO36E1_inst_i_17_n_3;
-  wire FIFO36E1_inst_i_18_n_0;
-  wire FIFO36E1_inst_i_18_n_1;
-  wire FIFO36E1_inst_i_18_n_2;
   wire FIFO36E1_inst_i_18_n_3;
   wire FIFO36E1_inst_i_19_n_0;
   wire FIFO36E1_inst_i_19_n_1;
@@ -1074,7 +1070,11 @@ module adc_filter_21
   wire FIFO36E1_inst_i_21_n_1;
   wire FIFO36E1_inst_i_21_n_2;
   wire FIFO36E1_inst_i_21_n_3;
-  wire FIFO36E1_inst_i_25_n_0;
+  wire FIFO36E1_inst_i_22_n_0;
+  wire FIFO36E1_inst_i_22_n_1;
+  wire FIFO36E1_inst_i_22_n_2;
+  wire FIFO36E1_inst_i_22_n_3;
+  wire FIFO36E1_inst_i_26_n_0;
   wire [0:0]Q;
   wire adc_strb_1;
   wire adc_strb_2;
@@ -1164,55 +1164,55 @@ module adc_filter_21
   wire \t_counter_reg[15]_i_37_4 ;
   wire \t_counter_reg[15]_i_37_5 ;
   wire [0:0]\trigger_level_reg[0] ;
-  wire [3:1]NLW_FIFO36E1_inst_i_17_CO_UNCONNECTED;
-  wire [3:2]NLW_FIFO36E1_inst_i_17_O_UNCONNECTED;
-  wire [1:0]NLW_FIFO36E1_inst_i_21_O_UNCONNECTED;
+  wire [3:1]NLW_FIFO36E1_inst_i_18_CO_UNCONNECTED;
+  wire [3:2]NLW_FIFO36E1_inst_i_18_O_UNCONNECTED;
+  wire [1:0]NLW_FIFO36E1_inst_i_22_O_UNCONNECTED;
 
-  (* ADDER_THRESHOLD = "35" *) 
-  CARRY4 FIFO36E1_inst_i_17
-       (.CI(FIFO36E1_inst_i_18_n_0),
-        .CO({NLW_FIFO36E1_inst_i_17_CO_UNCONNECTED[3:1],FIFO36E1_inst_i_17_n_3}),
-        .CYINIT(1'b0),
-        .DI({1'b0,1'b0,1'b0,1'b0}),
-        .O({NLW_FIFO36E1_inst_i_17_O_UNCONNECTED[3:2],d_round[15:14]}),
-        .S({1'b0,1'b0,d_out[19:18]}));
   (* ADDER_THRESHOLD = "35" *) 
   CARRY4 FIFO36E1_inst_i_18
        (.CI(FIFO36E1_inst_i_19_n_0),
-        .CO({FIFO36E1_inst_i_18_n_0,FIFO36E1_inst_i_18_n_1,FIFO36E1_inst_i_18_n_2,FIFO36E1_inst_i_18_n_3}),
+        .CO({NLW_FIFO36E1_inst_i_18_CO_UNCONNECTED[3:1],FIFO36E1_inst_i_18_n_3}),
         .CYINIT(1'b0),
         .DI({1'b0,1'b0,1'b0,1'b0}),
-        .O(d_round[13:10]),
-        .S(d_out[17:14]));
+        .O({NLW_FIFO36E1_inst_i_18_O_UNCONNECTED[3:2],d_round[15:14]}),
+        .S({1'b0,1'b0,d_out[19:18]}));
   (* ADDER_THRESHOLD = "35" *) 
   CARRY4 FIFO36E1_inst_i_19
        (.CI(FIFO36E1_inst_i_20_n_0),
         .CO({FIFO36E1_inst_i_19_n_0,FIFO36E1_inst_i_19_n_1,FIFO36E1_inst_i_19_n_2,FIFO36E1_inst_i_19_n_3}),
         .CYINIT(1'b0),
         .DI({1'b0,1'b0,1'b0,1'b0}),
-        .O(d_round[9:6]),
-        .S(d_out[13:10]));
+        .O(d_round[13:10]),
+        .S(d_out[17:14]));
   (* ADDER_THRESHOLD = "35" *) 
   CARRY4 FIFO36E1_inst_i_20
        (.CI(FIFO36E1_inst_i_21_n_0),
         .CO({FIFO36E1_inst_i_20_n_0,FIFO36E1_inst_i_20_n_1,FIFO36E1_inst_i_20_n_2,FIFO36E1_inst_i_20_n_3}),
         .CYINIT(1'b0),
         .DI({1'b0,1'b0,1'b0,1'b0}),
+        .O(d_round[9:6]),
+        .S(d_out[13:10]));
+  (* ADDER_THRESHOLD = "35" *) 
+  CARRY4 FIFO36E1_inst_i_21
+       (.CI(FIFO36E1_inst_i_22_n_0),
+        .CO({FIFO36E1_inst_i_21_n_0,FIFO36E1_inst_i_21_n_1,FIFO36E1_inst_i_21_n_2,FIFO36E1_inst_i_21_n_3}),
+        .CYINIT(1'b0),
+        .DI({1'b0,1'b0,1'b0,1'b0}),
         .O(d_round[5:2]),
         .S(d_out[9:6]));
   (* ADDER_THRESHOLD = "35" *) 
-  CARRY4 FIFO36E1_inst_i_21
+  CARRY4 FIFO36E1_inst_i_22
        (.CI(1'b0),
-        .CO({FIFO36E1_inst_i_21_n_0,FIFO36E1_inst_i_21_n_1,FIFO36E1_inst_i_21_n_2,FIFO36E1_inst_i_21_n_3}),
+        .CO({FIFO36E1_inst_i_22_n_0,FIFO36E1_inst_i_22_n_1,FIFO36E1_inst_i_22_n_2,FIFO36E1_inst_i_22_n_3}),
         .CYINIT(1'b0),
         .DI({1'b0,1'b0,d_out[3],1'b0}),
-        .O({d_round[1:0],NLW_FIFO36E1_inst_i_21_O_UNCONNECTED[1:0]}),
-        .S({d_out[5:4],FIFO36E1_inst_i_25_n_0,d_out[2]}));
+        .O({d_round[1:0],NLW_FIFO36E1_inst_i_22_O_UNCONNECTED[1:0]}),
+        .S({d_out[5:4],FIFO36E1_inst_i_26_n_0,d_out[2]}));
   LUT1 #(
     .INIT(2'h1)) 
-    FIFO36E1_inst_i_25
+    FIFO36E1_inst_i_26
        (.I0(d_out[3]),
-        .O(FIFO36E1_inst_i_25_n_0));
+        .O(FIFO36E1_inst_i_26_n_0));
   avg64_binning_34 avg_binning1
        (.CO(\t_counter_reg[15]_i_107_n_0 ),
         .DI({avg_binning1_n_0,avg_binning1_n_1,avg_binning1_n_2,avg_binning1_n_3}),
@@ -1537,10 +1537,6 @@ module adc_filter_22
 
   wire [0:0]CO;
   wire [0:0]E;
-  wire FIFO36E1_inst_i_12_n_3;
-  wire FIFO36E1_inst_i_13_n_0;
-  wire FIFO36E1_inst_i_13_n_1;
-  wire FIFO36E1_inst_i_13_n_2;
   wire FIFO36E1_inst_i_13_n_3;
   wire FIFO36E1_inst_i_14_n_0;
   wire FIFO36E1_inst_i_14_n_1;
@@ -1554,7 +1550,11 @@ module adc_filter_22
   wire FIFO36E1_inst_i_16_n_1;
   wire FIFO36E1_inst_i_16_n_2;
   wire FIFO36E1_inst_i_16_n_3;
-  wire FIFO36E1_inst_i_24_n_0;
+  wire FIFO36E1_inst_i_17_n_0;
+  wire FIFO36E1_inst_i_17_n_1;
+  wire FIFO36E1_inst_i_17_n_2;
+  wire FIFO36E1_inst_i_17_n_3;
+  wire FIFO36E1_inst_i_25_n_0;
   wire [1:0]O;
   wire [7:0]Q;
   wire [0:0]S;
@@ -1674,55 +1674,55 @@ module adc_filter_22
   wire \t_counter_reg[15]_i_46_4 ;
   wire \t_counter_reg[15]_i_46_5 ;
   wire [12:1]\trigger/out0 ;
-  wire [3:1]NLW_FIFO36E1_inst_i_12_CO_UNCONNECTED;
-  wire [3:2]NLW_FIFO36E1_inst_i_12_O_UNCONNECTED;
-  wire [1:0]NLW_FIFO36E1_inst_i_16_O_UNCONNECTED;
+  wire [3:1]NLW_FIFO36E1_inst_i_13_CO_UNCONNECTED;
+  wire [3:2]NLW_FIFO36E1_inst_i_13_O_UNCONNECTED;
+  wire [1:0]NLW_FIFO36E1_inst_i_17_O_UNCONNECTED;
 
-  (* ADDER_THRESHOLD = "35" *) 
-  CARRY4 FIFO36E1_inst_i_12
-       (.CI(FIFO36E1_inst_i_13_n_0),
-        .CO({NLW_FIFO36E1_inst_i_12_CO_UNCONNECTED[3:1],FIFO36E1_inst_i_12_n_3}),
-        .CYINIT(1'b0),
-        .DI({1'b0,1'b0,1'b0,1'b0}),
-        .O({NLW_FIFO36E1_inst_i_12_O_UNCONNECTED[3:2],d_round[15:14]}),
-        .S({1'b0,1'b0,avg_binning1_n_19,avg_binning1_n_20}));
   (* ADDER_THRESHOLD = "35" *) 
   CARRY4 FIFO36E1_inst_i_13
        (.CI(FIFO36E1_inst_i_14_n_0),
-        .CO({FIFO36E1_inst_i_13_n_0,FIFO36E1_inst_i_13_n_1,FIFO36E1_inst_i_13_n_2,FIFO36E1_inst_i_13_n_3}),
+        .CO({NLW_FIFO36E1_inst_i_13_CO_UNCONNECTED[3:1],FIFO36E1_inst_i_13_n_3}),
         .CYINIT(1'b0),
         .DI({1'b0,1'b0,1'b0,1'b0}),
-        .O(d_round[13:10]),
-        .S({avg_binning1_n_21,avg_binning1_n_22,avg_binning1_n_23,avg_binning1_n_24}));
+        .O({NLW_FIFO36E1_inst_i_13_O_UNCONNECTED[3:2],d_round[15:14]}),
+        .S({1'b0,1'b0,avg_binning1_n_19,avg_binning1_n_20}));
   (* ADDER_THRESHOLD = "35" *) 
   CARRY4 FIFO36E1_inst_i_14
        (.CI(FIFO36E1_inst_i_15_n_0),
         .CO({FIFO36E1_inst_i_14_n_0,FIFO36E1_inst_i_14_n_1,FIFO36E1_inst_i_14_n_2,FIFO36E1_inst_i_14_n_3}),
         .CYINIT(1'b0),
         .DI({1'b0,1'b0,1'b0,1'b0}),
-        .O(d_round[9:6]),
-        .S({avg_binning1_n_25,avg_binning1_n_26,avg_binning1_n_27,avg_binning1_n_28}));
+        .O(d_round[13:10]),
+        .S({avg_binning1_n_21,avg_binning1_n_22,avg_binning1_n_23,avg_binning1_n_24}));
   (* ADDER_THRESHOLD = "35" *) 
   CARRY4 FIFO36E1_inst_i_15
        (.CI(FIFO36E1_inst_i_16_n_0),
         .CO({FIFO36E1_inst_i_15_n_0,FIFO36E1_inst_i_15_n_1,FIFO36E1_inst_i_15_n_2,FIFO36E1_inst_i_15_n_3}),
         .CYINIT(1'b0),
         .DI({1'b0,1'b0,1'b0,1'b0}),
+        .O(d_round[9:6]),
+        .S({avg_binning1_n_25,avg_binning1_n_26,avg_binning1_n_27,avg_binning1_n_28}));
+  (* ADDER_THRESHOLD = "35" *) 
+  CARRY4 FIFO36E1_inst_i_16
+       (.CI(FIFO36E1_inst_i_17_n_0),
+        .CO({FIFO36E1_inst_i_16_n_0,FIFO36E1_inst_i_16_n_1,FIFO36E1_inst_i_16_n_2,FIFO36E1_inst_i_16_n_3}),
+        .CYINIT(1'b0),
+        .DI({1'b0,1'b0,1'b0,1'b0}),
         .O(d_round[5:2]),
         .S({avg_binning1_n_29,avg_binning1_n_30,avg_binning1_n_31,avg_binning1_n_32}));
   (* ADDER_THRESHOLD = "35" *) 
-  CARRY4 FIFO36E1_inst_i_16
+  CARRY4 FIFO36E1_inst_i_17
        (.CI(1'b0),
-        .CO({FIFO36E1_inst_i_16_n_0,FIFO36E1_inst_i_16_n_1,FIFO36E1_inst_i_16_n_2,FIFO36E1_inst_i_16_n_3}),
+        .CO({FIFO36E1_inst_i_17_n_0,FIFO36E1_inst_i_17_n_1,FIFO36E1_inst_i_17_n_2,FIFO36E1_inst_i_17_n_3}),
         .CYINIT(1'b0),
         .DI({1'b0,1'b0,avg_binning1_n_35,1'b0}),
-        .O({d_round[1:0],NLW_FIFO36E1_inst_i_16_O_UNCONNECTED[1:0]}),
-        .S({avg_binning1_n_33,avg_binning1_n_34,FIFO36E1_inst_i_24_n_0,avg_binning1_n_36}));
+        .O({d_round[1:0],NLW_FIFO36E1_inst_i_17_O_UNCONNECTED[1:0]}),
+        .S({avg_binning1_n_33,avg_binning1_n_34,FIFO36E1_inst_i_25_n_0,avg_binning1_n_36}));
   LUT1 #(
     .INIT(2'h1)) 
-    FIFO36E1_inst_i_24
+    FIFO36E1_inst_i_25
        (.I0(avg_binning1_n_35),
-        .O(FIFO36E1_inst_i_24_n_0));
+        .O(FIFO36E1_inst_i_25_n_0));
   avg64_binning_23 avg_binning1
        (.CO(\t_counter_reg[15]_i_124_n_0 ),
         .DI({avg_binning1_n_0,avg_binning1_n_1,avg_binning1_n_2,avg_binning1_n_3}),
@@ -1983,8 +1983,7 @@ module adc_filter_22
 endmodule
 
 module adc_interface
-   (rst_3d,
-    O,
+   (O,
     CO,
     \t_counter[15]_i_239 ,
     \t_counter[15]_i_194 ,
@@ -1994,11 +1993,8 @@ module adc_interface
     d_round,
     \d_out_reg[19] ,
     DI,
-    rst_3d_reg_0,
     adc_strb_1,
     adc_strb_2,
-    rst_2d,
-    ifclk_out_OBUF_BUFG,
     S,
     \t_counter_reg[15]_i_12 ,
     \t_counter_reg[15]_i_37 ,
@@ -2021,15 +2017,11 @@ module adc_interface
     \t_counter[15]_i_52 ,
     \t_counter_reg[15]_i_13 ,
     \t_counter_reg[15]_i_13_0 ,
-    pll_locked,
-    RST_IBUF,
-    rst_0,
-    rst_d,
+    ifclk_out_OBUF_BUFG,
     d_in,
     rst,
     overflow,
     filter_rst);
-  output rst_3d;
   output [1:0]O;
   output [0:0]CO;
   output [2:0]\t_counter[15]_i_239 ;
@@ -2040,11 +2032,8 @@ module adc_interface
   output [15:0]d_round;
   output [15:0]\d_out_reg[19] ;
   output [2:0]DI;
-  output rst_3d_reg_0;
   output adc_strb_1;
   output adc_strb_2;
-  input rst_2d;
-  input ifclk_out_OBUF_BUFG;
   input [0:0]S;
   input [2:0]\t_counter_reg[15]_i_12 ;
   input \t_counter_reg[15]_i_37 ;
@@ -2067,10 +2056,7 @@ module adc_interface
   input [0:0]\t_counter[15]_i_52 ;
   input \t_counter_reg[15]_i_13 ;
   input \t_counter_reg[15]_i_13_0 ;
-  input pll_locked;
-  input RST_IBUF;
-  input rst_0;
-  input rst_d;
+  input ifclk_out_OBUF_BUFG;
   input [13:0]d_in;
   input rst;
   input overflow;
@@ -2080,7 +2066,6 @@ module adc_interface
   wire [2:0]DI;
   wire [1:0]O;
   wire [7:0]Q;
-  wire RST_IBUF;
   wire [0:0]S;
   wire adc_strb_1;
   wire adc_strb_2;
@@ -2095,13 +2080,7 @@ module adc_interface
   wire filter_rst;
   wire ifclk_out_OBUF_BUFG;
   wire overflow;
-  wire pll_locked;
   wire rst;
-  wire rst_0;
-  wire rst_2d;
-  wire rst_3d;
-  wire rst_3d_reg_0;
-  wire rst_d;
   wire [1:0]\t_counter[15]_i_118 ;
   wire [0:0]\t_counter[15]_i_120 ;
   wire [2:0]\t_counter[15]_i_186 ;
@@ -2446,24 +2425,6 @@ module adc_interface
         .Q2(d1_raw[9]),
         .R(rst),
         .S(1'b0));
-  LUT6 #(
-    .INIT(64'hFFFFFFFFFFFFFFEF)) 
-    in_strb_d_i_3
-       (.I0(rst_3d),
-        .I1(rst_2d),
-        .I2(pll_locked),
-        .I3(RST_IBUF),
-        .I4(rst_0),
-        .I5(rst_d),
-        .O(rst_3d_reg_0));
-  FDRE #(
-    .INIT(1'b1)) 
-    rst_3d_reg
-       (.C(ifclk_out_OBUF_BUFG),
-        .CE(1'b1),
-        .D(rst_2d),
-        .Q(rst_3d),
-        .R(1'b0));
 endmodule
 
 (* ORIG_REF_NAME = "adc_interface" *) 
@@ -6828,14 +6789,15 @@ endmodule
 
 module fx3s_interface
    (rst_d,
+    rst_3d,
     SR,
     rst_internal,
-    rd_en4_out,
-    trigger_strobe,
-    fifo_rst_internal,
-    LED_RED_n_OBUF,
-    DO,
+    rst_3d_reg_0,
     rst_6d_reg_0,
+    LED_RED_n_OBUF,
+    filter_rst,
+    DO,
+    rst_7d_reg_0,
     d_out,
     A,
     SLCS,
@@ -6846,31 +6808,31 @@ module fx3s_interface
     \DQ_TRI[0] ,
     rst,
     ifclk_out_OBUF_BUFG,
-    rst_3d,
-    \t_counter_reg[0] ,
-    Q,
-    \t_counter[15]_i_4 ,
-    in_strb_d_reg,
-    strb_d,
-    strb_dd,
-    LED_GREEN_3_OBUF,
-    LED_GREEN_OBUF,
     rst_2d,
+    rst_5d,
+    \t_counter_reg[0] ,
+    rst_4d,
+    pll_locked,
+    RST_IBUF,
+    rst_0,
+    trigged,
     rx_oe,
     LED_BLUE_OBUF,
     DI,
     \poten1_value_reg[7] ,
-    trigged,
-    FLAGB_IBUF);
+    LED_GREEN_OBUF,
+    FLAGB_IBUF,
+    LED_GREEN_3_OBUF);
   output rst_d;
+  output rst_3d;
   output [0:0]SR;
   output rst_internal;
-  output rd_en4_out;
-  output trigger_strobe;
-  output fifo_rst_internal;
-  output LED_RED_n_OBUF;
-  output [15:0]DO;
+  output rst_3d_reg_0;
   output rst_6d_reg_0;
+  output LED_RED_n_OBUF;
+  output filter_rst;
+  output [15:0]DO;
+  output rst_7d_reg_0;
   output [15:0]d_out;
   output [0:0]A;
   output SLCS;
@@ -6881,50 +6843,34 @@ module fx3s_interface
   output \DQ_TRI[0] ;
   input rst;
   input ifclk_out_OBUF_BUFG;
-  input rst_3d;
-  input \t_counter_reg[0] ;
-  input [0:0]Q;
-  input \t_counter[15]_i_4 ;
-  input in_strb_d_reg;
-  input strb_d;
-  input strb_dd;
-  input LED_GREEN_3_OBUF;
-  input LED_GREEN_OBUF;
   input rst_2d;
+  input rst_5d;
+  input \t_counter_reg[0] ;
+  input rst_4d;
+  input pll_locked;
+  input RST_IBUF;
+  input rst_0;
+  input trigged;
   input rx_oe;
   input LED_BLUE_OBUF;
   input [16:0]DI;
   input [15:0]\poten1_value_reg[7] ;
-  input trigged;
+  input LED_GREEN_OBUF;
   input FLAGB_IBUF;
+  input LED_GREEN_3_OBUF;
 
   wire [0:0]A;
-  wire A0;
+  wire A0_i_1_n_0;
   wire A0_i_2_n_0;
+  wire A0_i_3_n_0;
+  wire A0_i_4_n_0;
+  wire A0_i_5_n_0;
+  wire A0_i_6_n_0;
+  wire A0_i_7_n_0;
   wire [16:0]DI;
   wire [15:0]DO;
   wire \DQ_TRI[0] ;
   wire FLAGB_IBUF;
-  wire \FSM_onehot_master_state[0]_i_1_n_0 ;
-  wire \FSM_onehot_master_state[0]_i_2_n_0 ;
-  wire \FSM_onehot_master_state[1]_i_1_n_0 ;
-  wire \FSM_onehot_master_state[3]_i_1_n_0 ;
-  wire \FSM_onehot_master_state[4]_i_1_n_0 ;
-  wire \FSM_onehot_master_state[7]_i_2_n_0 ;
-  wire \FSM_onehot_master_state[7]_i_3_n_0 ;
-  wire \FSM_onehot_master_state[7]_i_4_n_0 ;
-  wire \FSM_onehot_master_state[7]_i_5_n_0 ;
-  wire \FSM_onehot_master_state[7]_i_6_n_0 ;
-  wire \FSM_onehot_master_state[7]_i_7_n_0 ;
-  wire \FSM_onehot_master_state[7]_i_8_n_0 ;
-  wire \FSM_onehot_master_state_reg_n_0_[0] ;
-  wire \FSM_onehot_master_state_reg_n_0_[1] ;
-  wire \FSM_onehot_master_state_reg_n_0_[2] ;
-  wire \FSM_onehot_master_state_reg_n_0_[3] ;
-  wire \FSM_onehot_master_state_reg_n_0_[4] ;
-  wire \FSM_onehot_master_state_reg_n_0_[5] ;
-  wire \FSM_onehot_master_state_reg_n_0_[6] ;
-  wire \FSM_onehot_master_state_reg_n_0_[7] ;
   wire LED_BLUE_OBUF;
   wire LED_GREEN_3_OBUF;
   wire LED_GREEN_OBUF;
@@ -6932,18 +6878,16 @@ module fx3s_interface
   wire PKTEND;
   wire PKTEND_i_1_n_0;
   wire PKTEND_i_2_n_0;
-  wire [0:0]Q;
+  wire RST_IBUF;
   wire SLCS;
   wire SLCS_i_1_n_0;
   wire SLCS_i_2_n_0;
   wire SLCS_i_3_n_0;
-  wire SLCS_i_4_n_0;
   wire SLOE;
   wire SLOE_i_1_n_0;
   wire SLOE_i_2_n_0;
   wire SLRD;
   wire SLRD_i_1_n_0;
-  wire SLRD_i_2_n_0;
   wire SLWR;
   wire SLWR_i_1_n_0;
   wire SLWR_i_2_n_0;
@@ -6955,27 +6899,41 @@ module fx3s_interface
   wire fifo_departure_n_3;
   wire fifo_departure_n_81;
   wire fifo_rst_internal;
+  wire filter_rst;
   wire ifclk_out_OBUF_BUFG;
-  wire in_strb_d_i_2_n_0;
-  wire in_strb_d_reg;
   wire is_outgoing_i_1_n_0;
   wire is_outgoing_i_2_n_0;
   wire is_outgoing_i_3_n_0;
+  wire is_outgoing_i_4_n_0;
+  wire is_outgoing_i_5_n_0;
+  wire is_outgoing_i_6_n_0;
+  wire is_outgoing_i_7_n_0;
+  wire [3:0]master_state;
+  wire \master_state[0]_i_2_n_0 ;
+  wire \master_state[3]_i_2_n_0 ;
+  wire \master_state[3]_i_4_n_0 ;
+  wire \master_state_reg_n_0_[0] ;
+  wire \master_state_reg_n_0_[1] ;
+  wire \master_state_reg_n_0_[2] ;
+  wire \master_state_reg_n_0_[3] ;
   wire output_strobe_internal;
   wire p_1_in;
   wire p_2_in;
   wire p_3_in;
   wire p_4_in;
+  wire pll_locked;
   wire [15:0]\poten1_value_reg[7] ;
-  wire rd_en4_out;
   wire rst;
+  wire rst_0;
   wire rst_2d;
   wire rst_3d;
+  wire rst_3d_reg_0;
   wire rst_4d;
   wire rst_5d;
   wire rst_6d;
   wire rst_6d_reg_0;
   wire rst_7d;
+  wire rst_7d_reg_0;
   wire rst_8d;
   wire rst_9d;
   wire rst_d;
@@ -6988,23 +6946,16 @@ module fx3s_interface
   wire sending_i_1_n_0;
   wire sending_i_2_n_0;
   wire sending_reg_n_0;
-  wire strb_d;
-  wire strb_dd;
-  wire \t_counter[15]_i_4 ;
   wire \t_counter_reg[0] ;
   wire trigged;
   wire \trigged_d_reg_n_0_[0] ;
   wire \trigged_d_reg_n_0_[5] ;
-  wire trigger_strobe;
   wire tx_full;
   wire tx_rd_en_i_1_n_0;
   wire tx_rd_en_i_2_n_0;
   wire tx_rd_en_i_3_n_0;
   wire tx_rd_en_i_4_n_0;
   wire tx_rd_en_i_5_n_0;
-  wire tx_rd_en_i_6_n_0;
-  wire tx_rd_en_i_7_n_0;
-  wire tx_rd_en_i_8_n_0;
   wire tx_rd_en_reg_n_0;
   wire NLW_fifo_arrival_ALMOSTEMPTY_UNCONNECTED;
   wire NLW_fifo_arrival_DBITERR_UNCONNECTED;
@@ -7031,220 +6982,76 @@ module fx3s_interface
   wire [12:0]NLW_fifo_departure_RDCOUNT_UNCONNECTED;
   wire [12:0]NLW_fifo_departure_WRCOUNT_UNCONNECTED;
 
-  LUT5 #(
-    .INIT(32'h0202AA02)) 
+  LUT6 #(
+    .INIT(64'h000000000000F444)) 
     A0_i_1
-       (.I0(\FSM_onehot_master_state_reg_n_0_[0] ),
-        .I1(\FSM_onehot_master_state[7]_i_3_n_0 ),
-        .I2(\FSM_onehot_master_state[7]_i_5_n_0 ),
-        .I3(LED_GREEN_3_OBUF),
-        .I4(fifo_arrival_n_1),
-        .O(A0));
-  LUT3 #(
-    .INIT(8'h0B)) 
-    A0_i_2
        (.I0(fifo_arrival_n_1),
         .I1(LED_GREEN_3_OBUF),
-        .I2(\FSM_onehot_master_state[7]_i_5_n_0 ),
+        .I2(A0_i_3_n_0),
+        .I3(FLAGB_IBUF),
+        .I4(\master_state_reg_n_0_[0] ),
+        .I5(A0_i_4_n_0),
+        .O(A0_i_1_n_0));
+  LUT6 #(
+    .INIT(64'h4F4F004F40400040)) 
+    A0_i_2
+       (.I0(A0_i_5_n_0),
+        .I1(sending_reg_n_0),
+        .I2(fifo_departure_n_3),
+        .I3(LED_GREEN_3_OBUF),
+        .I4(fifo_arrival_n_1),
+        .I5(FLAGB_IBUF),
         .O(A0_i_2_n_0));
+  LUT6 #(
+    .INIT(64'h00000002FFFFFFFF)) 
+    A0_i_3
+       (.I0(A0_i_6_n_0),
+        .I1(\trigged_d_reg_n_0_[5] ),
+        .I2(p_4_in),
+        .I3(p_3_in),
+        .I4(p_2_in),
+        .I5(fifo_departure_n_3),
+        .O(A0_i_3_n_0));
+  (* SOFT_HLUTNM = "soft_lutpair392" *) 
+  LUT3 #(
+    .INIT(8'hFE)) 
+    A0_i_4
+       (.I0(\master_state_reg_n_0_[3] ),
+        .I1(\master_state_reg_n_0_[1] ),
+        .I2(\master_state_reg_n_0_[2] ),
+        .O(A0_i_4_n_0));
+  LUT6 #(
+    .INIT(64'hFFFFFFFFFFFFFFFE)) 
+    A0_i_5
+       (.I0(p_2_in),
+        .I1(p_3_in),
+        .I2(\trigged_d_reg_n_0_[0] ),
+        .I3(p_1_in),
+        .I4(trigged),
+        .I5(A0_i_7_n_0),
+        .O(A0_i_5_n_0));
+  LUT4 #(
+    .INIT(16'h0004)) 
+    A0_i_6
+       (.I0(trigged),
+        .I1(sending_reg_n_0),
+        .I2(p_1_in),
+        .I3(\trigged_d_reg_n_0_[0] ),
+        .O(A0_i_6_n_0));
+  LUT2 #(
+    .INIT(4'hE)) 
+    A0_i_7
+       (.I0(p_4_in),
+        .I1(\trigged_d_reg_n_0_[5] ),
+        .O(A0_i_7_n_0));
   FDRE #(
     .INIT(1'b0),
     .IS_C_INVERTED(1'b1)) 
     A0_reg
        (.C(ifclk_out_OBUF_BUFG),
-        .CE(A0),
+        .CE(A0_i_1_n_0),
         .D(A0_i_2_n_0),
         .Q(A),
-        .R(rst_internal_0));
-  LUT6 #(
-    .INIT(64'hCECCCECCCECCCFCC)) 
-    \FSM_onehot_master_state[0]_i_1 
-       (.I0(\FSM_onehot_master_state[7]_i_3_n_0 ),
-        .I1(\FSM_onehot_master_state[0]_i_2_n_0 ),
-        .I2(\FSM_onehot_master_state[7]_i_4_n_0 ),
-        .I3(\FSM_onehot_master_state_reg_n_0_[0] ),
-        .I4(fifo_departure_n_81),
-        .I5(fifo_departure_n_3),
-        .O(\FSM_onehot_master_state[0]_i_1_n_0 ));
-  (* SOFT_HLUTNM = "soft_lutpair395" *) 
-  LUT4 #(
-    .INIT(16'hEFEE)) 
-    \FSM_onehot_master_state[0]_i_2 
-       (.I0(\FSM_onehot_master_state_reg_n_0_[7] ),
-        .I1(\FSM_onehot_master_state_reg_n_0_[3] ),
-        .I2(LED_GREEN_3_OBUF),
-        .I3(\FSM_onehot_master_state_reg_n_0_[2] ),
-        .O(\FSM_onehot_master_state[0]_i_2_n_0 ));
-  (* SOFT_HLUTNM = "soft_lutpair392" *) 
-  LUT3 #(
-    .INIT(8'h20)) 
-    \FSM_onehot_master_state[1]_i_1 
-       (.I0(LED_GREEN_3_OBUF),
-        .I1(fifo_arrival_n_1),
-        .I2(\FSM_onehot_master_state_reg_n_0_[0] ),
-        .O(\FSM_onehot_master_state[1]_i_1_n_0 ));
-  LUT2 #(
-    .INIT(4'h8)) 
-    \FSM_onehot_master_state[3]_i_1 
-       (.I0(LED_GREEN_3_OBUF),
-        .I1(\FSM_onehot_master_state_reg_n_0_[2] ),
-        .O(\FSM_onehot_master_state[3]_i_1_n_0 ));
-  LUT6 #(
-    .INIT(64'h4044404440440000)) 
-    \FSM_onehot_master_state[4]_i_1 
-       (.I0(\FSM_onehot_master_state[7]_i_3_n_0 ),
-        .I1(\FSM_onehot_master_state_reg_n_0_[0] ),
-        .I2(fifo_arrival_n_1),
-        .I3(LED_GREEN_3_OBUF),
-        .I4(fifo_departure_n_3),
-        .I5(fifo_departure_n_81),
-        .O(\FSM_onehot_master_state[4]_i_1_n_0 ));
-  LUT5 #(
-    .INIT(32'hFFFFFFFE)) 
-    \FSM_onehot_master_state[7]_i_1 
-       (.I0(fifo_rst_internal),
-        .I1(rst_6d),
-        .I2(rst_9d),
-        .I3(rst_7d),
-        .I4(rst_8d),
-        .O(rst_internal_0));
-  LUT6 #(
-    .INIT(64'hFFFFFFFFFFFFA8AA)) 
-    \FSM_onehot_master_state[7]_i_2 
-       (.I0(\FSM_onehot_master_state_reg_n_0_[0] ),
-        .I1(\FSM_onehot_master_state[7]_i_3_n_0 ),
-        .I2(\FSM_onehot_master_state[7]_i_4_n_0 ),
-        .I3(\FSM_onehot_master_state[7]_i_5_n_0 ),
-        .I4(\FSM_onehot_master_state_reg_n_0_[4] ),
-        .I5(\FSM_onehot_master_state[7]_i_6_n_0 ),
-        .O(\FSM_onehot_master_state[7]_i_2_n_0 ));
-  LUT6 #(
-    .INIT(64'hFFFE0000FFFFFFFF)) 
-    \FSM_onehot_master_state[7]_i_3 
-       (.I0(p_4_in),
-        .I1(p_3_in),
-        .I2(\trigged_d_reg_n_0_[5] ),
-        .I3(\FSM_onehot_master_state[7]_i_7_n_0 ),
-        .I4(fifo_departure_n_3),
-        .I5(FLAGB_IBUF),
-        .O(\FSM_onehot_master_state[7]_i_3_n_0 ));
-  LUT2 #(
-    .INIT(4'h2)) 
-    \FSM_onehot_master_state[7]_i_4 
-       (.I0(LED_GREEN_3_OBUF),
-        .I1(fifo_arrival_n_1),
-        .O(\FSM_onehot_master_state[7]_i_4_n_0 ));
-  LUT3 #(
-    .INIT(8'h0D)) 
-    \FSM_onehot_master_state[7]_i_5 
-       (.I0(FLAGB_IBUF),
-        .I1(fifo_departure_n_3),
-        .I2(SLWR_i_3_n_0),
-        .O(\FSM_onehot_master_state[7]_i_5_n_0 ));
-  LUT6 #(
-    .INIT(64'hFFFFFFFFFFFFFFFE)) 
-    \FSM_onehot_master_state[7]_i_6 
-       (.I0(\FSM_onehot_master_state_reg_n_0_[7] ),
-        .I1(\FSM_onehot_master_state_reg_n_0_[1] ),
-        .I2(\FSM_onehot_master_state_reg_n_0_[2] ),
-        .I3(\FSM_onehot_master_state[7]_i_8_n_0 ),
-        .I4(\FSM_onehot_master_state_reg_n_0_[6] ),
-        .I5(\FSM_onehot_master_state_reg_n_0_[5] ),
-        .O(\FSM_onehot_master_state[7]_i_6_n_0 ));
-  LUT4 #(
-    .INIT(16'hFFFE)) 
-    \FSM_onehot_master_state[7]_i_7 
-       (.I0(p_2_in),
-        .I1(\trigged_d_reg_n_0_[0] ),
-        .I2(trigged),
-        .I3(p_1_in),
-        .O(\FSM_onehot_master_state[7]_i_7_n_0 ));
-  LUT3 #(
-    .INIT(8'h8A)) 
-    \FSM_onehot_master_state[7]_i_8 
-       (.I0(\FSM_onehot_master_state_reg_n_0_[3] ),
-        .I1(fifo_arrival_n_1),
-        .I2(LED_GREEN_3_OBUF),
-        .O(\FSM_onehot_master_state[7]_i_8_n_0 ));
-  (* FSM_ENCODED_STATES = "state_read_pre_2:00000100,state_read_pre_1:0010,state_start_read:00000010,state_idle:00000001,state_stop_write_2:00100000,state_stop_write_4:10000000,state_stop_write_1:00010000,state_stop_write_3:01000000,state_read_loop:00001000" *) 
-  FDSE #(
-    .INIT(1'b1),
-    .IS_C_INVERTED(1'b1)) 
-    \FSM_onehot_master_state_reg[0] 
-       (.C(ifclk_out_OBUF_BUFG),
-        .CE(\FSM_onehot_master_state[7]_i_2_n_0 ),
-        .D(\FSM_onehot_master_state[0]_i_1_n_0 ),
-        .Q(\FSM_onehot_master_state_reg_n_0_[0] ),
-        .S(rst_internal_0));
-  (* FSM_ENCODED_STATES = "state_read_pre_2:00000100,state_read_pre_1:0010,state_start_read:00000010,state_idle:00000001,state_stop_write_2:00100000,state_stop_write_4:10000000,state_stop_write_1:00010000,state_stop_write_3:01000000,state_read_loop:00001000" *) 
-  FDRE #(
-    .INIT(1'b0),
-    .IS_C_INVERTED(1'b1)) 
-    \FSM_onehot_master_state_reg[1] 
-       (.C(ifclk_out_OBUF_BUFG),
-        .CE(\FSM_onehot_master_state[7]_i_2_n_0 ),
-        .D(\FSM_onehot_master_state[1]_i_1_n_0 ),
-        .Q(\FSM_onehot_master_state_reg_n_0_[1] ),
-        .R(rst_internal_0));
-  (* FSM_ENCODED_STATES = "state_read_pre_2:00000100,state_read_pre_1:0010,state_start_read:00000010,state_idle:00000001,state_stop_write_2:00100000,state_stop_write_4:10000000,state_stop_write_1:00010000,state_stop_write_3:01000000,state_read_loop:00001000" *) 
-  FDRE #(
-    .INIT(1'b0),
-    .IS_C_INVERTED(1'b1)) 
-    \FSM_onehot_master_state_reg[2] 
-       (.C(ifclk_out_OBUF_BUFG),
-        .CE(\FSM_onehot_master_state[7]_i_2_n_0 ),
-        .D(\FSM_onehot_master_state_reg_n_0_[1] ),
-        .Q(\FSM_onehot_master_state_reg_n_0_[2] ),
-        .R(rst_internal_0));
-  (* FSM_ENCODED_STATES = "state_read_pre_2:00000100,state_read_pre_1:0010,state_start_read:00000010,state_idle:00000001,state_stop_write_2:00100000,state_stop_write_4:10000000,state_stop_write_1:00010000,state_stop_write_3:01000000,state_read_loop:00001000" *) 
-  FDRE #(
-    .INIT(1'b0),
-    .IS_C_INVERTED(1'b1)) 
-    \FSM_onehot_master_state_reg[3] 
-       (.C(ifclk_out_OBUF_BUFG),
-        .CE(\FSM_onehot_master_state[7]_i_2_n_0 ),
-        .D(\FSM_onehot_master_state[3]_i_1_n_0 ),
-        .Q(\FSM_onehot_master_state_reg_n_0_[3] ),
-        .R(rst_internal_0));
-  (* FSM_ENCODED_STATES = "state_read_pre_2:00000100,state_read_pre_1:0010,state_start_read:00000010,state_idle:00000001,state_stop_write_2:00100000,state_stop_write_4:10000000,state_stop_write_1:00010000,state_stop_write_3:01000000,state_read_loop:00001000" *) 
-  FDRE #(
-    .INIT(1'b0),
-    .IS_C_INVERTED(1'b1)) 
-    \FSM_onehot_master_state_reg[4] 
-       (.C(ifclk_out_OBUF_BUFG),
-        .CE(\FSM_onehot_master_state[7]_i_2_n_0 ),
-        .D(\FSM_onehot_master_state[4]_i_1_n_0 ),
-        .Q(\FSM_onehot_master_state_reg_n_0_[4] ),
-        .R(rst_internal_0));
-  (* FSM_ENCODED_STATES = "state_read_pre_2:00000100,state_read_pre_1:0010,state_start_read:00000010,state_idle:00000001,state_stop_write_2:00100000,state_stop_write_4:10000000,state_stop_write_1:00010000,state_stop_write_3:01000000,state_read_loop:00001000" *) 
-  FDRE #(
-    .INIT(1'b0),
-    .IS_C_INVERTED(1'b1)) 
-    \FSM_onehot_master_state_reg[5] 
-       (.C(ifclk_out_OBUF_BUFG),
-        .CE(\FSM_onehot_master_state[7]_i_2_n_0 ),
-        .D(\FSM_onehot_master_state_reg_n_0_[4] ),
-        .Q(\FSM_onehot_master_state_reg_n_0_[5] ),
-        .R(rst_internal_0));
-  (* FSM_ENCODED_STATES = "state_read_pre_2:00000100,state_read_pre_1:0010,state_start_read:00000010,state_idle:00000001,state_stop_write_2:00100000,state_stop_write_4:10000000,state_stop_write_1:00010000,state_stop_write_3:01000000,state_read_loop:00001000" *) 
-  FDRE #(
-    .INIT(1'b0),
-    .IS_C_INVERTED(1'b1)) 
-    \FSM_onehot_master_state_reg[6] 
-       (.C(ifclk_out_OBUF_BUFG),
-        .CE(\FSM_onehot_master_state[7]_i_2_n_0 ),
-        .D(\FSM_onehot_master_state_reg_n_0_[5] ),
-        .Q(\FSM_onehot_master_state_reg_n_0_[6] ),
-        .R(rst_internal_0));
-  (* FSM_ENCODED_STATES = "state_read_pre_2:00000100,state_read_pre_1:0010,state_start_read:00000010,state_idle:00000001,state_stop_write_2:00100000,state_stop_write_4:10000000,state_stop_write_1:00010000,state_stop_write_3:01000000,state_read_loop:00001000" *) 
-  FDRE #(
-    .INIT(1'b0),
-    .IS_C_INVERTED(1'b1)) 
-    \FSM_onehot_master_state_reg[7] 
-       (.C(ifclk_out_OBUF_BUFG),
-        .CE(\FSM_onehot_master_state[7]_i_2_n_0 ),
-        .D(\FSM_onehot_master_state_reg_n_0_[6] ),
-        .Q(\FSM_onehot_master_state_reg_n_0_[7] ),
         .R(rst_internal_0));
   LUT1 #(
     .INIT(2'h1)) 
@@ -7252,22 +7059,21 @@ module fx3s_interface
        (.I0(tx_full),
         .O(LED_RED_n_OBUF));
   LUT6 #(
-    .INIT(64'hAAAAAAAABBABAAAA)) 
+    .INIT(64'hFFF0F0F000000F02)) 
     PKTEND_i_1
-       (.I0(\FSM_onehot_master_state_reg_n_0_[4] ),
-        .I1(\FSM_onehot_master_state[7]_i_3_n_0 ),
-        .I2(LED_GREEN_3_OBUF),
-        .I3(fifo_arrival_n_1),
-        .I4(\FSM_onehot_master_state_reg_n_0_[0] ),
-        .I5(\FSM_onehot_master_state[7]_i_5_n_0 ),
+       (.I0(A0_i_3_n_0),
+        .I1(SLWR_i_3_n_0),
+        .I2(\master_state_reg_n_0_[2] ),
+        .I3(\master_state_reg_n_0_[0] ),
+        .I4(\master_state_reg_n_0_[1] ),
+        .I5(\master_state_reg_n_0_[3] ),
         .O(PKTEND_i_1_n_0));
-  (* SOFT_HLUTNM = "soft_lutpair393" *) 
   LUT5 #(
-    .INIT(32'hAAAABAAA)) 
+    .INIT(32'hEEEEEFEE)) 
     PKTEND_i_2
-       (.I0(\FSM_onehot_master_state_reg_n_0_[4] ),
-        .I1(fifo_departure_n_81),
-        .I2(\FSM_onehot_master_state_reg_n_0_[0] ),
+       (.I0(\master_state_reg_n_0_[2] ),
+        .I1(\master_state_reg_n_0_[0] ),
+        .I2(fifo_departure_n_81),
         .I3(FLAGB_IBUF),
         .I4(fifo_departure_n_3),
         .O(PKTEND_i_2_n_0));
@@ -7280,42 +7086,31 @@ module fx3s_interface
         .D(PKTEND_i_2_n_0),
         .Q(PKTEND),
         .S(rst_internal_0));
-  LUT6 #(
-    .INIT(64'hFFFFFFFFFFFFA8AA)) 
+  LUT5 #(
+    .INIT(32'hFF03F002)) 
     SLCS_i_1
-       (.I0(\FSM_onehot_master_state_reg_n_0_[0] ),
-        .I1(\FSM_onehot_master_state[7]_i_3_n_0 ),
-        .I2(\FSM_onehot_master_state[7]_i_4_n_0 ),
-        .I3(\FSM_onehot_master_state[7]_i_5_n_0 ),
-        .I4(\FSM_onehot_master_state_reg_n_0_[7] ),
-        .I5(SLCS_i_3_n_0),
+       (.I0(\master_state[3]_i_4_n_0 ),
+        .I1(\master_state_reg_n_0_[0] ),
+        .I2(\master_state_reg_n_0_[1] ),
+        .I3(\master_state_reg_n_0_[3] ),
+        .I4(\master_state_reg_n_0_[2] ),
         .O(SLCS_i_1_n_0));
   LUT6 #(
-    .INIT(64'hFFFEFFFEFFFFFFFE)) 
+    .INIT(64'hFFEFEEEEEFEFEEEE)) 
     SLCS_i_2
-       (.I0(SLCS_i_4_n_0),
-        .I1(\FSM_onehot_master_state_reg_n_0_[7] ),
-        .I2(\FSM_onehot_master_state_reg_n_0_[1] ),
-        .I3(\FSM_onehot_master_state_reg_n_0_[2] ),
-        .I4(\FSM_onehot_master_state_reg_n_0_[3] ),
-        .I5(\FSM_onehot_master_state[7]_i_4_n_0 ),
+       (.I0(\master_state_reg_n_0_[1] ),
+        .I1(\master_state_reg_n_0_[2] ),
+        .I2(FLAGB_IBUF),
+        .I3(A0_i_5_n_0),
+        .I4(SLCS_i_3_n_0),
+        .I5(fifo_departure_n_3),
         .O(SLCS_i_2_n_0));
-  LUT4 #(
-    .INIT(16'hF322)) 
+  LUT2 #(
+    .INIT(4'hB)) 
     SLCS_i_3
-       (.I0(\FSM_onehot_master_state_reg_n_0_[2] ),
+       (.I0(fifo_arrival_n_1),
         .I1(LED_GREEN_3_OBUF),
-        .I2(fifo_arrival_n_1),
-        .I3(\FSM_onehot_master_state_reg_n_0_[3] ),
         .O(SLCS_i_3_n_0));
-  LUT4 #(
-    .INIT(16'hA200)) 
-    SLCS_i_4
-       (.I0(\FSM_onehot_master_state[7]_i_3_n_0 ),
-        .I1(LED_GREEN_3_OBUF),
-        .I2(fifo_arrival_n_1),
-        .I3(\FSM_onehot_master_state_reg_n_0_[0] ),
-        .O(SLCS_i_4_n_0));
   FDSE #(
     .INIT(1'b1),
     .IS_C_INVERTED(1'b1)) 
@@ -7325,25 +7120,20 @@ module fx3s_interface
         .D(SLCS_i_2_n_0),
         .Q(SLCS),
         .S(rst_internal_0));
-  LUT6 #(
-    .INIT(64'hFFFFFFFF444F0000)) 
+  LUT4 #(
+    .INIT(16'hFFA8)) 
     SLOE_i_1
-       (.I0(fifo_arrival_n_1),
-        .I1(LED_GREEN_3_OBUF),
-        .I2(\FSM_onehot_master_state[7]_i_5_n_0 ),
-        .I3(\FSM_onehot_master_state[7]_i_3_n_0 ),
-        .I4(\FSM_onehot_master_state_reg_n_0_[0] ),
-        .I5(SLCS_i_3_n_0),
+       (.I0(\master_state_reg_n_0_[3] ),
+        .I1(\master_state_reg_n_0_[1] ),
+        .I2(\master_state_reg_n_0_[2] ),
+        .I3(A0_i_1_n_0),
         .O(SLOE_i_1_n_0));
-  LUT6 #(
-    .INIT(64'hFFFFFFFFF400F4F4)) 
+  LUT3 #(
+    .INIT(8'hFE)) 
     SLOE_i_2
-       (.I0(\FSM_onehot_master_state[7]_i_5_n_0 ),
-        .I1(\FSM_onehot_master_state_reg_n_0_[0] ),
-        .I2(\FSM_onehot_master_state_reg_n_0_[3] ),
-        .I3(fifo_arrival_n_1),
-        .I4(LED_GREEN_3_OBUF),
-        .I5(\FSM_onehot_master_state_reg_n_0_[2] ),
+       (.I0(A0_i_2_n_0),
+        .I1(\master_state_reg_n_0_[2] ),
+        .I2(\master_state_reg_n_0_[1] ),
         .O(SLOE_i_2_n_0));
   FDSE #(
     .INIT(1'b1),
@@ -7354,62 +7144,48 @@ module fx3s_interface
         .D(SLOE_i_2_n_0),
         .Q(SLOE),
         .S(rst_internal_0));
-  LUT5 #(
-    .INIT(32'hEAFFEAEE)) 
-    SLRD_i_1
-       (.I0(\FSM_onehot_master_state_reg_n_0_[1] ),
-        .I1(\FSM_onehot_master_state_reg_n_0_[3] ),
-        .I2(fifo_arrival_n_1),
-        .I3(LED_GREEN_3_OBUF),
-        .I4(\FSM_onehot_master_state_reg_n_0_[2] ),
-        .O(SLRD_i_1_n_0));
-  (* SOFT_HLUTNM = "soft_lutpair395" *) 
   LUT4 #(
-    .INIT(16'hFBAA)) 
-    SLRD_i_2
-       (.I0(\FSM_onehot_master_state_reg_n_0_[2] ),
-        .I1(LED_GREEN_3_OBUF),
-        .I2(fifo_arrival_n_1),
-        .I3(\FSM_onehot_master_state_reg_n_0_[3] ),
-        .O(SLRD_i_2_n_0));
+    .INIT(16'hA8CA)) 
+    SLRD_i_1
+       (.I0(\master_state_reg_n_0_[3] ),
+        .I1(\master_state_reg_n_0_[2] ),
+        .I2(\master_state_reg_n_0_[0] ),
+        .I3(\master_state_reg_n_0_[1] ),
+        .O(SLRD_i_1_n_0));
   FDSE #(
     .INIT(1'b1),
     .IS_C_INVERTED(1'b1)) 
     SLRD_reg
        (.C(ifclk_out_OBUF_BUFG),
         .CE(SLRD_i_1_n_0),
-        .D(SLRD_i_2_n_0),
+        .D(\master_state_reg_n_0_[3] ),
         .Q(SLRD),
         .S(rst_internal_0));
-  LUT6 #(
-    .INIT(64'hFFFFBBFBAAAAAAAA)) 
+  LUT5 #(
+    .INIT(32'hFCCC0032)) 
     SLWR_i_1
-       (.I0(\FSM_onehot_master_state_reg_n_0_[4] ),
-        .I1(\FSM_onehot_master_state[7]_i_5_n_0 ),
-        .I2(LED_GREEN_3_OBUF),
-        .I3(fifo_arrival_n_1),
-        .I4(\FSM_onehot_master_state[7]_i_3_n_0 ),
-        .I5(\FSM_onehot_master_state_reg_n_0_[0] ),
+       (.I0(\master_state[3]_i_4_n_0 ),
+        .I1(\master_state_reg_n_0_[2] ),
+        .I2(\master_state_reg_n_0_[0] ),
+        .I3(\master_state_reg_n_0_[1] ),
+        .I4(\master_state_reg_n_0_[3] ),
         .O(SLWR_i_1_n_0));
   LUT6 #(
-    .INIT(64'hFFFFFFBAAAAAAAAA)) 
+    .INIT(64'hFFFFFFFEFFFCFFFC)) 
     SLWR_i_2
-       (.I0(\FSM_onehot_master_state_reg_n_0_[4] ),
-        .I1(fifo_arrival_n_1),
-        .I2(LED_GREEN_3_OBUF),
-        .I3(SLWR_i_3_n_0),
-        .I4(\FSM_onehot_master_state[7]_i_3_n_0 ),
-        .I5(\FSM_onehot_master_state_reg_n_0_[0] ),
+       (.I0(A0_i_5_n_0),
+        .I1(\master_state_reg_n_0_[2] ),
+        .I2(SLWR_i_3_n_0),
+        .I3(\master_state_reg_n_0_[0] ),
+        .I4(sending_reg_n_0),
+        .I5(fifo_departure_n_3),
         .O(SLWR_i_2_n_0));
-  LUT6 #(
-    .INIT(64'h0000000200000000)) 
+  LUT3 #(
+    .INIT(8'h2F)) 
     SLWR_i_3
-       (.I0(fifo_departure_n_3),
-        .I1(p_4_in),
-        .I2(p_3_in),
-        .I3(\trigged_d_reg_n_0_[5] ),
-        .I4(\FSM_onehot_master_state[7]_i_7_n_0 ),
-        .I5(sending_reg_n_0),
+       (.I0(LED_GREEN_3_OBUF),
+        .I1(fifo_arrival_n_1),
+        .I2(FLAGB_IBUF),
         .O(SLWR_i_3_n_0));
   FDSE #(
     .INIT(1'b1),
@@ -7420,6 +7196,16 @@ module fx3s_interface
         .D(SLWR_i_2_n_0),
         .Q(SLWR),
         .S(rst_internal_0));
+  LUT6 #(
+    .INIT(64'hFFFFFFFFFFFFFFFD)) 
+    \d[4][13]_i_1 
+       (.I0(pll_locked),
+        .I1(RST_IBUF),
+        .I2(rst_0),
+        .I3(rst_3d),
+        .I4(rst_d),
+        .I5(rst_2d),
+        .O(filter_rst));
   (* BOX_TYPE = "PRIMITIVE" *) 
   FIFO36E1 #(
     .ALMOST_EMPTY_OFFSET(13'h0080),
@@ -7449,7 +7235,7 @@ module fx3s_interface
         .DO({NLW_fifo_arrival_DO_UNCONNECTED[63:16],d_out}),
         .DOP(NLW_fifo_arrival_DOP_UNCONNECTED[7:0]),
         .ECCPARITY(NLW_fifo_arrival_ECCPARITY_UNCONNECTED[7:0]),
-        .EMPTY(rst_6d_reg_0),
+        .EMPTY(rst_7d_reg_0),
         .FULL(NLW_fifo_arrival_FULL_UNCONNECTED),
         .INJECTDBITERR(1'b0),
         .INJECTSBITERR(1'b0),
@@ -7468,19 +7254,18 @@ module fx3s_interface
   LUT6 #(
     .INIT(64'h0000000100000000)) 
     fifo_arrival_i_1
-       (.I0(fifo_rst_internal),
+       (.I0(rst_7d),
         .I1(rst_6d),
         .I2(rst_9d),
-        .I3(rst_7d),
-        .I4(rst_8d),
+        .I3(rst_8d),
+        .I4(fifo_rst_internal),
         .I5(rx_oe),
         .O(output_strobe_internal));
-  (* SOFT_HLUTNM = "soft_lutpair394" *) 
   LUT2 #(
     .INIT(4'h8)) 
     fifo_arrival_i_2
-       (.I0(LED_GREEN_3_OBUF),
-        .I1(rx_wr_en_reg_n_0),
+       (.I0(rx_wr_en_reg_n_0),
+        .I1(LED_GREEN_3_OBUF),
         .O(rx_wr_en_internal));
   (* BOX_TYPE = "PRIMITIVE" *) 
   FIFO36E1 #(
@@ -7528,63 +7313,96 @@ module fx3s_interface
         .WREN(fifo_departure_i_2_n_0),
         .WRERR(NLW_fifo_departure_WRERR_UNCONNECTED));
   LUT6 #(
-    .INIT(64'hFFFFFFFFFFFFFEFF)) 
+    .INIT(64'hFFFFFFFFFFFEFFFF)) 
     fifo_departure_i_1
-       (.I0(rst_5d),
-        .I1(rst_4d),
-        .I2(rst_d),
-        .I3(LED_GREEN_OBUF),
-        .I4(rst_2d),
-        .I5(rst_3d),
+       (.I0(rst_2d),
+        .I1(rst_d),
+        .I2(rst_4d),
+        .I3(rst_3d),
+        .I4(LED_GREEN_OBUF),
+        .I5(rst_5d),
         .O(fifo_rst_internal));
   LUT6 #(
     .INIT(64'h0000000100000000)) 
     fifo_departure_i_2
-       (.I0(fifo_rst_internal),
+       (.I0(rst_7d),
         .I1(rst_6d),
         .I2(rst_9d),
-        .I3(rst_7d),
-        .I4(rst_8d),
+        .I3(rst_8d),
+        .I4(fifo_rst_internal),
         .I5(LED_BLUE_OBUF),
         .O(fifo_departure_i_2_n_0));
-  LUT6 #(
-    .INIT(64'h0000000000010000)) 
-    in_strb_d_i_1
-       (.I0(in_strb_d_i_2_n_0),
-        .I1(rst_5d),
-        .I2(rst_4d),
-        .I3(in_strb_d_reg),
-        .I4(strb_d),
-        .I5(strb_dd),
-        .O(trigger_strobe));
-  (* SOFT_HLUTNM = "soft_lutpair396" *) 
   LUT3 #(
     .INIT(8'hFE)) 
     in_strb_d_i_2
        (.I0(rst_6d),
         .I1(rst_8d),
         .I2(rst_7d),
-        .O(in_strb_d_i_2_n_0));
+        .O(rst_6d_reg_0));
+  LUT6 #(
+    .INIT(64'hFFFFFFFFFFFFFFEF)) 
+    in_strb_d_i_3
+       (.I0(rst_3d),
+        .I1(rst_2d),
+        .I2(pll_locked),
+        .I3(RST_IBUF),
+        .I4(rst_0),
+        .I5(rst_d),
+        .O(rst_3d_reg_0));
   LUT1 #(
     .INIT(2'h1)) 
     is_outgoing_i_1
        (.I0(is_outgoing_i_2_n_0),
         .O(is_outgoing_i_1_n_0));
   LUT6 #(
-    .INIT(64'h0007555500030000)) 
+    .INIT(64'hAAAAABBBAAAAA888)) 
     is_outgoing_i_2
-       (.I0(\FSM_onehot_master_state_reg_n_0_[7] ),
-        .I1(\FSM_onehot_master_state[7]_i_5_n_0 ),
-        .I2(\FSM_onehot_master_state[7]_i_4_n_0 ),
-        .I3(\FSM_onehot_master_state[7]_i_3_n_0 ),
-        .I4(\FSM_onehot_master_state_reg_n_0_[0] ),
-        .I5(is_outgoing_i_3_n_0),
+       (.I0(is_outgoing_i_3_n_0),
+        .I1(is_outgoing_i_4_n_0),
+        .I2(\master_state[3]_i_4_n_0 ),
+        .I3(is_outgoing_i_5_n_0),
+        .I4(is_outgoing_i_6_n_0),
+        .I5(is_outgoing_i_7_n_0),
         .O(is_outgoing_i_2_n_0));
+  LUT6 #(
+    .INIT(64'h000000D000000000)) 
+    is_outgoing_i_3
+       (.I0(LED_GREEN_3_OBUF),
+        .I1(fifo_arrival_n_1),
+        .I2(FLAGB_IBUF),
+        .I3(\master_state_reg_n_0_[2] ),
+        .I4(\master_state_reg_n_0_[3] ),
+        .I5(A0_i_3_n_0),
+        .O(is_outgoing_i_3_n_0));
+  (* SOFT_HLUTNM = "soft_lutpair394" *) 
+  LUT4 #(
+    .INIT(16'hEA00)) 
+    is_outgoing_i_4
+       (.I0(\master_state_reg_n_0_[2] ),
+        .I1(\master_state_reg_n_0_[0] ),
+        .I2(\master_state_reg_n_0_[1] ),
+        .I3(\master_state_reg_n_0_[3] ),
+        .O(is_outgoing_i_4_n_0));
+  LUT3 #(
+    .INIT(8'h01)) 
+    is_outgoing_i_5
+       (.I0(\master_state_reg_n_0_[3] ),
+        .I1(\master_state_reg_n_0_[1] ),
+        .I2(\master_state_reg_n_0_[0] ),
+        .O(is_outgoing_i_5_n_0));
+  (* SOFT_HLUTNM = "soft_lutpair395" *) 
+  LUT3 #(
+    .INIT(8'h04)) 
+    is_outgoing_i_6
+       (.I0(\master_state_reg_n_0_[1] ),
+        .I1(\master_state_reg_n_0_[2] ),
+        .I2(\master_state_reg_n_0_[0] ),
+        .O(is_outgoing_i_6_n_0));
   LUT1 #(
     .INIT(2'h1)) 
-    is_outgoing_i_3
+    is_outgoing_i_7
        (.I0(\DQ_TRI[0] ),
-        .O(is_outgoing_i_3_n_0));
+        .O(is_outgoing_i_7_n_0));
   FDSE #(
     .INIT(1'b1),
     .IS_C_INVERTED(1'b1)) 
@@ -7594,21 +7412,124 @@ module fx3s_interface
         .D(is_outgoing_i_1_n_0),
         .Q(\DQ_TRI[0] ),
         .S(rst_internal_0));
+  LUT5 #(
+    .INIT(32'h0000550C)) 
+    \master_state[0]_i_1 
+       (.I0(\master_state_reg_n_0_[3] ),
+        .I1(\master_state[0]_i_2_n_0 ),
+        .I2(\master_state_reg_n_0_[2] ),
+        .I3(\master_state_reg_n_0_[1] ),
+        .I4(\master_state_reg_n_0_[0] ),
+        .O(master_state[0]));
+  LUT6 #(
+    .INIT(64'hFFFFFFFF08A8FFFF)) 
+    \master_state[0]_i_2 
+       (.I0(FLAGB_IBUF),
+        .I1(fifo_departure_n_81),
+        .I2(fifo_departure_n_3),
+        .I3(A0_i_5_n_0),
+        .I4(SLCS_i_3_n_0),
+        .I5(\master_state_reg_n_0_[3] ),
+        .O(\master_state[0]_i_2_n_0 ));
+  (* SOFT_HLUTNM = "soft_lutpair394" *) 
+  LUT4 #(
+    .INIT(16'h034C)) 
+    \master_state[1]_i_1 
+       (.I0(\master_state_reg_n_0_[2] ),
+        .I1(\master_state_reg_n_0_[0] ),
+        .I2(\master_state_reg_n_0_[3] ),
+        .I3(\master_state_reg_n_0_[1] ),
+        .O(master_state[1]));
+  LUT6 #(
+    .INIT(64'h0608060806090608)) 
+    \master_state[2]_i_1 
+       (.I0(\master_state_reg_n_0_[1] ),
+        .I1(\master_state_reg_n_0_[0] ),
+        .I2(\master_state_reg_n_0_[3] ),
+        .I3(\master_state_reg_n_0_[2] ),
+        .I4(LED_GREEN_3_OBUF),
+        .I5(fifo_arrival_n_1),
+        .O(master_state[2]));
+  LUT5 #(
+    .INIT(32'hFFFFFFFE)) 
+    \master_state[3]_i_1 
+       (.I0(rst_7d),
+        .I1(rst_6d),
+        .I2(rst_9d),
+        .I3(rst_8d),
+        .I4(fifo_rst_internal),
+        .O(rst_internal_0));
+  LUT5 #(
+    .INIT(32'hFFFFFFFE)) 
+    \master_state[3]_i_2 
+       (.I0(\master_state_reg_n_0_[0] ),
+        .I1(\master_state_reg_n_0_[3] ),
+        .I2(\master_state_reg_n_0_[1] ),
+        .I3(\master_state_reg_n_0_[2] ),
+        .I4(\master_state[3]_i_4_n_0 ),
+        .O(\master_state[3]_i_2_n_0 ));
+  (* SOFT_HLUTNM = "soft_lutpair395" *) 
+  LUT4 #(
+    .INIT(16'h1180)) 
+    \master_state[3]_i_3 
+       (.I0(\master_state_reg_n_0_[1] ),
+        .I1(\master_state_reg_n_0_[2] ),
+        .I2(\master_state_reg_n_0_[0] ),
+        .I3(\master_state_reg_n_0_[3] ),
+        .O(master_state[3]));
+  LUT6 #(
+    .INIT(64'hEFFFFFFFEFFFEFFF)) 
+    \master_state[3]_i_4 
+       (.I0(sending_reg_n_0),
+        .I1(A0_i_5_n_0),
+        .I2(fifo_departure_n_3),
+        .I3(FLAGB_IBUF),
+        .I4(fifo_arrival_n_1),
+        .I5(LED_GREEN_3_OBUF),
+        .O(\master_state[3]_i_4_n_0 ));
+  FDRE #(
+    .INIT(1'b0),
+    .IS_C_INVERTED(1'b1)) 
+    \master_state_reg[0] 
+       (.C(ifclk_out_OBUF_BUFG),
+        .CE(\master_state[3]_i_2_n_0 ),
+        .D(master_state[0]),
+        .Q(\master_state_reg_n_0_[0] ),
+        .R(rst_internal_0));
+  FDRE #(
+    .INIT(1'b0),
+    .IS_C_INVERTED(1'b1)) 
+    \master_state_reg[1] 
+       (.C(ifclk_out_OBUF_BUFG),
+        .CE(\master_state[3]_i_2_n_0 ),
+        .D(master_state[1]),
+        .Q(\master_state_reg_n_0_[1] ),
+        .R(rst_internal_0));
+  FDRE #(
+    .INIT(1'b0),
+    .IS_C_INVERTED(1'b1)) 
+    \master_state_reg[2] 
+       (.C(ifclk_out_OBUF_BUFG),
+        .CE(\master_state[3]_i_2_n_0 ),
+        .D(master_state[2]),
+        .Q(\master_state_reg_n_0_[2] ),
+        .R(rst_internal_0));
+  FDRE #(
+    .INIT(1'b0),
+    .IS_C_INVERTED(1'b1)) 
+    \master_state_reg[3] 
+       (.C(ifclk_out_OBUF_BUFG),
+        .CE(\master_state[3]_i_2_n_0 ),
+        .D(master_state[3]),
+        .Q(\master_state_reg_n_0_[3] ),
+        .R(rst_internal_0));
   FDRE #(
     .INIT(1'b1)) 
-    rst_4d_reg
+    rst_3d_reg
        (.C(ifclk_out_OBUF_BUFG),
         .CE(1'b1),
-        .D(rst_3d),
-        .Q(rst_4d),
-        .R(1'b0));
-  FDRE #(
-    .INIT(1'b1)) 
-    rst_5d_reg
-       (.C(ifclk_out_OBUF_BUFG),
-        .CE(1'b1),
-        .D(rst_4d),
-        .Q(rst_5d),
+        .D(rst_2d),
+        .Q(rst_3d),
         .R(1'b0));
   FDRE #(
     .INIT(1'b1)) 
@@ -7650,14 +7571,14 @@ module fx3s_interface
         .D(rst),
         .Q(rst_d),
         .R(1'b0));
-  (* SOFT_HLUTNM = "soft_lutpair394" *) 
+  (* SOFT_HLUTNM = "soft_lutpair393" *) 
   LUT5 #(
-    .INIT(32'hAEFFAA88)) 
+    .INIT(32'h57754000)) 
     rx_wr_en_i_1
-       (.I0(\FSM_onehot_master_state_reg_n_0_[2] ),
-        .I1(LED_GREEN_3_OBUF),
-        .I2(fifo_arrival_n_1),
-        .I3(\FSM_onehot_master_state_reg_n_0_[3] ),
+       (.I0(\master_state_reg_n_0_[3] ),
+        .I1(\master_state_reg_n_0_[2] ),
+        .I2(\master_state_reg_n_0_[0] ),
+        .I3(\master_state_reg_n_0_[1] ),
         .I4(rx_wr_en_reg_n_0),
         .O(rx_wr_en_i_1_n_0));
   FDRE #(
@@ -7670,21 +7591,24 @@ module fx3s_interface
         .Q(rx_wr_en_reg_n_0),
         .R(rst_internal_0));
   LUT6 #(
-    .INIT(64'h5F555F550A000B00)) 
+    .INIT(64'h0100FFFF01000000)) 
     sending_i_1
-       (.I0(\FSM_onehot_master_state_reg_n_0_[4] ),
-        .I1(\FSM_onehot_master_state[7]_i_4_n_0 ),
-        .I2(sending_i_2_n_0),
-        .I3(\FSM_onehot_master_state_reg_n_0_[0] ),
-        .I4(fifo_departure_n_81),
+       (.I0(\master_state_reg_n_0_[3] ),
+        .I1(\master_state_reg_n_0_[0] ),
+        .I2(fifo_departure_n_3),
+        .I3(FLAGB_IBUF),
+        .I4(sending_i_2_n_0),
         .I5(sending_reg_n_0),
         .O(sending_i_1_n_0));
-  (* SOFT_HLUTNM = "soft_lutpair393" *) 
-  LUT2 #(
-    .INIT(4'hB)) 
+  LUT6 #(
+    .INIT(64'hFFFFFFFF01000000)) 
     sending_i_2
-       (.I0(fifo_departure_n_3),
-        .I1(FLAGB_IBUF),
+       (.I0(A0_i_4_n_0),
+        .I1(fifo_departure_n_3),
+        .I2(fifo_departure_n_81),
+        .I3(FLAGB_IBUF),
+        .I4(SLCS_i_3_n_0),
+        .I5(tx_rd_en_i_3_n_0),
         .O(sending_i_2_n_0));
   FDRE #(
     .INIT(1'b0),
@@ -7698,7 +7622,7 @@ module fx3s_interface
   LUT6 #(
     .INIT(64'hFFFFFFFFFFFFFFFE)) 
     strb_d_i_1
-       (.I0(in_strb_d_reg),
+       (.I0(rst_3d_reg_0),
         .I1(rst_4d),
         .I2(rst_5d),
         .I3(rst_7d),
@@ -7711,16 +7635,6 @@ module fx3s_interface
        (.I0(rst_internal),
         .I1(\t_counter_reg[0] ),
         .O(SR));
-  LUT6 #(
-    .INIT(64'h0000000000000002)) 
-    \t_counter[15]_i_9 
-       (.I0(Q),
-        .I1(\t_counter[15]_i_4 ),
-        .I2(in_strb_d_reg),
-        .I3(rst_4d),
-        .I4(rst_5d),
-        .I5(in_strb_d_i_2_n_0),
-        .O(rd_en4_out));
   FDRE #(
     .INIT(1'b0),
     .IS_C_INVERTED(1'b1)) 
@@ -7775,83 +7689,54 @@ module fx3s_interface
         .D(p_4_in),
         .Q(\trigged_d_reg_n_0_[5] ),
         .R(1'b0));
-  LUT6 #(
-    .INIT(64'hAAAAFFEFAAAA0020)) 
+  LUT5 #(
+    .INIT(32'hAAABAAA8)) 
     tx_rd_en_i_1
        (.I0(tx_rd_en_i_2_n_0),
         .I1(tx_rd_en_i_3_n_0),
-        .I2(\FSM_onehot_master_state_reg_n_0_[0] ),
-        .I3(tx_rd_en_i_4_n_0),
-        .I4(tx_rd_en_i_5_n_0),
-        .I5(tx_rd_en_reg_n_0),
+        .I2(tx_rd_en_i_4_n_0),
+        .I3(tx_rd_en_i_5_n_0),
+        .I4(tx_rd_en_reg_n_0),
         .O(tx_rd_en_i_1_n_0));
-  (* SOFT_HLUTNM = "soft_lutpair392" *) 
-  LUT5 #(
-    .INIT(32'h0000D000)) 
+  LUT6 #(
+    .INIT(64'h0000000000005100)) 
     tx_rd_en_i_2
-       (.I0(LED_GREEN_3_OBUF),
-        .I1(fifo_arrival_n_1),
-        .I2(\FSM_onehot_master_state_reg_n_0_[0] ),
-        .I3(FLAGB_IBUF),
-        .I4(fifo_departure_n_3),
-        .O(tx_rd_en_i_2_n_0));
-  LUT6 #(
-    .INIT(64'hFFFFFFFE00000000)) 
-    tx_rd_en_i_3
-       (.I0(rst_8d),
-        .I1(rst_7d),
-        .I2(rst_9d),
-        .I3(rst_6d),
-        .I4(fifo_rst_internal),
-        .I5(\FSM_onehot_master_state[7]_i_4_n_0 ),
-        .O(tx_rd_en_i_3_n_0));
-  LUT6 #(
-    .INIT(64'h5100000000000000)) 
-    tx_rd_en_i_4
-       (.I0(sending_reg_n_0),
+       (.I0(fifo_departure_n_3),
         .I1(LED_GREEN_3_OBUF),
         .I2(fifo_arrival_n_1),
-        .I3(tx_rd_en_i_6_n_0),
-        .I4(fifo_departure_n_3),
-        .I5(FLAGB_IBUF),
+        .I3(FLAGB_IBUF),
+        .I4(\master_state_reg_n_0_[0] ),
+        .I5(A0_i_4_n_0),
+        .O(tx_rd_en_i_2_n_0));
+  (* SOFT_HLUTNM = "soft_lutpair393" *) 
+  LUT4 #(
+    .INIT(16'hAA90)) 
+    tx_rd_en_i_3
+       (.I0(\master_state_reg_n_0_[3] ),
+        .I1(\master_state_reg_n_0_[1] ),
+        .I2(\master_state_reg_n_0_[0] ),
+        .I3(\master_state_reg_n_0_[2] ),
+        .O(tx_rd_en_i_3_n_0));
+  (* SOFT_HLUTNM = "soft_lutpair392" *) 
+  LUT5 #(
+    .INIT(32'h00000100)) 
+    tx_rd_en_i_4
+       (.I0(\master_state_reg_n_0_[2] ),
+        .I1(\master_state_reg_n_0_[1] ),
+        .I2(\master_state_reg_n_0_[3] ),
+        .I3(LED_GREEN_3_OBUF),
+        .I4(fifo_arrival_n_1),
         .O(tx_rd_en_i_4_n_0));
   LUT6 #(
-    .INIT(64'hAAAAAAAAAAAAAAEA)) 
+    .INIT(64'h4444444444440444)) 
     tx_rd_en_i_5
-       (.I0(\FSM_onehot_master_state_reg_n_0_[4] ),
-        .I1(\FSM_onehot_master_state[7]_i_4_n_0 ),
-        .I2(\FSM_onehot_master_state_reg_n_0_[0] ),
-        .I3(tx_rd_en_i_7_n_0),
-        .I4(fifo_rst_internal),
-        .I5(tx_rd_en_i_8_n_0),
+       (.I0(A0_i_4_n_0),
+        .I1(SLCS_i_3_n_0),
+        .I2(FLAGB_IBUF),
+        .I3(fifo_departure_n_3),
+        .I4(A0_i_5_n_0),
+        .I5(sending_reg_n_0),
         .O(tx_rd_en_i_5_n_0));
-  LUT4 #(
-    .INIT(16'h0001)) 
-    tx_rd_en_i_6
-       (.I0(p_4_in),
-        .I1(p_3_in),
-        .I2(\trigged_d_reg_n_0_[5] ),
-        .I3(\FSM_onehot_master_state[7]_i_7_n_0 ),
-        .O(tx_rd_en_i_6_n_0));
-  LUT6 #(
-    .INIT(64'h0000000000000001)) 
-    tx_rd_en_i_7
-       (.I0(\FSM_onehot_master_state_reg_n_0_[1] ),
-        .I1(\FSM_onehot_master_state_reg_n_0_[2] ),
-        .I2(\FSM_onehot_master_state_reg_n_0_[5] ),
-        .I3(\FSM_onehot_master_state_reg_n_0_[6] ),
-        .I4(\FSM_onehot_master_state_reg_n_0_[3] ),
-        .I5(\FSM_onehot_master_state_reg_n_0_[7] ),
-        .O(tx_rd_en_i_7_n_0));
-  (* SOFT_HLUTNM = "soft_lutpair396" *) 
-  LUT4 #(
-    .INIT(16'hFFFE)) 
-    tx_rd_en_i_8
-       (.I0(rst_8d),
-        .I1(rst_7d),
-        .I2(rst_9d),
-        .I3(rst_6d),
-        .O(tx_rd_en_i_8_n_0));
   FDRE #(
     .INIT(1'b0),
     .IS_C_INVERTED(1'b1)) 
@@ -10030,51 +9915,59 @@ endmodule
 
 module hydrophone_trigger
    (D,
-    strb_d,
-    strb_dd,
+    trigger_strobe,
     trigged,
+    rst_4d,
+    rst_5d,
     trigged_reg_0,
     strb_dd_reg_0,
-    Q,
-    strb_dd_reg_1,
+    rd_en4_out,
     ifclk_out_OBUF_BUFG,
-    fifo_rst_internal,
-    trigger_strobe,
     DI,
     adc_strb_4,
     adc_strb_1,
     adc_strb_2,
     adc_strb_3,
     rst_internal,
+    rst_3d,
     \latched_input_reg[63] ,
+    in_strb_d_reg,
+    in_strb_d_reg_0,
+    rst_d,
+    LED_GREEN_OBUF,
+    rst_2d,
     trigged_reg_1,
     SR,
     \t_counter_reg[6]_0 );
   output [63:0]D;
-  output strb_d;
-  output strb_dd;
+  output trigger_strobe;
   output trigged;
+  output rst_4d;
+  output rst_5d;
   output trigged_reg_0;
   output strb_dd_reg_0;
-  output [0:0]Q;
-  output strb_dd_reg_1;
+  output rd_en4_out;
   input ifclk_out_OBUF_BUFG;
-  input fifo_rst_internal;
-  input trigger_strobe;
   input [63:0]DI;
   input adc_strb_4;
   input adc_strb_1;
   input adc_strb_2;
   input adc_strb_3;
   input rst_internal;
+  input rst_3d;
   input \latched_input_reg[63] ;
+  input in_strb_d_reg;
+  input in_strb_d_reg_0;
+  input rst_d;
+  input LED_GREEN_OBUF;
+  input rst_2d;
   input trigged_reg_1;
   input [0:0]SR;
   input \t_counter_reg[6]_0 ;
 
   wire [63:0]D;
   wire [63:0]DI;
-  wire [0:0]Q;
+  wire LED_GREEN_OBUF;
   wire [0:0]SR;
   wire adc_strb_1;
   wire adc_strb_2;
@@ -10084,6 +9977,7 @@ module hydrophone_trigger
   wire fifo_rd_en;
   wire fifo_rst_internal;
   wire h_counter;
+  wire [6:6]h_counter_reg;
   wire \h_counter_reg_n_0_[0] ;
   wire \h_counter_reg_n_0_[1] ;
   wire \h_counter_reg_n_0_[2] ;
@@ -10091,17 +9985,24 @@ module hydrophone_trigger
   wire \h_counter_reg_n_0_[4] ;
   wire \h_counter_reg_n_0_[5] ;
   wire ifclk_out_OBUF_BUFG;
+  wire in_strb_d_reg;
+  wire in_strb_d_reg_0;
   wire \latched_input_reg[63] ;
   wire [6:0]p_0_in;
+  wire rd_en4_out;
   wire rd_en_i_1_n_0;
   wire rd_en_reg_n_0;
+  wire rst_2d;
+  wire rst_3d;
+  wire rst_4d;
+  wire rst_5d;
+  wire rst_d;
   wire rst_internal;
   wire [15:0]sel0;
   wire strb_all__0;
   wire strb_d;
   wire strb_dd;
   wire strb_dd_reg_0;
-  wire strb_dd_reg_1;
   wire [15:0]t_counter0;
   wire \t_counter[12]_i_2_n_0 ;
   wire \t_counter[12]_i_3_n_0 ;
@@ -10111,6 +10012,7 @@ module hydrophone_trigger
   wire \t_counter[15]_i_15_n_0 ;
   wire \t_counter[15]_i_16_n_0 ;
   wire \t_counter[15]_i_17_n_0 ;
+  wire \t_counter[15]_i_18_n_0 ;
   wire \t_counter[15]_i_2_n_0 ;
   wire \t_counter[15]_i_5_n_0 ;
   wire \t_counter[15]_i_6_n_0 ;
@@ -10204,7 +10106,7 @@ module hydrophone_trigger
         .WRCOUNT(NLW_FIFO36E1_inst_WRCOUNT_UNCONNECTED[12:0]),
         .WREN(trigger_strobe),
         .WRERR(NLW_FIFO36E1_inst_WRERR_UNCONNECTED));
-  (* SOFT_HLUTNM = "soft_lutpair397" *) 
+  (* SOFT_HLUTNM = "soft_lutpair396" *) 
   LUT5 #(
     .INIT(32'h04040400)) 
     FIFO36E1_inst_i_1
@@ -10214,6 +10116,16 @@ module hydrophone_trigger
         .I3(rd_en_reg_n_0),
         .I4(almost_full),
         .O(fifo_rd_en));
+  LUT6 #(
+    .INIT(64'hFFFFFFFFFFFFFEFF)) 
+    FIFO36E1_inst_i_2
+       (.I0(rst_5d),
+        .I1(rst_4d),
+        .I2(rst_d),
+        .I3(LED_GREEN_OBUF),
+        .I4(rst_2d),
+        .I5(rst_3d),
+        .O(fifo_rst_internal));
   LUT4 #(
     .INIT(16'h0004)) 
     \FSM_sequential_main_state[3]_i_3 
@@ -10227,14 +10139,14 @@ module hydrophone_trigger
     \h_counter[0]_i_1 
        (.I0(\h_counter_reg_n_0_[0] ),
         .O(p_0_in[0]));
-  (* SOFT_HLUTNM = "soft_lutpair400" *) 
+  (* SOFT_HLUTNM = "soft_lutpair399" *) 
   LUT2 #(
     .INIT(4'h6)) 
     \h_counter[1]_i_1 
        (.I0(\h_counter_reg_n_0_[0] ),
         .I1(\h_counter_reg_n_0_[1] ),
         .O(p_0_in[1]));
-  (* SOFT_HLUTNM = "soft_lutpair400" *) 
+  (* SOFT_HLUTNM = "soft_lutpair399" *) 
   LUT3 #(
     .INIT(8'h6A)) 
     \h_counter[2]_i_1 
@@ -10242,7 +10154,7 @@ module hydrophone_trigger
         .I1(\h_counter_reg_n_0_[0] ),
         .I2(\h_counter_reg_n_0_[1] ),
         .O(p_0_in[2]));
-  (* SOFT_HLUTNM = "soft_lutpair398" *) 
+  (* SOFT_HLUTNM = "soft_lutpair397" *) 
   LUT4 #(
     .INIT(16'h7F80)) 
     \h_counter[3]_i_1 
@@ -10251,7 +10163,7 @@ module hydrophone_trigger
         .I2(\h_counter_reg_n_0_[2] ),
         .I3(\h_counter_reg_n_0_[3] ),
         .O(p_0_in[3]));
-  (* SOFT_HLUTNM = "soft_lutpair398" *) 
+  (* SOFT_HLUTNM = "soft_lutpair397" *) 
   LUT5 #(
     .INIT(32'h6AAAAAAA)) 
     \h_counter[4]_i_1 
@@ -10276,7 +10188,7 @@ module hydrophone_trigger
     \h_counter[6]_i_1 
        (.I0(strb_dd),
         .I1(strb_d),
-        .I2(Q),
+        .I2(h_counter_reg),
         .O(h_counter));
   LUT6 #(
     .INIT(64'h8000000000000000)) 
@@ -10349,8 +10261,18 @@ module hydrophone_trigger
        (.C(ifclk_out_OBUF_BUFG),
         .CE(h_counter),
         .D(p_0_in[6]),
-        .Q(Q),
+        .Q(h_counter_reg),
         .R(rst_internal));
+  LUT6 #(
+    .INIT(64'h0000000000010000)) 
+    in_strb_d_i_1
+       (.I0(in_strb_d_reg_0),
+        .I1(rst_5d),
+        .I2(rst_4d),
+        .I3(in_strb_d_reg),
+        .I4(strb_d),
+        .I5(strb_dd),
+        .O(trigger_strobe));
   LUT5 #(
     .INIT(32'h00000200)) 
     \latched_input[63]_i_1 
@@ -10365,7 +10287,7 @@ module hydrophone_trigger
     rd_en_i_1
        (.I0(strb_d),
         .I1(strb_dd),
-        .I2(Q),
+        .I2(h_counter_reg),
         .I3(rd_en_reg_n_0),
         .O(rd_en_i_1_n_0));
   FDRE #(
@@ -10377,6 +10299,22 @@ module hydrophone_trigger
         .D(rd_en_i_1_n_0),
         .Q(rd_en_reg_n_0),
         .R(rst_internal));
+  FDRE #(
+    .INIT(1'b1)) 
+    rst_4d_reg
+       (.C(ifclk_out_OBUF_BUFG),
+        .CE(1'b1),
+        .D(rst_3d),
+        .Q(rst_4d),
+        .R(1'b0));
+  FDRE #(
+    .INIT(1'b1)) 
+    rst_5d_reg
+       (.C(ifclk_out_OBUF_BUFG),
+        .CE(1'b1),
+        .D(rst_4d),
+        .Q(rst_5d),
+        .R(1'b0));
   LUT4 #(
     .INIT(16'h8000)) 
     strb_all
@@ -10403,7 +10341,7 @@ module hydrophone_trigger
         .D(strb_d),
         .Q(strb_dd),
         .R(rst_internal));
-  (* SOFT_HLUTNM = "soft_lutpair399" *) 
+  (* SOFT_HLUTNM = "soft_lutpair398" *) 
   LUT1 #(
     .INIT(2'h1)) 
     \t_counter[0]_i_1 
@@ -10445,7 +10383,7 @@ module hydrophone_trigger
         .I2(sel0[10]),
         .I3(sel0[1]),
         .O(\t_counter[15]_i_15_n_0 ));
-  (* SOFT_HLUTNM = "soft_lutpair399" *) 
+  (* SOFT_HLUTNM = "soft_lutpair398" *) 
   LUT4 #(
     .INIT(16'hFFFE)) 
     \t_counter[15]_i_16 
@@ -10462,20 +10400,20 @@ module hydrophone_trigger
         .I2(sel0[4]),
         .I3(sel0[11]),
         .O(\t_counter[15]_i_17_n_0 ));
-  (* SOFT_HLUTNM = "soft_lutpair397" *) 
+  (* SOFT_HLUTNM = "soft_lutpair396" *) 
   LUT2 #(
     .INIT(4'hB)) 
     \t_counter[15]_i_18 
        (.I0(strb_dd),
         .I1(strb_d),
-        .O(strb_dd_reg_1));
+        .O(\t_counter[15]_i_18_n_0 ));
   LUT5 #(
     .INIT(32'h04000000)) 
     \t_counter[15]_i_2 
        (.I0(rst_internal),
         .I1(strb_d),
         .I2(strb_dd),
-        .I3(Q),
+        .I3(h_counter_reg),
         .I4(\t_counter[15]_i_5_n_0 ),
         .O(\t_counter[15]_i_2_n_0 ));
   LUT4 #(
@@ -10501,6 +10439,16 @@ module hydrophone_trigger
     \t_counter[15]_i_8 
        (.I0(sel0[13]),
         .O(\t_counter[15]_i_8_n_0 ));
+  LUT6 #(
+    .INIT(64'h0000000000000002)) 
+    \t_counter[15]_i_9 
+       (.I0(h_counter_reg),
+        .I1(\t_counter[15]_i_18_n_0 ),
+        .I2(in_strb_d_reg),
+        .I3(rst_4d),
+        .I4(rst_5d),
+        .I5(in_strb_d_reg_0),
+        .O(rd_en4_out));
   LUT1 #(
     .INIT(2'h1)) 
     \t_counter[4]_i_2 
@@ -10730,7 +10678,7 @@ module hydrophone_trigger
     trigged_i_1
        (.I0(trigged_reg_1),
         .I1(\t_counter[15]_i_5_n_0 ),
-        .I2(Q),
+        .I2(h_counter_reg),
         .I3(trigger_strobe),
         .I4(trigged),
         .O(trigged_i_1_n_0));
@@ -22963,31 +22911,22 @@ endmodule
 
 module reset_subs
    (rst_0,
-    filter_rst,
     rst_reg_0,
     rst,
     LED_GREEN_OBUF,
     ifclk_out_OBUF_BUFG,
     pll_locked,
-    RST_IBUF,
-    rst_3d,
-    rst_d,
-    rst_2d);
+    RST_IBUF);
   output rst_0;
-  output filter_rst;
   output rst_reg_0;
   output rst;
   output LED_GREEN_OBUF;
   input ifclk_out_OBUF_BUFG;
   input pll_locked;
   input RST_IBUF;
-  input rst_3d;
-  input rst_d;
-  input rst_2d;
 
   wire LED_GREEN_OBUF;
   wire RST_IBUF;
-  wire filter_rst;
   wire [4:0]hold_counter0;
   wire \hold_counter[4]_i_1_n_0 ;
   wire [4:0]hold_counter_reg;
@@ -22995,9 +22934,6 @@ module reset_subs
   wire pll_locked;
   wire rst;
   wire rst_0;
-  wire rst_2d;
-  wire rst_3d;
-  wire rst_d;
   wire rst_i_1_n_0;
   wire rst_reg_0;
   wire sel;
@@ -23017,16 +22953,6 @@ module reset_subs
         .I1(RST_IBUF),
         .I2(rst_0),
         .O(LED_GREEN_OBUF));
-  LUT6 #(
-    .INIT(64'hFFFFFFFFFFFFFFFD)) 
-    \d[4][13]_i_1 
-       (.I0(pll_locked),
-        .I1(RST_IBUF),
-        .I2(rst_0),
-        .I3(rst_3d),
-        .I4(rst_d),
-        .I5(rst_2d),
-        .O(filter_rst));
   (* SOFT_HLUTNM = "soft_lutpair390" *) 
   LUT3 #(
     .INIT(8'hEF)) 
@@ -40487,13 +40413,12 @@ module zeabus_hydrophone
   wire adc1_n_15;
   wire adc1_n_16;
   wire adc1_n_17;
-  wire adc1_n_18;
+  wire adc1_n_3;
   wire adc1_n_4;
   wire adc1_n_5;
+  wire adc1_n_50;
   wire adc1_n_51;
   wire adc1_n_52;
-  wire adc1_n_53;
-  wire adc1_n_54;
   wire adc1_n_6;
   wire adc1_n_7;
   wire adc1_n_8;
@@ -40577,9 +40502,7 @@ module zeabus_hydrophone
   wire config_man_n_8;
   wire config_man_n_9;
   wire [4:4]data0;
-  wire fifo_rst_internal;
   wire filter_rst;
-  wire [6:6]h_counter_reg;
   wire ifclk_out;
   wire ifclk_out_OBUF;
   wire ifclk_out_OBUF_BUFG;
@@ -40592,27 +40515,28 @@ module zeabus_hydrophone
   wire [7:0]poten0;
   wire poten_update_start;
   wire rd_en4_out;
-  wire reset_inst_n_2;
+  wire reset_inst_n_1;
   wire rst;
   wire rst_0;
   wire rst_2d;
   wire rst_3d;
+  wire rst_4d;
+  wire rst_5d;
   wire rst_d;
   wire rst_internal;
   wire [15:0]rx_data;
   wire rx_oe;
-  wire slave_fifo_n_23;
-  wire strb_d;
-  wire strb_dd;
+  wire slave_fifo_n_24;
+  wire slave_fifo_n_4;
+  wire slave_fifo_n_5;
   wire [1:1]sub_state__0;
   wire [0:0]t_counter0_in;
   wire t_counter5;
   wire trigged;
   wire [63:0]trigged_out;
   wire [15:0]trigger_level;
-  wire trigger_n_67;
   wire trigger_n_68;
-  wire trigger_n_70;
+  wire trigger_n_69;
   wire trigger_strobe;
   wire NLW_PLLE2_BASE_inst_CLKOUT2_UNCONNECTED;
   wire NLW_PLLE2_BASE_inst_CLKOUT3_UNCONNECTED;
@@ -40937,10 +40861,9 @@ module zeabus_hydrophone
         .O(SLWR));
   adc_interface adc1
        (.CO(t_counter5),
-        .DI({adc1_n_51,adc1_n_52,adc1_n_53}),
+        .DI({adc1_n_50,adc1_n_51,adc1_n_52}),
         .O(out0),
         .Q({trigger_level[15],trigger_level[13],trigger_level[11],trigger_level[9],trigger_level[7],trigger_level[5],trigger_level[3],trigger_level[0]}),
-        .RST_IBUF(RST_IBUF),
         .S(config_man_n_47),
         .adc_strb_1(adc_strb_1),
         .adc_strb_2(adc_strb_2),
@@ -40950,19 +40873,13 @@ module zeabus_hydrophone
         .filter_rst(filter_rst),
         .ifclk_out_OBUF_BUFG(ifclk_out_OBUF_BUFG),
         .overflow(OTR_1_IBUF),
-        .pll_locked(pll_locked),
         .rst(rst),
-        .rst_0(rst_0),
-        .rst_2d(rst_2d),
-        .rst_3d(rst_3d),
-        .rst_3d_reg_0(adc1_n_54),
-        .rst_d(rst_d),
         .\t_counter[15]_i_118 ({config_man_n_9,config_man_n_10}),
         .\t_counter[15]_i_120 (config_man_n_8),
-        .\t_counter[15]_i_186 ({adc1_n_15,adc1_n_16,adc1_n_17}),
-        .\t_counter[15]_i_190 ({adc1_n_11,adc1_n_12,adc1_n_13,adc1_n_14}),
-        .\t_counter[15]_i_194 ({adc1_n_7,adc1_n_8,adc1_n_9,adc1_n_10}),
-        .\t_counter[15]_i_239 ({adc1_n_4,adc1_n_5,adc1_n_6}),
+        .\t_counter[15]_i_186 ({adc1_n_14,adc1_n_15,adc1_n_16}),
+        .\t_counter[15]_i_190 ({adc1_n_10,adc1_n_11,adc1_n_12,adc1_n_13}),
+        .\t_counter[15]_i_194 ({adc1_n_6,adc1_n_7,adc1_n_8,adc1_n_9}),
+        .\t_counter[15]_i_239 ({adc1_n_3,adc1_n_4,adc1_n_5}),
         .\t_counter[15]_i_52 (config_man_n_13),
         .\t_counter[15]_i_53 ({config_man_n_11,config_man_n_12}),
         .\t_counter_reg[15]_i_12 ({config_man_n_24,config_man_n_25,config_man_n_26}),
@@ -40981,7 +40898,7 @@ module zeabus_hydrophone
         .\t_counter_reg[15]_i_37_3 (config_man_n_35),
         .\t_counter_reg[15]_i_37_4 (config_man_n_38),
         .\t_counter_reg[15]_i_37_5 (config_man_n_37),
-        .\trigger_level_reg[0] (adc1_n_18));
+        .\trigger_level_reg[0] (adc1_n_17));
   adc_interface_0 adc2
        (.CO(adc2_n_15),
         .DI({adc2_n_63,adc2_n_64,adc2_n_65}),
@@ -41033,7 +40950,7 @@ module zeabus_hydrophone
        (.CO(adc2_n_15),
         .D(data0),
         .DI({adc2_n_63,adc2_n_64,adc2_n_65}),
-        .\FSM_sequential_state_reg[1]_0 (slave_fifo_n_23),
+        .\FSM_sequential_state_reg[1]_0 (slave_fifo_n_24),
         .FUNC_EN(config_man_n_48),
         .FUNC_EN_IBUF(FUNC_EN_IBUF),
         .LED_GREEN_OBUF(LED_GREEN_OBUF),
@@ -41052,8 +40969,8 @@ module zeabus_hydrophone
         .sub_state__0(sub_state__0),
         .\t_counter[15]_i_4_0 ({adc2_n_66,adc2_n_67,adc2_n_68}),
         .\t_counter[15]_i_4_1 (adc2_n_30),
-        .\t_counter[15]_i_4_2 (adc1_n_18),
-        .\t_counter[15]_i_4_3 ({adc1_n_51,adc1_n_52,adc1_n_53}),
+        .\t_counter[15]_i_4_2 (adc1_n_17),
+        .\t_counter[15]_i_4_3 ({adc1_n_50,adc1_n_51,adc1_n_52}),
         .\t_counter_reg[15]_i_10_0 (adc2_2_out[15:2]),
         .\t_counter_reg[15]_i_10_1 ({adc2_n_19,adc2_n_20,adc2_n_21,adc2_n_22}),
         .\t_counter_reg[15]_i_10_2 ({adc2_n_23,adc2_n_24,adc2_n_25,adc2_n_26}),
@@ -41062,13 +40979,13 @@ module zeabus_hydrophone
         .\t_counter_reg[15]_i_11_1 ({adc2_n_4,adc2_n_5,adc2_n_6,adc2_n_7}),
         .\t_counter_reg[15]_i_11_2 ({adc2_n_8,adc2_n_9,adc2_n_10,adc2_n_11}),
         .\t_counter_reg[15]_i_11_3 ({adc2_n_12,adc2_n_13,adc2_n_14}),
-        .\t_counter_reg[15]_i_12_0 ({adc1_n_7,adc1_n_8,adc1_n_9,adc1_n_10}),
-        .\t_counter_reg[15]_i_12_1 ({adc1_n_11,adc1_n_12,adc1_n_13,adc1_n_14}),
-        .\t_counter_reg[15]_i_12_2 ({adc1_n_15,adc1_n_16,adc1_n_17}),
+        .\t_counter_reg[15]_i_12_0 ({adc1_n_6,adc1_n_7,adc1_n_8,adc1_n_9}),
+        .\t_counter_reg[15]_i_12_1 ({adc1_n_10,adc1_n_11,adc1_n_12,adc1_n_13}),
+        .\t_counter_reg[15]_i_12_2 ({adc1_n_14,adc1_n_15,adc1_n_16}),
         .\t_counter_reg[15]_i_13 (out0),
         .\t_counter_reg[15]_i_13_0 (adc1_2_out[15:14]),
         .\t_counter_reg[15]_i_19 ({adc2_n_16,adc2_n_17,adc2_n_18}),
-        .\t_counter_reg[15]_i_37 ({adc1_n_4,adc1_n_5,adc1_n_6}),
+        .\t_counter_reg[15]_i_37 ({adc1_n_3,adc1_n_4,adc1_n_5}),
         .\t_counter_reg[6] (t_counter5),
         .\trigger_level_reg[0]_0 (config_man_n_8),
         .\trigger_level_reg[12]_0 ({config_man_n_11,config_man_n_12}),
@@ -41107,8 +41024,8 @@ module zeabus_hydrophone
         .RST_IBUF(RST_IBUF),
         .ifclk_out_OBUF_BUFG(ifclk_out_OBUF_BUFG),
         .in_strb_d_reg_0(packetizer_inst_n_0),
-        .\latched_input_reg[63]_0 (trigger_n_67),
-        .out_strobe_reg_0(trigger_n_68),
+        .\latched_input_reg[63]_0 (trigger_n_68),
+        .out_strobe_reg_0(trigger_n_69),
         .pll_locked(pll_locked),
         .rst(rst),
         .rst_0(rst_0),
@@ -41123,7 +41040,7 @@ module zeabus_hydrophone
         .SCL_TRI(SCL_TRI),
         .SDA_IBUF(SDA_IBUF),
         .SDA_TRI(SDA_TRI),
-        .\fSDA_reg[0] (reset_inst_n_2),
+        .\fSDA_reg[0] (reset_inst_n_1),
         .ifclk_out_OBUF_BUFG(ifclk_out_OBUF_BUFG),
         .pll_locked(pll_locked),
         .poten1_value({poten0[7:5],poten0[3:0]}),
@@ -41133,15 +41050,11 @@ module zeabus_hydrophone
   reset_subs reset_inst
        (.LED_GREEN_OBUF(LED_GREEN_OBUF),
         .RST_IBUF(RST_IBUF),
-        .filter_rst(filter_rst),
         .ifclk_out_OBUF_BUFG(ifclk_out_OBUF_BUFG),
         .pll_locked(pll_locked),
         .rst(rst),
         .rst_0(rst_0),
-        .rst_2d(rst_2d),
-        .rst_3d(rst_3d),
-        .rst_d(rst_d),
-        .rst_reg_0(reset_inst_n_2));
+        .rst_reg_0(reset_inst_n_1));
   fx3s_interface slave_fifo
        (.A(A_OBUF),
         .DI({pkt_end,packetize_out}),
@@ -41153,51 +41066,55 @@ module zeabus_hydrophone
         .LED_GREEN_OBUF(LED_GREEN_OBUF),
         .LED_RED_n_OBUF(LED_RED_n_OBUF),
         .PKTEND(PKTEND_OBUF),
-        .Q(h_counter_reg),
+        .RST_IBUF(RST_IBUF),
         .SLCS(SLCS_OBUF),
         .SLOE(SLOE_OBUF),
         .SLRD(SLRD_OBUF),
         .SLWR(SLWR_OBUF),
         .SR(t_counter0_in),
         .d_out(rx_data),
-        .fifo_rst_internal(fifo_rst_internal),
+        .filter_rst(filter_rst),
         .ifclk_out_OBUF_BUFG(ifclk_out_OBUF_BUFG),
-        .in_strb_d_reg(adc1_n_54),
+        .pll_locked(pll_locked),
         .\poten1_value_reg[7] (DQ_IBUF),
-        .rd_en4_out(rd_en4_out),
         .rst(rst),
+        .rst_0(rst_0),
         .rst_2d(rst_2d),
         .rst_3d(rst_3d),
-        .rst_6d_reg_0(slave_fifo_n_23),
+        .rst_3d_reg_0(slave_fifo_n_4),
+        .rst_4d(rst_4d),
+        .rst_5d(rst_5d),
+        .rst_6d_reg_0(slave_fifo_n_5),
+        .rst_7d_reg_0(slave_fifo_n_24),
         .rst_d(rst_d),
         .rst_internal(rst_internal),
         .rx_oe(rx_oe),
-        .strb_d(strb_d),
-        .strb_dd(strb_dd),
-        .\t_counter[15]_i_4 (trigger_n_70),
         .\t_counter_reg[0] (config_man_n_14),
-        .trigged(trigged),
-        .trigger_strobe(trigger_strobe));
+        .trigged(trigged));
   hydrophone_trigger trigger
        (.D(trigged_out),
         .DI({adc2_2_out,adc2_1_out,adc1_2_out,adc1_1_out}),
-        .Q(h_counter_reg),
+        .LED_GREEN_OBUF(LED_GREEN_OBUF),
         .SR(t_counter0_in),
         .adc_strb_1(adc_strb_1),
         .adc_strb_2(adc_strb_2),
         .adc_strb_3(adc_strb_3),
         .adc_strb_4(adc_strb_4),
-        .fifo_rst_internal(fifo_rst_internal),
         .ifclk_out_OBUF_BUFG(ifclk_out_OBUF_BUFG),
+        .in_strb_d_reg(slave_fifo_n_4),
+        .in_strb_d_reg_0(slave_fifo_n_5),
         .\latched_input_reg[63] (packetizer_inst_n_0),
+        .rd_en4_out(rd_en4_out),
+        .rst_2d(rst_2d),
+        .rst_3d(rst_3d),
+        .rst_4d(rst_4d),
+        .rst_5d(rst_5d),
+        .rst_d(rst_d),
         .rst_internal(rst_internal),
-        .strb_d(strb_d),
-        .strb_dd(strb_dd),
-        .strb_dd_reg_0(trigger_n_68),
-        .strb_dd_reg_1(trigger_n_70),
+        .strb_dd_reg_0(trigger_n_69),
         .\t_counter_reg[6]_0 (config_man_n_14),
         .trigged(trigged),
-        .trigged_reg_0(trigger_n_67),
+        .trigged_reg_0(trigger_n_68),
         .trigged_reg_1(config_man_n_48),
         .trigger_strobe(trigger_strobe));
 endmodule

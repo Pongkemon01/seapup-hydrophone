@@ -242,6 +242,14 @@ module fx3_interface_tb;
 		d_in = in_data[cycle_count];
 	end
 	
+	reg [1:0] post_rd;
+	reg [1:0] pre_rd;
+	initial
+	begin
+	   post_rd <= 2'b0;
+	   pre_rd <= 2'b0;
+	end
+	
 	// FX3S behavior
 	always @(posedge ifclk)
 	begin
@@ -266,18 +274,35 @@ module fx3_interface_tb;
 			end
 		end
 		
-		if( FLAGA && !SLOE && !SLRD )
+		if( FLAGA )
 		begin
-			if(conf_index > 3)
-				if(conf_index > 5 )
-					FLAGA = 0;
-				else
-					conf_index = conf_index + 1;
-			else
-			begin
-				DQ_In = conf_data[conf_index];
-				conf_index = conf_index + 1;
-			end
+		  if( !SLRD )
+		  begin
+		      post_rd = 2'b0;
+		      if( pre_rd == 2'd1 )
+		      begin
+		          DQ_In = conf_data[conf_index];
+		          conf_index = conf_index + 1;
+		      end
+		      else
+		          pre_rd = pre_rd + 1;
+		  end
+		  else
+		  begin
+		      pre_rd = 2'b0;
+		      if(post_rd >= 2'd1)
+		      begin
+		          if(conf_index > 5)
+		              FLAGA = 0;
+		      end
+		      else
+		          post_rd = post_rd + 1;
+		  end
+		end
+		else
+		begin
+		  pre_rd = 2'b0;
+		  post_rd = 2'b0;
 		end
 	end
 endmodule

@@ -491,6 +491,9 @@ class hydrophone_usb:
       buf_size = buf_size + 2
     if( LNA_Gain_1 >= 0 ):
       buf_size = buf_size + 4
+    if( buf_size == 2 ):
+      # Nothig to send
+      return
     buffer = np.empty( buf_size, dtype='uint8' )
 
     # Set ID

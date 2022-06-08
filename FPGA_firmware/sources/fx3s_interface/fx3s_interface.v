@@ -82,15 +82,17 @@ module fx3s_interface #(
     // State value
     localparam state_idle = 4'b0000;
 
-    localparam state_start_read = 4'b0001;
-    localparam state_read_pre_1 = 4'b0010;
-    localparam state_read_pre_2 = 4'b0011;
-    localparam state_read_loop = 4'b0101;
+    localparam state_stop_write_1 = 4'b0001;
+    localparam state_stop_write_2 = 4'b0010;
+    localparam state_stop_write_3 = 4'b0011;
+    localparam state_stop_write_4 = 4'b0100;
 
-    localparam state_stop_write_1 = 4'b0110;
-    localparam state_stop_write_2 = 4'b0111;
-    localparam state_stop_write_3 = 4'b1000;
-    localparam state_stop_write_4 = 4'b1001;
+    localparam state_start_read = 4'b0101;
+    localparam state_read_pre_1 = 4'b0110;
+    localparam state_read_pre_2 = 4'b0111;
+    localparam state_read_word = 4'b1000;
+    localparam state_read_post_1 = 4'b1001;
+    localparam state_read_post_2 = 4'b1010;
 
     // This module use FIFO to store incoming and outgoing data
     // The FIFO size for arrival data is 32 16-bit words.
@@ -215,6 +217,16 @@ module fx3s_interface #(
 
     // Main process
     /*
+     * Note
+     *
+     * Since FLAGA has 2-clock delay after the last word is read, we cannot use it to detect the
+     * incoming data size. Therefore, FLAGA is used only for detecting start of data incoming.
+     * Moreover, the incoming data is connected directly to RX-FIFO, operaing at clock rising edge.
+     * We cannot examine information inside them. Therefore, we can only read 1 word and wait for
+     * FLAGA status by 2 clocks. If thereare more incoming data, the previous steps are repeated.
+     * 
+     */
+    /*
      * State transition table (FLAGA and FLAGB are active low)
      * ------------------------------------------------------------------------------------
      *     State     | Condition                       |  Next State | Action
@@ -235,10 +247,13 @@ module fx3s_interface #(
      *  read_pre_1   | 1                               | read_pre_2  | -
      * ------------------------------------------------------------------------------------
      *  read_pre_2   | !FLAGA                          | idle        | SLCS = 1, SLRD = 1, SLOE = 1
-     *               | else                            | read_loop   | rx_wr_en = 1
+     *               | else                            | read_word   | rx_wr_en = 1
      * ------------------------------------------------------------------------------------
-     *  read_loop    | !FLAGA || rx_full               | idle        | SLCS = 1, SLRD = 1, SLOE = 1, rx_wr_en = 0
-     *               | else                            | read_loop   | -
+     *  read_word    | 1                               | read_post_1 | SLRD = 1, rx_wr_en = 0
+     * ------------------------------------------------------------------------------------
+     *  read_post_1  | 1                               | read_post_2 | -
+     * ------------------------------------------------------------------------------------
+     *  read_post_2  | 1                               | idle        | SLCS = 1, SLOE = 1
      * ------------------------------------------------------------------------------------
      *  stop_write_1 | 1                               | stop_write_2| PKTEND = 1, tx,rd_en = 0, SLWR = 1 (then wait 3 clocks), 
      *               |                                 |             |       sending = 0
@@ -341,7 +356,7 @@ module fx3s_interface #(
                 begin
                     SLRD <= 0;
 					dbg <= 1;
-                    master_state <= state_read_pre_2;
+                    master_state <= state_read_pre_1;
                 end
 
                 state_read_pre_1:
@@ -351,30 +366,28 @@ module fx3s_interface #(
 
                 state_read_pre_2:
                 begin
-                    if( !FLAGA )
-                    begin
-                        SLCS <= 1;
-                        SLRD <= 1;
-                        SLOE <= 1;
-                        master_state <= state_idle;
-                    end
-                    else
-                    begin
-                        rx_wr_en <= 1;
-                        master_state <= state_read_loop;
-                    end
+                    rx_wr_en <= 1;
+                    master_state <= state_read_word;
                 end
 
-                state_read_loop:
+                state_read_word:
                 begin
-                    if( !FLAGA || rx_full )
-                    begin
-                        SLCS <= 1;
-                        SLRD <= 1;
-                        SLOE <= 1;
-                        rx_wr_en <= 0;
-                        master_state <= state_idle;
-                    end
+
+                    SLRD <= 1;
+                    rx_wr_en <= 0;
+                    master_state <= state_read_post_1;
+                end
+
+                state_read_post_1:
+                begin
+                    master_state <= state_read_post_2;
+                end
+
+                state_read_post_2:
+                begin
+                    SLCS <= 1;
+                    SLOE <= 1;
+                    master_state <= state_idle;
                 end
 
                 // FPGA -> FX3S finalizing writing process
