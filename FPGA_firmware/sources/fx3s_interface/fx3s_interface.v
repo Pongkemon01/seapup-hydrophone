@@ -93,6 +93,7 @@ module fx3s_interface #(
     localparam state_read_word = 4'b1000;
     localparam state_read_post_1 = 4'b1001;
     localparam state_read_post_2 = 4'b1010;
+    localparam state_read_post_3 = 4'b1011;
 
     // This module use FIFO to store incoming and outgoing data
     // The FIFO size for arrival data is 32 16-bit words.
@@ -253,7 +254,9 @@ module fx3s_interface #(
      * ------------------------------------------------------------------------------------
      *  read_post_1  | 1                               | read_post_2 | -
      * ------------------------------------------------------------------------------------
-     *  read_post_2  | 1                               | idle        | SLCS = 1, SLOE = 1
+     *  read_post_2  | 1                               | read_post_3 | -
+     * ------------------------------------------------------------------------------------
+     *  read_post_3  | 1                               | idle        | SLCS = 1, SLOE = 1
      * ------------------------------------------------------------------------------------
      *  stop_write_1 | 1                               | stop_write_2| PKTEND = 1, tx,rd_en = 0, SLWR = 1 (then wait 3 clocks), 
      *               |                                 |             |       sending = 0
@@ -302,6 +305,19 @@ module fx3s_interface #(
                         tx_rd_en = 0;
                         master_state <= state_start_read;
                     end
+                    else if( tx_empty && !internal_trigged_line && sending )
+                    begin
+                        decision <= 3'b100;
+                        // Still in sending but nothing more to send then send ZLP
+                        is_outgoing <= 1;
+                        SLCS <= 0;
+                        SLWR <= 1;
+                        SLOE <= 1;
+                        A0 <= addr_write;
+                        tx_rd_en <= 0;
+                        PKTEND <= 0;
+                        master_state <= state_stop_write_1;
+                    end
                     else if( !tx_empty && FLAGB )
                     begin
                         decision <= 3'b010;
@@ -333,19 +349,6 @@ module fx3s_interface #(
                         SLWR <= 1;
                         tx_rd_en <= 0;
                         master_state <= state_idle;
-                    end
-                    else if( tx_empty && !internal_trigged_line && sending )
-                    begin
-                        decision <= 3'b100;
-                        // Still in sending but nothing more to send then send ZLP
-                        is_outgoing <= 1;
-                        SLCS <= 0;
-                        SLWR <= 1;
-                        SLOE <= 1;
-                        A0 <= addr_write;
-                        tx_rd_en <= 0;
-                        PKTEND <= 0;
-                        master_state <= state_stop_write_1;
                     end
                     else
                         decision <= 3'b111;
@@ -384,6 +387,11 @@ module fx3s_interface #(
                 end
 
                 state_read_post_2:
+                begin
+                    master_state <= state_read_post_3;
+                end
+
+                state_read_post_3:
                 begin
                     SLCS <= 1;
                     SLOE <= 1;

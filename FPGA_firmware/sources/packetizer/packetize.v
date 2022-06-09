@@ -67,18 +67,19 @@ module packetizer #(
 	n * 8 bytes: stream of "n" sampled data that satisfied the trigger
 */
 
-	localparam MAX_PKT_SIZE = (4 + (SAMPLING_PER_PACKET * 4)) - 1;  // Maximum size of a packet (minus 1)
+	localparam MAX_PKT_SIZE = 4 + (SAMPLING_PER_PACKET * 4);  // Maximum size of a packet
 
 	// States
 	localparam STATE_IDLE = 5'b00000;				// Waiting for trigged and posedge in_strobe
 	localparam STATE_SEND_HEADER_SEQ = 5'b00001; 	// Sending header data (Sequence)
-	localparam STATE_SEND_HEADER_TIME_L = 5'b00010; // Sending header data (Timestamp LSB)
-	localparam STATE_SEND_HEADER_TIME_H = 5'b00011; // Sending header data (Timestamp MSB)
+	localparam STATE_SEND_HEADER_TIME_H = 5'b00010; // Sending header data (Timestamp MSB)
+	localparam STATE_SEND_HEADER_TIME_L = 5'b00011; // Sending header data (Timestamp LSB)
 	localparam STATE_SEND_DATA_CH1 = 5'b00100; 		// Sending the following data (Channel 1)
 	localparam STATE_SEND_DATA_CH2 = 5'b00101; 		// Sending the following data (Channel 2)
 	localparam STATE_SEND_DATA_CH3 = 5'b00110; 		// Sending the following data (Channel 3)
 	localparam STATE_SEND_DATA_CH4 = 5'b00111; 		// Sending the following data (Channel 4)
-	localparam STATE_WAIT_STROBE = 5'b01000;		// Waiting for input strobe signal
+	localparam STATE_LATCH_LAST_WORD = 5'b01000;		// Latching CH4 to the output
+	localparam STATE_WAIT_STROBE = 5'b01001;		// Waiting for input strobe signal
 
 	// Output data selection
 	localparam OUT_ID = 3'b000;				// d_out contains signature ID (0xDCB0)
@@ -212,7 +213,7 @@ module packetizer #(
 						seq_cnt <= seq_cnt + 1;
 						sending <= 1;
 						out_strobe <= 1;
-						out_sel <= OUT_ID;		// Sending header id
+						out_sel <= OUT_ID;		// out header ID
 						main_state <= STATE_SEND_HEADER_SEQ;
 					end
 
@@ -222,42 +223,47 @@ module packetizer #(
 				// Each sub-state macro requires 3 clk_64MHz.
 				STATE_SEND_HEADER_SEQ:
 				begin
-					out_sel <= OUT_SEQ;		// Sending packet sequence
-					main_state <= STATE_SEND_HEADER_TIME_L;
-				end
-				STATE_SEND_HEADER_TIME_L:
-				begin
-					out_sel <= OUT_TIME_L;		// Sending timestamp (LSB)
+					out_sel <= OUT_SEQ;		// out packet sequence, latch ID
 					main_state <= STATE_SEND_HEADER_TIME_H;
 				end
 				STATE_SEND_HEADER_TIME_H:
 				begin
-					out_sel <= OUT_TIME_H;		// Sending timestamp (MSB)
+					out_sel <= OUT_TIME_H;		// out timestamp (MSB), latch seq
+					main_state <= STATE_SEND_HEADER_TIME_L;
+				end
+				STATE_SEND_HEADER_TIME_L:
+				begin
+					out_sel <= OUT_TIME_L;		// out timestamp (LSB), latch ts(msb)
 					main_state <= STATE_SEND_DATA_CH1;
 				end
 				STATE_SEND_DATA_CH1:
 				begin
+					out_strobe <= 1;		// Redundant for data sending loop
 					current_pkt_size <= current_pkt_size + 16'd4;
-					out_sel <= OUT_CH1;		// Sending CH1 sampling
+					out_sel <= OUT_CH1;		// out CH1 sampling, latch ts(lsb), or xxx
 					main_state <= STATE_SEND_DATA_CH2;
 				end
 				STATE_SEND_DATA_CH2:
 				begin
-					out_sel <= OUT_CH2;		// Sending CH2 sampling
+					out_sel <= OUT_CH2;		// out CH2 sampling, latch ch1
 					main_state <= STATE_SEND_DATA_CH3;
 				end
 				STATE_SEND_DATA_CH3:
 				begin
-					out_sel <= OUT_CH3;		// Sending CH3 sampling
-					if( ( current_pkt_size >= MAX_PKT_SIZE ) || !trigged )
-					begin
-					   pkt_end <= 1;
-					end
+					out_sel <= OUT_CH3;		// out CH3 sampling, latch ch2
 					main_state <= STATE_SEND_DATA_CH4;
 				end
 				STATE_SEND_DATA_CH4:
 				begin
-					out_sel <= OUT_CH4;		// Sending CH4 sampling
+					out_sel <= OUT_CH4;		// out CH4 sampling, latch ch3
+					if( ( current_pkt_size >= MAX_PKT_SIZE ) || !trigged )
+					begin
+					   pkt_end <= 1;
+					end
+					main_state <= STATE_LATCH_LAST_WORD;
+				end
+				STATE_LATCH_LAST_WORD:
+				begin
 					out_strobe <= 0;
 					if( ( current_pkt_size >= MAX_PKT_SIZE ) || !trigged )
 					begin
@@ -283,7 +289,6 @@ module packetizer #(
 					begin
 						if( in_strobe == 1 && in_strb_d == 0 )
 						begin
-							out_strobe <= 1;
 							main_state <= STATE_SEND_DATA_CH1;
 						end
 					end

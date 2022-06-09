@@ -557,7 +557,7 @@ class hydrophone_usb:
           seq = int( struct.unpack( '>H', buffer[2:4] )[0] )        # Slicing includes the start index but excludes the end index
           timestamp = int( struct.unpack( '>L', buffer[4:8] )[0] )
           payload_len = int( len( buffer[8:] ) / 2 )
-          raw = struct.unpack( f'>{payload_len}H', buffer[8:] )     # Remove the preemble
+          raw = struct.unpack( f'>{payload_len}h', buffer[8:] )     # Remove the preemble
           return seq, timestamp, raw
           
       _err_count = _err_count + 1   # Reaching here means the packet is invalid

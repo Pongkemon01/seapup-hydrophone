@@ -51,7 +51,7 @@ module hydrophone_trigger_tb;
 	
 	// Module under test
 	hydrophone_trigger ht( .rst(rst), .clk(clk), .trigger_level(level), .d_out(d_out), .d_in(d_in), .trigged(trigged), 
-		.strb_ch1(strobe), .strb_ch2(strobe), .strb_ch3(strobe), .strb_ch4(strobe), .output_strobe(output_strb) );
+		.strb_ch1(strobe), .strb_ch2(strobe), .strb_ch3(strobe), .strb_ch4(strobe), .output_strobe(output_strb), .enable(1) );
 	
 	initial
 	begin
@@ -59,7 +59,7 @@ module hydrophone_trigger_tb;
 		out_file = $fopen("output.hex"); // open file
 		$fmonitor(out_file, "%d : %016X,%b,%b,%b", cycle_count, d_out, output_strb, trigged, rst);
 		//$monitor("%d : %016X,%b,%b", d_out, trigged, rst);
-		level = 16'd2000; // 0x07D0
+		level = 16'd16383; // 0x07D0
 		strobe = 0;
 		strobe_count = 0;
 		rst = 1; 

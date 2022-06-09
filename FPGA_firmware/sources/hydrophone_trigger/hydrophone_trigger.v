@@ -166,6 +166,7 @@ module hydrophone_trigger
 				// The input data at the very beginning after reset should not be used though
 				if( h_counter < header )
 				begin
+				    rd_en <= 0;
 					h_counter <= h_counter + 1;
 				end
 				else

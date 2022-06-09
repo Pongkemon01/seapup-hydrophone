@@ -2,8 +2,8 @@
 # Vivado v2020.2 (64-bit)
 # SW Build 3064766 on Wed Nov 18 09:12:47 MST 2020
 # IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
-# Start of session at: Wed Jun  8 11:50:07 2022
-# Process ID: 14052
+# Start of session at: Thu Jun  9 17:10:05 2022
+# Process ID: 35095
 # Current directory: /home/stp/seapup/zeabus_hydrophone/FPGA_firmware/hydrophone_dsp.runs/synth_1
 # Command line: vivado -log zeabus_hydrophone.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source zeabus_hydrophone.tcl
 # Log file: /home/stp/seapup/zeabus_hydrophone/FPGA_firmware/hydrophone_dsp.runs/synth_1/zeabus_hydrophone.vds
@@ -17,9 +17,9 @@ INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a15t
 INFO: [Device 21-403] Loading part xc7a15tcsg324-1
 INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 4 processes.
 INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
-INFO: [Synth 8-7075] Helper process launched with PID 14104
+INFO: [Synth 8-7075] Helper process launched with PID 35160
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 2389.781 ; gain = 0.000 ; free physical = 102 ; free virtual = 4081
+Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 2482.719 ; gain = 0.000 ; free physical = 303 ; free virtual = 4060
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-6157] synthesizing module 'zeabus_hydrophone' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:39]
 	Parameter trigger_head bound to: 64 - type: integer 
@@ -42,6 +42,7 @@ INFO: [Synth 8-6157] synthesizing module 'fx3s_interface' [/home/stp/seapup/zeab
 	Parameter state_read_word bound to: 4'b1000 
 	Parameter state_read_post_1 bound to: 4'b1001 
 	Parameter state_read_post_2 bound to: 4'b1010 
+	Parameter state_read_post_3 bound to: 4'b1011 
 INFO: [Synth 8-6157] synthesizing module 'FIFO36E1' [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:14374]
 	Parameter ALMOST_EMPTY_OFFSET bound to: 13'b0000010000000 
 	Parameter ALMOST_FULL_OFFSET bound to: 13'b0001111101000 
@@ -62,7 +63,7 @@ INFO: [Synth 8-6157] synthesizing module 'FIFO36E1' [/home/stp/asset/xilinx/Viva
 	Parameter SIM_DEVICE bound to: 7SERIES - type: string 
 	Parameter SRVAL bound to: 72'b000000000000000000000000000000000000000000000000000000000000000000000000 
 INFO: [Synth 8-6155] done synthesizing module 'FIFO36E1' (2#1) [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:14374]
-WARNING: [Synth 8-689] width (17) of port connection 'DO' does not match port width (64) of module 'FIFO36E1' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/fx3s_interface/fx3s_interface.v:464]
+WARNING: [Synth 8-689] width (17) of port connection 'DO' does not match port width (64) of module 'FIFO36E1' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/fx3s_interface/fx3s_interface.v:472]
 INFO: [Synth 8-6157] synthesizing module 'FIFO36E1__parameterized0' [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:14374]
 	Parameter ALMOST_EMPTY_OFFSET bound to: 13'b0000010000000 
 	Parameter ALMOST_FULL_OFFSET bound to: 13'b0011111010000 
@@ -83,7 +84,7 @@ INFO: [Synth 8-6157] synthesizing module 'FIFO36E1__parameterized0' [/home/stp/a
 	Parameter SIM_DEVICE bound to: 7SERIES - type: string 
 	Parameter SRVAL bound to: 72'b000000000000000000000000000000000000000000000000000000000000000000000000 
 INFO: [Synth 8-6155] done synthesizing module 'FIFO36E1__parameterized0' (2#1) [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:14374]
-WARNING: [Synth 8-689] width (16) of port connection 'DO' does not match port width (64) of module 'FIFO36E1__parameterized0' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/fx3s_interface/fx3s_interface.v:518]
+WARNING: [Synth 8-689] width (16) of port connection 'DO' does not match port width (64) of module 'FIFO36E1__parameterized0' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/fx3s_interface/fx3s_interface.v:526]
 INFO: [Synth 8-6155] done synthesizing module 'fx3s_interface' (3#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/fx3s_interface/fx3s_interface.v:36]
 WARNING: [Synth 8-7071] port 'state' of module 'fx3s_interface' is unconnected for instance 'slave_fifo' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:167]
 WARNING: [Synth 8-7071] port 'decision' of module 'fx3s_interface' is unconnected for instance 'slave_fifo' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:167]
@@ -168,16 +169,17 @@ INFO: [Synth 8-155] case statement is not full and has no default [/home/stp/sea
 INFO: [Synth 8-6155] done synthesizing module 'poten_interface' (7#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/poten_interface/poten_interface.v:40]
 INFO: [Synth 8-6157] synthesizing module 'packetizer' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/packetizer/packetize.v:36]
 	Parameter SAMPLING_PER_PACKET bound to: 1000 - type: integer 
-	Parameter MAX_PKT_SIZE bound to: 4003 - type: integer 
+	Parameter MAX_PKT_SIZE bound to: 4004 - type: integer 
 	Parameter STATE_IDLE bound to: 5'b00000 
 	Parameter STATE_SEND_HEADER_SEQ bound to: 5'b00001 
-	Parameter STATE_SEND_HEADER_TIME_L bound to: 5'b00010 
-	Parameter STATE_SEND_HEADER_TIME_H bound to: 5'b00011 
+	Parameter STATE_SEND_HEADER_TIME_H bound to: 5'b00010 
+	Parameter STATE_SEND_HEADER_TIME_L bound to: 5'b00011 
 	Parameter STATE_SEND_DATA_CH1 bound to: 5'b00100 
 	Parameter STATE_SEND_DATA_CH2 bound to: 5'b00101 
 	Parameter STATE_SEND_DATA_CH3 bound to: 5'b00110 
 	Parameter STATE_SEND_DATA_CH4 bound to: 5'b00111 
-	Parameter STATE_WAIT_STROBE bound to: 5'b01000 
+	Parameter STATE_LATCH_LAST_WORD bound to: 5'b01000 
+	Parameter STATE_WAIT_STROBE bound to: 5'b01001 
 	Parameter OUT_ID bound to: 3'b000 
 	Parameter OUT_SEQ bound to: 3'b001 
 	Parameter OUT_TIME_L bound to: 3'b010 
@@ -186,7 +188,7 @@ INFO: [Synth 8-6157] synthesizing module 'packetizer' [/home/stp/seapup/zeabus_h
 	Parameter OUT_CH2 bound to: 3'b101 
 	Parameter OUT_CH3 bound to: 3'b110 
 	Parameter OUT_CH4 bound to: 3'b111 
-INFO: [Synth 8-155] case statement is not full and has no default [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/packetizer/packetize.v:205]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/packetizer/packetize.v:206]
 INFO: [Synth 8-6155] done synthesizing module 'packetizer' (8#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/packetizer/packetize.v:36]
 WARNING: [Synth 8-7071] port 'debug_main_state' of module 'packetizer' is unconnected for instance 'packetizer_inst' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:238]
 WARNING: [Synth 8-7071] port 'debug_strb_d' of module 'packetizer' is unconnected for instance 'packetizer_inst' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:238]
@@ -268,18 +270,18 @@ INFO: [Synth 8-6157] synthesizing module 'PLLE2_BASE' [/home/stp/asset/xilinx/Vi
 INFO: [Synth 8-6155] done synthesizing module 'PLLE2_BASE' (18#1) [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:61605]
 INFO: [Synth 8-6155] done synthesizing module 'zeabus_hydrophone' (19#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:39]
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:07 . Memory (MB): peak = 2389.781 ; gain = 0.000 ; free physical = 966 ; free virtual = 4799
+Finished RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 2482.719 ; gain = 0.000 ; free physical = 953 ; free virtual = 4629
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:06 ; elapsed = 00:00:08 . Memory (MB): peak = 2389.781 ; gain = 0.000 ; free physical = 965 ; free virtual = 4798
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 2482.719 ; gain = 0.000 ; free physical = 969 ; free virtual = 4645
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:06 ; elapsed = 00:00:08 . Memory (MB): peak = 2389.781 ; gain = 0.000 ; free physical = 965 ; free virtual = 4798
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 2482.719 ; gain = 0.000 ; free physical = 969 ; free virtual = 4645
 ---------------------------------------------------------------------------------
-Netlist sorting complete. Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.02 . Memory (MB): peak = 2389.781 ; gain = 0.000 ; free physical = 956 ; free virtual = 4789
+Netlist sorting complete. Time (s): cpu = 00:00:00.02 ; elapsed = 00:00:00.02 . Memory (MB): peak = 2482.719 ; gain = 0.000 ; free physical = 961 ; free virtual = 4637
 INFO: [Netlist 29-17] Analyzing 34 Unisim elements for replacement
 CRITICAL WARNING: [Netlist 29-346] The CLKOUT0_PHASE for PLLE2_ADV (PLLE2_BASE_inst) is being adjusted from -140.0 to -141.9. The CLKOUT0_PHASE value needs to be in increments of 1/56 the FVCO and/or increments depending on CLKOUT_DIVIDE. Refer to the Clocking Resources User Guide of the device family for details.
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
@@ -294,27 +296,27 @@ INFO: [Project 1-236] Implementation specific constraints were found while readi
 Resolution: To avoid this warning, move constraints listed in [.Xil/zeabus_hydrophone_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2476.504 ; gain = 0.000 ; free physical = 868 ; free virtual = 4702
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2514.660 ; gain = 0.000 ; free physical = 860 ; free virtual = 4536
 INFO: [Project 1-111] Unisim Transformation Summary:
   A total of 1 instances were transformed.
   PLLE2_BASE => PLLE2_ADV: 1 instance 
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.01 . Memory (MB): peak = 2476.504 ; gain = 0.000 ; free physical = 868 ; free virtual = 4702
+Constraint Validation Runtime : Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.01 . Memory (MB): peak = 2514.660 ; gain = 0.000 ; free physical = 860 ; free virtual = 4536
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:11 ; elapsed = 00:00:14 . Memory (MB): peak = 2476.504 ; gain = 86.723 ; free physical = 942 ; free virtual = 4777
+Finished Constraint Validation : Time (s): cpu = 00:00:10 ; elapsed = 00:00:12 . Memory (MB): peak = 2514.660 ; gain = 31.941 ; free physical = 990 ; free virtual = 4666
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7a15tcsg324-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:11 ; elapsed = 00:00:14 . Memory (MB): peak = 2476.504 ; gain = 86.723 ; free physical = 942 ; free virtual = 4777
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:10 ; elapsed = 00:00:12 . Memory (MB): peak = 2514.660 ; gain = 31.941 ; free physical = 990 ; free virtual = 4666
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:11 ; elapsed = 00:00:14 . Memory (MB): peak = 2476.504 ; gain = 86.723 ; free physical = 942 ; free virtual = 4777
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:10 ; elapsed = 00:00:12 . Memory (MB): peak = 2514.660 ; gain = 31.941 ; free physical = 990 ; free virtual = 4666
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'hydrophone_config_manager'
 INFO: [Synth 8-802] inferred FSM for state register 'c_state_reg' in module 'i2c_master_bit_ctrl'
@@ -376,19 +378,20 @@ INFO: [Synth 8-3354] encoded FSM with state register 'sub_state_reg' using encod
 ---------------------------------------------------------------------------------------------------
                    State |                     New Encoding |                Previous Encoding 
 ---------------------------------------------------------------------------------------------------
-              STATE_IDLE |                             0000 |                            00000
-   STATE_SEND_HEADER_SEQ |                             0001 |                            00001
-STATE_SEND_HEADER_TIME_L |                             0010 |                            00010
-STATE_SEND_HEADER_TIME_H |                             0011 |                            00011
-     STATE_SEND_DATA_CH1 |                             0100 |                            00100
-     STATE_SEND_DATA_CH2 |                             0101 |                            00101
-     STATE_SEND_DATA_CH3 |                             0110 |                            00110
-     STATE_SEND_DATA_CH4 |                             0111 |                            00111
-       STATE_WAIT_STROBE |                             1000 |                            01000
+              STATE_IDLE |                       0000000001 |                            00000
+   STATE_SEND_HEADER_SEQ |                       0000000010 |                            00001
+STATE_SEND_HEADER_TIME_H |                       0000000100 |                            00010
+STATE_SEND_HEADER_TIME_L |                       0000001000 |                            00011
+     STATE_SEND_DATA_CH1 |                       0000010000 |                            00100
+     STATE_SEND_DATA_CH2 |                       0000100000 |                            00101
+     STATE_SEND_DATA_CH3 |                       0001000000 |                            00110
+     STATE_SEND_DATA_CH4 |                       0010000000 |                            00111
+   STATE_LATCH_LAST_WORD |                       0100000000 |                            01000
+       STATE_WAIT_STROBE |                       1000000000 |                            01001
 ---------------------------------------------------------------------------------------------------
-INFO: [Synth 8-3354] encoded FSM with state register 'main_state_reg' using encoding 'sequential' in module 'packetizer'
+INFO: [Synth 8-3354] encoded FSM with state register 'main_state_reg' using encoding 'one-hot' in module 'packetizer'
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:12 ; elapsed = 00:00:16 . Memory (MB): peak = 2476.504 ; gain = 86.723 ; free physical = 929 ; free virtual = 4767
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:11 ; elapsed = 00:00:13 . Memory (MB): peak = 2514.660 ; gain = 31.941 ; free physical = 1010 ; free virtual = 4688
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start RTL Component Statistics 
@@ -418,33 +421,34 @@ Detailed RTL Component Info :
 	   2 Input   20 Bit        Muxes := 4     
 	  24 Input   18 Bit        Muxes := 1     
 	   2 Input   16 Bit        Muxes := 6     
-	   9 Input   16 Bit        Muxes := 1     
+	  10 Input   16 Bit        Muxes := 1     
 	   5 Input   16 Bit        Muxes := 1     
 	   2 Input   14 Bit        Muxes := 82    
+	  10 Input   10 Bit        Muxes := 1     
+	   2 Input   10 Bit        Muxes := 2     
 	   2 Input    8 Bit        Muxes := 2     
 	   4 Input    8 Bit        Muxes := 4     
 	   4 Input    7 Bit        Muxes := 1     
-	   9 Input    5 Bit        Muxes := 1     
-	   2 Input    4 Bit        Muxes := 9     
+	  10 Input    5 Bit        Muxes := 1     
+	   2 Input    4 Bit        Muxes := 7     
 	   6 Input    4 Bit        Muxes := 2     
 	   4 Input    4 Bit        Muxes := 1     
-	   9 Input    4 Bit        Muxes := 1     
 	   2 Input    3 Bit        Muxes := 7     
 	   5 Input    3 Bit        Muxes := 1     
 	   4 Input    3 Bit        Muxes := 1     
 	  15 Input    3 Bit        Muxes := 1     
-	   9 Input    3 Bit        Muxes := 1     
+	  10 Input    3 Bit        Muxes := 1     
 	   4 Input    2 Bit        Muxes := 1     
 	   2 Input    2 Bit        Muxes := 7     
 	   3 Input    2 Bit        Muxes := 1     
-	  12 Input    1 Bit        Muxes := 22    
-	   2 Input    1 Bit        Muxes := 46    
-	   3 Input    1 Bit        Muxes := 2     
+	  13 Input    1 Bit        Muxes := 22    
+	   2 Input    1 Bit        Muxes := 49    
 	   5 Input    1 Bit        Muxes := 1     
 	   4 Input    1 Bit        Muxes := 13    
 	  18 Input    1 Bit        Muxes := 5     
 	   6 Input    1 Bit        Muxes := 11    
-	   9 Input    1 Bit        Muxes := 10    
+	  10 Input    1 Bit        Muxes := 10    
+	   3 Input    1 Bit        Muxes := 1     
 ---------------------------------------------------------------------------------
 Finished RTL Component Statistics 
 ---------------------------------------------------------------------------------
@@ -461,25 +465,25 @@ Finished Part Resource Summary
 Start Cross Boundary and Area Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:19 ; elapsed = 00:00:23 . Memory (MB): peak = 2476.504 ; gain = 86.723 ; free physical = 914 ; free virtual = 4761
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:18 ; elapsed = 00:00:20 . Memory (MB): peak = 2514.660 ; gain = 31.941 ; free physical = 948 ; free virtual = 4629
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:24 ; elapsed = 00:00:28 . Memory (MB): peak = 2476.504 ; gain = 86.723 ; free physical = 795 ; free virtual = 4642
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:23 ; elapsed = 00:00:25 . Memory (MB): peak = 2514.660 ; gain = 31.941 ; free physical = 855 ; free virtual = 4537
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:00:25 ; elapsed = 00:00:29 . Memory (MB): peak = 2476.504 ; gain = 86.723 ; free physical = 788 ; free virtual = 4636
+Finished Timing Optimization : Time (s): cpu = 00:00:24 ; elapsed = 00:00:26 . Memory (MB): peak = 2514.660 ; gain = 31.941 ; free physical = 850 ; free virtual = 4532
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Technology Mapping
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:00:27 ; elapsed = 00:00:31 . Memory (MB): peak = 2476.504 ; gain = 86.723 ; free physical = 783 ; free virtual = 4631
+Finished Technology Mapping : Time (s): cpu = 00:00:26 ; elapsed = 00:00:28 . Memory (MB): peak = 2514.660 ; gain = 31.941 ; free physical = 827 ; free virtual = 4509
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start IO Insertion
@@ -497,37 +501,37 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:00:29 ; elapsed = 00:00:34 . Memory (MB): peak = 2480.473 ; gain = 90.691 ; free physical = 779 ; free virtual = 4627
+Finished IO Insertion : Time (s): cpu = 00:00:28 ; elapsed = 00:00:30 . Memory (MB): peak = 2514.660 ; gain = 31.941 ; free physical = 827 ; free virtual = 4509
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:00:29 ; elapsed = 00:00:34 . Memory (MB): peak = 2480.473 ; gain = 90.691 ; free physical = 779 ; free virtual = 4627
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:28 ; elapsed = 00:00:30 . Memory (MB): peak = 2514.660 ; gain = 31.941 ; free physical = 827 ; free virtual = 4509
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:30 ; elapsed = 00:00:34 . Memory (MB): peak = 2480.473 ; gain = 90.691 ; free physical = 779 ; free virtual = 4627
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:28 ; elapsed = 00:00:31 . Memory (MB): peak = 2514.660 ; gain = 31.941 ; free physical = 827 ; free virtual = 4509
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:00:30 ; elapsed = 00:00:34 . Memory (MB): peak = 2480.473 ; gain = 90.691 ; free physical = 779 ; free virtual = 4627
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:28 ; elapsed = 00:00:31 . Memory (MB): peak = 2514.660 ; gain = 31.941 ; free physical = 826 ; free virtual = 4508
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:30 ; elapsed = 00:00:34 . Memory (MB): peak = 2480.473 ; gain = 90.691 ; free physical = 780 ; free virtual = 4628
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:28 ; elapsed = 00:00:31 . Memory (MB): peak = 2514.660 ; gain = 31.941 ; free physical = 828 ; free virtual = 4509
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:00:30 ; elapsed = 00:00:34 . Memory (MB): peak = 2480.473 ; gain = 90.691 ; free physical = 780 ; free virtual = 4628
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:28 ; elapsed = 00:00:31 . Memory (MB): peak = 2514.660 ; gain = 31.941 ; free physical = 828 ; free virtual = 4509
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -547,34 +551,34 @@ Report Cell Usage:
 |2     |CARRY4     |   184|
 |3     |FIFO36E1   |     3|
 |6     |IDDR       |    30|
-|7     |LUT1       |   141|
-|8     |LUT2       |   138|
-|9     |LUT3       |   472|
-|10    |LUT4       |   377|
-|11    |LUT5       |   433|
-|12    |LUT6       |   537|
+|7     |LUT1       |   142|
+|8     |LUT2       |   142|
+|9     |LUT3       |   469|
+|10    |LUT4       |   381|
+|11    |LUT5       |   438|
+|12    |LUT6       |   532|
 |13    |MUXF7      |    16|
 |14    |PLLE2_BASE |     1|
-|15    |FDRE       |  1084|
-|16    |FDSE       |    42|
+|15    |FDRE       |  1090|
+|16    |FDSE       |    43|
 |17    |IBUF       |    35|
 |18    |IOBUF      |    18|
 |19    |OBUF       |    24|
 +------+-----------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:00:30 ; elapsed = 00:00:34 . Memory (MB): peak = 2480.473 ; gain = 90.691 ; free physical = 780 ; free virtual = 4628
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:28 ; elapsed = 00:00:31 . Memory (MB): peak = 2514.660 ; gain = 31.941 ; free physical = 828 ; free virtual = 4509
 ---------------------------------------------------------------------------------
 Synthesis finished with 0 errors, 0 critical warnings and 0 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:00:28 ; elapsed = 00:00:32 . Memory (MB): peak = 2480.473 ; gain = 3.969 ; free physical = 834 ; free virtual = 4683
-Synthesis Optimization Complete : Time (s): cpu = 00:00:30 ; elapsed = 00:00:34 . Memory (MB): peak = 2480.480 ; gain = 90.691 ; free physical = 834 ; free virtual = 4683
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:26 ; elapsed = 00:00:28 . Memory (MB): peak = 2514.660 ; gain = 0.000 ; free physical = 881 ; free virtual = 4563
+Synthesis Optimization Complete : Time (s): cpu = 00:00:29 ; elapsed = 00:00:31 . Memory (MB): peak = 2514.668 ; gain = 31.941 ; free physical = 881 ; free virtual = 4563
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:00.04 ; elapsed = 00:00:00.03 . Memory (MB): peak = 2480.480 ; gain = 0.000 ; free physical = 921 ; free virtual = 4769
+Netlist sorting complete. Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.04 . Memory (MB): peak = 2514.668 ; gain = 0.000 ; free physical = 978 ; free virtual = 4660
 INFO: [Netlist 29-17] Analyzing 252 Unisim elements for replacement
 CRITICAL WARNING: [Netlist 29-346] The CLKOUT0_PHASE for PLLE2_ADV (PLLE2_BASE_inst) is being adjusted from -140.0 to -141.9. The CLKOUT0_PHASE value needs to be in increments of 1/56 the FVCO and/or increments depending on CLKOUT_DIVIDE. Refer to the Clocking Resources User Guide of the device family for details.
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2480.480 ; gain = 0.000 ; free physical = 867 ; free virtual = 4716
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2514.668 ; gain = 0.000 ; free physical = 923 ; free virtual = 4605
 INFO: [Project 1-111] Unisim Transformation Summary:
   A total of 19 instances were transformed.
   IOBUF => IOBUF (IBUF, OBUFT): 18 instances
@@ -583,8 +587,8 @@ INFO: [Project 1-111] Unisim Transformation Summary:
 INFO: [Common 17-83] Releasing license: Synthesis
 78 Infos, 24 Warnings, 2 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:00:39 ; elapsed = 00:00:38 . Memory (MB): peak = 2480.480 ; gain = 90.773 ; free physical = 1012 ; free virtual = 4861
+synth_design: Time (s): cpu = 00:00:38 ; elapsed = 00:00:35 . Memory (MB): peak = 2514.668 ; gain = 32.023 ; free physical = 1079 ; free virtual = 4761
 INFO: [runtcl-6] Synthesis results are not added to the cache due to CRITICAL_WARNING
 INFO: [Common 17-1381] The checkpoint '/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/hydrophone_dsp.runs/synth_1/zeabus_hydrophone.dcp' has been generated.
 INFO: [runtcl-4] Executing : report_utilization -file zeabus_hydrophone_utilization_synth.rpt -pb zeabus_hydrophone_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Wed Jun  8 11:50:57 2022...
+INFO: [Common 17-206] Exiting Vivado at Thu Jun  9 17:10:53 2022...

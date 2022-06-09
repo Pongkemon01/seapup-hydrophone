@@ -126,29 +126,29 @@ module zeabus_hydrophone #(
     assign LED_RED_n = ~tx_full;
 
     // Debug LED
-    assign LED_RED_1 = dbg[0];
-    assign LED_YELLOW_1 = dbg[1];
-    assign LED_GREEN_1 = dbg[2];
+    // assign LED_RED_1 = dbg[0];
+    // assign LED_YELLOW_1 = dbg[1];
+    // assign LED_GREEN_1 = dbg[2];
 	
-    assign LED_RED_2 = dbg[3];
-    assign LED_YELLOW_2 = dbg[4];
-    assign LED_GREEN_2 = dbg[5];
+    // assign LED_RED_2 = dbg[3];
+    // assign LED_YELLOW_2 = dbg[4];
+    // assign LED_GREEN_2 = dbg[5];
 	
-    assign LED_RED_3 = dbg[6];
-    assign LED_YELLOW_3 = dbg[7];
-	assign LED_GREEN_3 = FLAGA;
+    // assign LED_RED_3 = dbg[6];
+    // assign LED_YELLOW_3 = dbg[7];
+	// assign LED_GREEN_3 = FLAGA;
 	
-    // assign LED_RED_1 = RST;
-    // assign LED_YELLOW_1 = trigged;
-    // assign LED_GREEN_1 = slave_fifo_rdy;
+    assign LED_RED_1 = RST;
+    assign LED_YELLOW_1 = trigged;
+    assign LED_GREEN_1 = slave_fifo_rdy;
 	
-    // assign LED_RED_2 = rx_oe;
-    // assign LED_YELLOW_2 = pkt_end;
-    // assign LED_GREEN_2 = rx_valid;
+    assign LED_RED_2 = rx_oe;
+    assign LED_YELLOW_2 = pkt_end;
+    assign LED_GREEN_2 = rx_valid;
 	
-    // assign LED_RED_3 = poten_update_start;
-    // assign LED_YELLOW_3 = trigger_fifo_rdy;
-    // assign LED_GREEN_3 = FUNC_EN;
+    assign LED_RED_3 = poten_update_start;
+    assign LED_YELLOW_3 = trigger_fifo_rdy;
+    assign LED_GREEN_3 = FUNC_EN;
 
     // Clock distribution
     assign CLKA_1 = adc_clk;
