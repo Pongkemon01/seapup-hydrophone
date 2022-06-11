@@ -34,9 +34,9 @@
 // --------------------------------------------------------------------------------
 
 module fx3_interface_tb;
-	localparam	FX3S_DMA_Size = 19;	// Size of FX3S receiving DMA buffer (in 16-bit words)
+	localparam	FX3S_DMA_Size = 20;	// Size of FX3S receiving DMA buffer (in 16-bit words)
 	localparam	total_data = 10000;
-	localparam  clk_per_strobe = 64;
+	localparam  clk_per_strobe = 4; // Actual must be 64
 	
 	integer out_file, cycle_count = 0, counter_64MHz = 0, conf_index = 0, DMA_Counter = 0, DMA_Wait = 0, strobe_count = 0;
 
@@ -74,7 +74,7 @@ module fx3_interface_tb;
 	wire [2:0] fx3s_decision;
 	wire tx_empty, tx_full, rx_empty, rx_full;
 	wire tx_wr_en, tx_rd_en, rx_wr_en, rx_rd_en;
-	wire is_outgoing, sending;
+	wire is_outgoing, sending, fx3s_fifo_rst;
 	
 	// Config manager signals
 	wire [7:0] poten_1;
@@ -128,7 +128,7 @@ module fx3_interface_tb;
 		// Debug signals
 		.state(fx3s_state), .TxEmpty(tx_empty), .TxFull(tx_full), .RxEmpty(rx_empty), .RxFull(rx_full),
 		.TxWrEn(tx_wr_en), .TxRdEn(tx_rd_en), .RxWrEn(rx_wr_en), .RxRdEn(rx_rd_en),	.outgoing(is_outgoing),
-		.decision(fx3s_decision), .pkt_end_out(fx3s_pkt_end), .is_sending(sending),
+		.decision(fx3s_decision), .pkt_end_out(fx3s_pkt_end), .is_sending(sending), .fifo_rst(fx3s_fifo_rst),
 		// System signals
 		.clk(clk_64MHz), .rst(rst), .rdy(if_ready), 
 		.d_in(p_d_out), .input_strobe(packetize_strobe), .input_full(if_input_full), .trigged(trigged),
@@ -249,13 +249,20 @@ module fx3_interface_tb;
 	   post_rd <= 2'b0;
 	   pre_rd <= 2'b0;
 	end
+
+	// Setup data every posedge clk
+	always @(posedge ifclk)
+	begin
+		DQ_In = conf_data[conf_index];
+	end
 	
 	// FX3S behavior
 	always @(posedge ifclk)
 	begin
 		if(counter_64MHz == 20)
 			FLAGB = 1;		// Enable FPGA->FX3S (Buffer not full)
-		if(counter_64MHz == 32'h3ebca)
+		//if(counter_64MHz == 32'h3ebca)
+		if(counter_64MHz == 48)
 			FLAGA = 1;		// Enable FX3S->FPGA (Buffer not empty)
 		
 		if( DMA_Wait > 0 && counter_64MHz > 20)
@@ -274,14 +281,14 @@ module fx3_interface_tb;
 			end
 		end
 		
-		if( FLAGA )
+		if( !SLCS && FLAGA )
 		begin
 		  if( !SLRD )
 		  begin
 		      post_rd = 2'b0;
-		      if( pre_rd == 2'd1 )
+		      if( pre_rd == 2'd2 )
 		      begin
-		          DQ_In = conf_data[conf_index];
+
 		          conf_index = conf_index + 1;
 		      end
 		      else
@@ -292,7 +299,7 @@ module fx3_interface_tb;
 		      pre_rd = 2'b0;
 		      if(post_rd >= 2'd1)
 		      begin
-		          if(conf_index > 5)
+		          if(conf_index > 3)
 		              FLAGA = 0;
 		      end
 		      else

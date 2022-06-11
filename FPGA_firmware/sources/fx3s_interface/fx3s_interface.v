@@ -42,6 +42,7 @@ module fx3s_interface #(
     output TxEmpty, TxFull, RxEmpty, RxFull,
     output TxWrEn, TxRdEn, RxWrEn, RxRdEn,
     output outgoing, pkt_end_out, is_sending,
+    output fifo_rst,
 
     // Device pins
     output ifclk_out,               // Communication clock from FPGA -> FX3S (FPGA controlled)
@@ -133,6 +134,7 @@ module fx3s_interface #(
     assign outgoing = is_outgoing;
     assign pkt_end_out = pkt_end;
     assign is_sending = sending;
+    assign fifo_rst = fifo_rst_internal;
 
     assign fifo_rst_internal = rst | rst_d | rst_dd | rst_3d | rst_4d | rst_5d;
     assign rst_internal = fifo_rst_internal | rst_6d | rst_7d | rst_8d | rst_9d;

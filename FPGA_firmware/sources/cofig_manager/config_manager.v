@@ -93,7 +93,7 @@ module hydrophone_config_manager #(
 
 	// Combination logic
 	assign current_state = state;
-	assign dbg[7:0] = prefix[15:8];
+	assign dbg[7:0] = trigger_level[15:8];
 	assign dbg[8] = data_valid;
 
 	// Behavioral part
