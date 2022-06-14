@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-| Date             : Sat Jun 11 12:34:07 2022
+| Date             : Tue Jun 14 15:21:12 2022
 | Host             : Seapup-dell running 64-bit Ubuntu 20.04.4 LTS
 | Command          : report_power -file zeabus_hydrophone_power_routed.rpt -pb zeabus_hydrophone_power_summary_routed.pb -rpx zeabus_hydrophone_power_routed.rpx
 | Design           : zeabus_hydrophone
@@ -53,16 +53,16 @@ Table of Contents
 | On-Chip        | Power (W) | Used     | Available | Utilization (%) |
 +----------------+-----------+----------+-----------+-----------------+
 | Clocks         |     0.005 |        6 |       --- |             --- |
-| Slice Logic    |    <0.001 |     3524 |       --- |             --- |
-|   LUT as Logic |    <0.001 |     1510 |     10400 |           14.52 |
-|   CARRY4       |    <0.001 |      184 |      8150 |            2.26 |
-|   Register     |    <0.001 |     1140 |     20800 |            5.48 |
+| Slice Logic    |    <0.001 |     3544 |       --- |             --- |
+|   LUT as Logic |    <0.001 |     1525 |     10400 |           14.66 |
+|   CARRY4       |    <0.001 |      188 |      8150 |            2.31 |
+|   Register     |    <0.001 |     1141 |     20800 |            5.49 |
 |   F7/F8 Muxes  |    <0.001 |       16 |     32600 |            0.05 |
 |   Others       |     0.000 |       84 |       --- |             --- |
-| Signals        |    <0.001 |     2731 |       --- |             --- |
+| Signals        |    <0.001 |     2747 |       --- |             --- |
 | Block RAM      |     0.000 |        3 |        25 |           12.00 |
 | PLL            |     0.096 |        1 |         5 |           20.00 |
-| I/O            |     0.041 |       77 |       210 |           36.67 |
+| I/O            |     0.040 |       77 |       210 |           36.67 |
 | Static Power   |     0.072 |          |           |                 |
 | Total          |     0.214 |          |           |                 |
 +----------------+-----------+----------+-----------+-----------------+

@@ -1240,6 +1240,9 @@ static CyBool_t ZeabusUSBAppUSBControlCB(
             case ZEABUS_USB_REQ_FUNC_DIS:
                 CyU3PEventSet( &xZeabusEvent, ZEABUS_EVENT_REQ_FUNC_DIS, CYU3P_EVENT_OR );
                 break;
+            case ZEABUS_USB_RESTART_FIFO:
+                CyU3PEventSet( &xZeabusEvent, ZEABUS_EVENT_REQ_RESTART_FIFO, CYU3P_EVENT_OR );
+                break;
 
             default:
                 isHandled = CyFalse;     // Unknown command

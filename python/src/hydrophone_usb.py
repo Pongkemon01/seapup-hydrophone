@@ -507,9 +507,12 @@ class hydrophone_usb:
       buffer[1] = buffer[1] | 0b00001000
       if( threshold > 1 ):
         threshold = 1
+      #threshold = threshold & 0xFFFF
+      #thres_value = np.uint16( threshold )
       thres_value = np.uint16( threshold * 32767 )
       buffer[2] = np.uint8( thres_value >> 8 )
       buffer[3] = np.uint8( thres_value & 0xFF )
+      print(f'Threshold {thres_value} with msb = {buffer[2]:X}, lsb = {buffer[3]:X}')
       gain_index = 4
     else:
       gain_index = 2

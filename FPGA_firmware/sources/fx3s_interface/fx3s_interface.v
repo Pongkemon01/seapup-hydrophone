@@ -37,12 +37,12 @@ module fx3s_interface #(
     parameter   FX3S_DMA_Size = 4096    // Size of FX3S receiving DMA buffer (in 16-bit words)
     ) (
     // Debug signals
-    output [3:0] state,
-    output reg [2:0] decision,
-    output TxEmpty, TxFull, RxEmpty, RxFull,
-    output TxWrEn, TxRdEn, RxWrEn, RxRdEn,
-    output outgoing, pkt_end_out, is_sending,
-    output fifo_rst,
+    //output [3:0] state,
+    //output reg [2:0] decision,
+    //output TxEmpty, TxFull, RxEmpty, RxFull,
+    //output TxWrEn, TxRdEn, RxWrEn, RxRdEn,
+    //output outgoing, pkt_end_out, is_sending,
+    //output fifo_rst,
 
     // Device pins
     output ifclk_out,               // Communication clock from FPGA -> FX3S (FPGA controlled)
@@ -61,7 +61,6 @@ module fx3s_interface #(
     input clk,                      // Master clock for this module (64 MHz 0-degree)
     input rst,                      // Synchronous reset (active high)
     output rdy,                     // Indicate that the system is ready for data
-    output reg dbg,
 
     // Data to send out (FPGA -> FX3S)
     input [15:0] d_in,              // Input data to send to FX3S
@@ -94,7 +93,6 @@ module fx3s_interface #(
     localparam state_read_word = 4'b1000;
     localparam state_read_post_1 = 4'b1001;
     localparam state_read_post_2 = 4'b1010;
-    localparam state_read_post_3 = 4'b1011;
 
     // This module use FIFO to store incoming and outgoing data
     // The FIFO size for arrival data is 32 16-bit words.
@@ -122,19 +120,19 @@ module fx3s_interface #(
     //************************************************************
     // Combination logic for debug
     //************************************************************
-    assign state = master_state;
-    assign TxFull = input_full;
-    assign TxEmpty = tx_empty;
-    assign RxFull = rx_full;
-    assign RxEmpty = rx_empty;
-    assign TxWrEn = tx_wr_en;
-    assign TxRdEn = tx_rd_en;
-    assign RxWrEn = rx_wr_en;
-    assign RxRdEn = output_strobe;
-    assign outgoing = is_outgoing;
-    assign pkt_end_out = pkt_end;
-    assign is_sending = sending;
-    assign fifo_rst = fifo_rst_internal;
+    //assign state = master_state;
+    //assign TxFull = input_full;
+    //assign TxEmpty = tx_empty;
+    //assign RxFull = rx_full;
+    //assign RxEmpty = rx_empty;
+    //assign TxWrEn = tx_wr_en;
+    //assign TxRdEn = tx_rd_en;
+    //assign RxWrEn = rx_wr_en;
+    //assign RxRdEn = output_strobe;
+    //assign outgoing = is_outgoing;
+    //assign pkt_end_out = pkt_end;
+    //assign is_sending = sending;
+    //assign fifo_rst = fifo_rst_internal;
 
     assign fifo_rst_internal = rst | rst_d | rst_dd | rst_3d | rst_4d | rst_5d;
     assign rst_internal = fifo_rst_internal | rst_6d | rst_7d | rst_8d | rst_9d;
@@ -186,7 +184,6 @@ module fx3s_interface #(
         rst_3d <= 1;
         rst_dd <= 1;
         rst_d <= 1;
-		dbg <= 0;
     end
 
     //************************************************************
@@ -247,18 +244,16 @@ module fx3s_interface #(
      * ------------------------------------------------------------------------------------
      *  start_read   | 1                               | read_pre_1  | SLRD = 0
      * ------------------------------------------------------------------------------------
-     *  read_pre_1   | 1                               | read_pre_2  | -
+     *  read_pre_1   | 1                               | read_pre_2  | SLRD = 1
      * ------------------------------------------------------------------------------------
      *  read_pre_2   | !FLAGA                          | idle        | SLCS = 1, SLRD = 1, SLOE = 1
      *               | else                            | read_word   | rx_wr_en = 1
      * ------------------------------------------------------------------------------------
-     *  read_word    | 1                               | read_post_1 | SLRD = 1, rx_wr_en = 0
+     *  read_word    | 1                               | read_post_1 | rx_wr_en = 0
      * ------------------------------------------------------------------------------------
      *  read_post_1  | 1                               | read_post_2 | -
      * ------------------------------------------------------------------------------------
-     *  read_post_2  | 1                               | read_post_3 | -
-     * ------------------------------------------------------------------------------------
-     *  read_post_3  | 1                               | idle        | SLCS = 1, SLOE = 1
+     *  read_post_2  | 1                               | idle        | SLCS = 1, SLOE = 1
      * ------------------------------------------------------------------------------------
      *  stop_write_1 | 1                               | stop_write_2| PKTEND = 1, tx,rd_en = 0, SLWR = 1 (then wait 3 clocks), 
      *               |                                 |             |       sending = 0
@@ -287,7 +282,7 @@ module fx3s_interface #(
             rx_wr_en <= 0;
             tx_rd_en <= 0;
             master_state <= state_idle;
-            decision <= 3'b000;
+            //decision <= 3'b000;
         end
         else
         begin
@@ -297,7 +292,7 @@ module fx3s_interface #(
                     // As writing is performed by FIFO state machine, "state_idle" just setup writing states
                     if( !rx_full && FLAGA )
                     begin
-                        decision <= 3'b001;
+                        //decision <= 3'b001;
                         // Have something to read, then read them first
                         is_outgoing <= 0;
                         SLCS <= 0;
@@ -309,7 +304,7 @@ module fx3s_interface #(
                     end
                     else if( tx_empty && !internal_trigged_line && sending )
                     begin
-                        decision <= 3'b100;
+                        //decision <= 3'b100;
                         // Still in sending but nothing more to send then send ZLP
                         is_outgoing <= 1;
                         SLCS <= 0;
@@ -322,7 +317,7 @@ module fx3s_interface #(
                     end
                     else if( !tx_empty && FLAGB )
                     begin
-                        decision <= 3'b010;
+                        //decision <= 3'b010;
                         // Have something to send, then send them
                         is_outgoing <= 1;
                         SLCS <= 0;
@@ -344,7 +339,7 @@ module fx3s_interface #(
                     end
                     else if( (tx_empty && internal_trigged_line) || !FLAGB )
                     begin
-                        decision <= 3'b011;
+                        //decision <= 3'b011;
                         // Not ending the sending but having to wait for next data
                         is_outgoing <= 0;
                         SLCS <= 1;
@@ -352,20 +347,20 @@ module fx3s_interface #(
                         tx_rd_en <= 0;
                         master_state <= state_idle;
                     end
-                    else
-                        decision <= 3'b111;
+                    //else
+                    //    decision <= 3'b111;
                 end
 
                 // FX3S -> FPGA states
                 state_start_read:
                 begin
                     SLRD <= 0;
-					dbg <= 1;
                     master_state <= state_read_pre_1;
                 end
 
                 state_read_pre_1:
                 begin
+                    SLRD <= 1;      // Immediately release SLRD to indicate 1 word transfer
                     master_state <= state_read_pre_2;
                 end
 
@@ -377,8 +372,6 @@ module fx3s_interface #(
 
                 state_read_word:
                 begin
-
-                    SLRD <= 1;
                     rx_wr_en <= 0;
                     master_state <= state_read_post_1;
                 end
@@ -389,11 +382,6 @@ module fx3s_interface #(
                 end
 
                 state_read_post_2:
-                begin
-                    master_state <= state_read_post_3;
-                end
-
-                state_read_post_3:
                 begin
                     SLCS <= 1;
                     SLOE <= 1;
@@ -453,7 +441,7 @@ module fx3s_interface #(
 
     FIFO36E1 #(
         .ALMOST_EMPTY_OFFSET(13'h0080),    // Sets the almost empty threshold
-        .ALMOST_FULL_OFFSET(13'd1000),     // Sets almost full threshold to 1000 entries
+        .ALMOST_FULL_OFFSET(13'd20),       // Sets almost full threshold to 20 available entries
         .DATA_WIDTH(36),                   // Sets data width to 4-72 (18-bit by 2k-depth) (36-bit by 1k-depth)
         .DO_REG(1),                        // Enable output register (1-0) Must be 1 if EN_SYN = FALSE
         .EN_ECC_READ("FALSE"),             // Enable ECC decoder, FALSE, TRUE
@@ -507,7 +495,7 @@ module fx3s_interface #(
 
     FIFO36E1 #(
         .ALMOST_EMPTY_OFFSET(13'h0080),    // Sets the almost empty threshold
-        .ALMOST_FULL_OFFSET(13'd2000),     // Sets almost full threshold to 2000 entries
+        .ALMOST_FULL_OFFSET(13'd20),       // Sets almost full threshold to 20 available entries
         .DATA_WIDTH(18),                   // Sets data width to 4-72 (18-bit by 2k-depth)
         .DO_REG(1),                        // Enable output register (1-0) Must be 1 if EN_SYN = FALSE
         .EN_ECC_READ("FALSE"),             // Enable ECC decoder, FALSE, TRUE

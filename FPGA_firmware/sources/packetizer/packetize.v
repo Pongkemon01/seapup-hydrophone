@@ -37,10 +37,10 @@ module packetizer #(
 	parameter	SAMPLING_PER_PACKET = 1000	// Total sampling in a packet (max 1020)
     ) (
 	// Debug output
-	output [4:0] debug_main_state,
-	output debug_strb_d,
-	output [15:0] pkt_size_counter,
-	output reg sending,		// Packetizer is in the middle of sending data
+	//output [4:0] debug_main_state,
+	//output debug_strb_d,
+	//output [15:0] pkt_size_counter,
+	//output reg sending,		// Packetizer is in the middle of sending data
 
 	// Input ports
 	input [63:0] d_in,		// Data input from each channel
@@ -101,15 +101,15 @@ module packetizer #(
 	
 	reg [15:0] current_pkt_size;	// size of current packet
 	
-	assign debug_main_state = main_state;
-	assign debug_strb_d = in_strb_d;
-	assign pkt_size_counter = current_pkt_size;
+	//assign debug_main_state = main_state;
+	//assign debug_strb_d = in_strb_d;
+	//assign pkt_size_counter = current_pkt_size;
 
 	initial
 	begin
 		out_sel <= OUT_ID;
 		pkt_end <= 0;
-		sending <= 0;
+		//sending <= 0;
 		seq_cnt <= 16'b0;
 		timer <= 32'b0;
 		out_strobe <= 0;
@@ -197,7 +197,7 @@ module packetizer #(
 		begin
 			out_sel <= OUT_ID;
 			pkt_end <= 0;
-			sending <= 0;
+			//sending <= 0;
 			out_strobe <= 0;
 			main_state <= #1 STATE_IDLE;
 		end
@@ -211,7 +211,7 @@ module packetizer #(
 					begin
 						current_pkt_size <= 16'd4;
 						seq_cnt <= seq_cnt + 1;
-						sending <= 1;
+						//sending <= 1;
 						out_strobe <= 1;
 						out_sel <= OUT_ID;		// out header ID
 						main_state <= STATE_SEND_HEADER_SEQ;
@@ -270,7 +270,7 @@ module packetizer #(
 						// Still have data but packet size reached max.
 						// Close current packet and start new packet
 						pkt_end <= 0;
-						sending <= 0;
+						//sending <= 0;
 						main_state <= STATE_IDLE;
 					end
 					else
@@ -282,7 +282,7 @@ module packetizer #(
 				begin
 					if( !trigged )
 					begin
-						sending <= 0;
+						//sending <= 0;
 						main_state <= STATE_IDLE;
 					end
 					else

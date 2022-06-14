@@ -120,35 +120,37 @@ module zeabus_hydrophone #(
     //assign trigger_level_set = trigger_level;
     //assign conf_read_din = rx_data;
 
+    assign dbg = abs_trig[7:0];
+
     // Combination logic
     assign LED_BLUE = p_data_strobe;
     assign LED_GREEN = ~rst;
     assign LED_RED_n = ~tx_full;
 
     // Debug LED
-    assign LED_RED_1 = dbg[0];
-    assign LED_YELLOW_1 = dbg[1];
-    assign LED_GREEN_1 = dbg[2];
+    //assign LED_RED_1 = dbg[0];
+    //assign LED_YELLOW_1 = dbg[1];
+    //assign LED_GREEN_1 = dbg[2];
 	
-    assign LED_RED_2 = dbg[3];
-    assign LED_YELLOW_2 = dbg[4];
-    assign LED_GREEN_2 = dbg[5];
+    //assign LED_RED_2 = dbg[3];
+    //assign LED_YELLOW_2 = dbg[4];
+    //assign LED_GREEN_2 = dbg[5];
 	
-    assign LED_RED_3 = dbg[6];
-    assign LED_YELLOW_3 = dbg[7];
-	assign LED_GREEN_3 = trigged;
+    //assign LED_RED_3 = dbg[6];
+    //assign LED_YELLOW_3 = dbg[7];
+	//assign LED_GREEN_3 = trigged;
 	
-    //assign LED_RED_1 = RST;
-    //assign LED_YELLOW_1 = trigged;
-    //assign LED_GREEN_1 = slave_fifo_rdy;
+    assign LED_RED_1 = RST;
+    assign LED_YELLOW_1 = trigged;
+    assign LED_GREEN_1 = slave_fifo_rdy;
 	
-    //assign LED_RED_2 = rx_oe;
-    //assign LED_YELLOW_2 = pkt_end;
-    //assign LED_GREEN_2 = rx_valid;
+    assign LED_RED_2 = rx_oe;
+    assign LED_YELLOW_2 = pkt_end;
+    assign LED_GREEN_2 = rx_valid;
 	
-    //assign LED_RED_3 = poten_update_start;
-    //assign LED_YELLOW_3 = trigger_fifo_rdy;
-    //assign LED_GREEN_3 = FUNC_EN;
+    assign LED_RED_3 = poten_update_start;
+    assign LED_YELLOW_3 = trigger_fifo_rdy;
+    assign LED_GREEN_3 = FUNC_EN;
 
     // Clock distribution
     assign CLKA_1 = adc_clk;
@@ -181,8 +183,7 @@ module zeabus_hydrophone #(
         // Control signal
         .clk(sys_clk),                  // Master clock for this module (64 MHz)
         .rst(rst),                      // Synchronous reset (active high)
-        //.rdy(slave_fifo_rdy),           // Indicate that the system is ready for data (unused)
-        .dbg(slave_fifo_rdy),           // Indicate that the system is ready for data (unused)
+        .rdy(slave_fifo_rdy),           // Indicate that the system is ready for data (unused)
 
         // Data to send out (FPGA -> FX3S)
         .d_in(packetize_out),           // Input data to send to FX3S
@@ -213,9 +214,7 @@ module zeabus_hydrophone #(
         .poten1_value(poten0),          // Value of potentiometer 1 (defines gain of channel 1)
         .poten2_value(poten1),          // Value of potentiometer 2 (defines gain of channel 2)
         .poten3_value(poten2),          // Value of potentiometer 3 (defines gain of channel 3)
-        .poten4_value(poten3),           // Value of potentiometer 4 (defines gain of channel 4)
-		
-		.dbg(dbg)
+        .poten4_value(poten3)           // Value of potentiometer 4 (defines gain of channel 4)
     );
 
     poten_interface poten_i2c(

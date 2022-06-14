@@ -55,8 +55,8 @@ module hydrophone_config_manager #(
 	parameter rst_delay = 8			// Total clock cycles to delay the start after reset
 	) (
 	// Degug signals
-	output [8:0]dbg,
-	output [2:0] current_state,
+	// output [8:0]dbg,
+	// output [2:0] current_state,
 
 	// Interface to slave fifo output buffer
 	input  [15:0] d_in,				// Data from slave FIFO
@@ -92,9 +92,9 @@ module hydrophone_config_manager #(
 	reg [15:0] prefix;
 
 	// Combination logic
-	assign current_state = state;
-	assign dbg[7:0] = trigger_level[15:8];
-	assign dbg[8] = data_valid;
+	// assign current_state = state;
+	// assign dbg[7:0] = trigger_level[15:8];
+	// assign dbg[8] = data_valid;
 
 	// Behavioral part
 	initial
