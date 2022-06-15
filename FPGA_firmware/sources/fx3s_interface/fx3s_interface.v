@@ -210,7 +210,7 @@ module fx3s_interface #(
     // The FIFO size for departure data is 1024 64-bit words.
     wire    [15:0] tx_data;
     wire    [15:0] rx_data;
-    wire    rx_empty, rx_full, tx_empty;    // Full and empty FIFO flag
+    wire    rx_empty, rx_full, tx_empty, tx_full;    // Full and empty FIFO flag
     reg     tx_rd_en;
     wire    tx_wr_en;
     reg     rx_wr_en;               // FIFO write enable controlled by state machine
@@ -250,6 +250,7 @@ module fx3s_interface #(
     assign output_strobe_internal = output_strobe & ~rst_internal;
     assign internal_trigged_line = trigged | trigged_d[0] | trigged_d[1] | trigged_d[2] | trigged_d[3] | trigged_d[4] | trigged_d[5];
     assign rx_wr_en_internal = rx_wr_en & FLAGA;
+    assign input_full = tx_full;
 
     assign ifclk_out = clk;     // Slave FIFO interface operates at 64 MHz
 
@@ -547,7 +548,7 @@ module fx3s_interface #(
     CascadedFIFO32bit fifo_departure(
         .clk(clk), .rst(fifo_rst_internal), .wr_en(tx_wr_en), .rd_en(tx_rd_en),
         .d_out({ pkt_end, tx_data }), .d_in({pkt_end_in, d_in }),
-        .is_empty(tx_empty), .is_almost_full(input_full)
+        .is_empty(tx_empty), .is_almost_full(tx_full)
     );
 
     //************************************************************

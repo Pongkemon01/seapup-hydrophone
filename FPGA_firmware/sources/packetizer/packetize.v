@@ -52,6 +52,9 @@ module packetizer #(
 	output reg pkt_end,		// 0 = nothing, 1 = current data is the last word
 	output reg out_strobe,	// Clock to latch the output data (at each posedge)
 
+	// Feedback from output buffer
+	input out_full,			// Output buffer is almost full
+
 	// Control ports
 	input rst,				// System reset (active high)
 	input clk			// System clock
@@ -207,7 +210,7 @@ module packetizer #(
 				STATE_IDLE:
 				begin
 					current_pkt_size <= 16'b0;
-					if( trigged && in_strb_d == 0 && in_strobe == 1 )
+					if( ( trigged && in_strb_d == 0 && in_strobe == 1 ) && !out_full )
 					begin
 						current_pkt_size <= 16'd4;
 						seq_cnt <= seq_cnt + 1;
@@ -255,7 +258,7 @@ module packetizer #(
 				STATE_SEND_DATA_CH4:
 				begin
 					out_sel <= OUT_CH4;		// out CH4 sampling, latch ch3
-					if( ( current_pkt_size >= MAX_PKT_SIZE ) || !trigged )
+					if( ( current_pkt_size >= MAX_PKT_SIZE ) || !trigged || out_full )
 					begin
 						// Still have data but packet size reached max.
 						// Close current packet and start new packet

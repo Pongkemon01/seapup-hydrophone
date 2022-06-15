@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-| Date         : Wed Jun 15 11:20:10 2022
+| Date         : Wed Jun 15 12:45:26 2022
 | Host         : Seapup-dell running 64-bit Ubuntu 20.04.4 LTS
 | Command      : report_control_sets -verbose -file zeabus_hydrophone_control_sets_placed.rpt
 | Design       : zeabus_hydrophone
@@ -58,12 +58,12 @@ Table of Contents
 +--------------+-----------------------+------------------------+-----------------+--------------+
 | Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
 +--------------+-----------------------+------------------------+-----------------+--------------+
-| No           | No                    | No                     |             325 |          111 |
+| No           | No                    | No                     |             325 |          114 |
 | No           | No                    | Yes                    |               0 |            0 |
 | No           | Yes                   | No                     |             432 |          139 |
-| Yes          | No                    | No                     |             235 |           80 |
+| Yes          | No                    | No                     |             235 |           86 |
 | Yes          | No                    | Yes                    |               0 |            0 |
-| Yes          | Yes                   | No                     |             149 |           47 |
+| Yes          | Yes                   | No                     |             149 |           49 |
 +--------------+-----------------------+------------------------+-----------------+--------------+
 
 
@@ -76,39 +76,39 @@ Table of Contents
 | ~ifclk_out_OBUF_BUFG | slave_fifo/fifo_departure/master_state_reg[2]                           | slave_fifo/rst_internal_12                                      |                1 |              1 |         1.00 |
 | ~ifclk_out_OBUF_BUFG | slave_fifo/fifo_departure/master_state_reg[0]                           | slave_fifo/rst_internal_12                                      |                1 |              1 |         1.00 |
 | ~ifclk_out_OBUF_BUFG | slave_fifo/fifo_departure/master_state_reg[0]_0                         | slave_fifo/rst_internal_12                                      |                1 |              1 |         1.00 |
-| ~ifclk_out_OBUF_BUFG | slave_fifo/SLRD_i_1_n_0                                                 | slave_fifo/rst_internal_12                                      |                1 |              1 |         1.00 |
 | ~ifclk_out_OBUF_BUFG | slave_fifo/fifo_departure/master_state_reg[2]_1                         | slave_fifo/rst_internal_12                                      |                1 |              1 |         1.00 |
+| ~ifclk_out_OBUF_BUFG | slave_fifo/SLRD_i_1_n_0                                                 | slave_fifo/rst_internal_12                                      |                1 |              1 |         1.00 |
 | ~ifclk_out_OBUF_BUFG | slave_fifo/fifo_departure/master_state_reg[2]_2                         | slave_fifo/rst_internal_12                                      |                1 |              1 |         1.00 |
-|  ifclk_out_OBUF_BUFG |                                                                         | poten_i2c/byte_controller/bit_controller/filter_cnt[3]_i_1_n_0  |                2 |              4 |         2.00 |
 | ~ifclk_out_OBUF_BUFG | slave_fifo/fifo_departure/E[0]                                          | slave_fifo/rst_internal_12                                      |                2 |              4 |         2.00 |
-|  ifclk_out_OBUF_BUFG | poten_i2c/byte_controller/bit_controller/c_state                        |                                                                 |                2 |              4 |         2.00 |
 | ~ifclk_out_OBUF_BUFG |                                                                         | slave_fifo/rst_internal_12                                      |                3 |              4 |         1.33 |
+|  ifclk_out_OBUF_BUFG | poten_i2c/byte_controller/bit_controller/c_state                        |                                                                 |                2 |              4 |         2.00 |
+|  ifclk_out_OBUF_BUFG |                                                                         | poten_i2c/byte_controller/bit_controller/filter_cnt[3]_i_1_n_0  |                2 |              4 |         2.00 |
 |  ifclk_out_OBUF_BUFG | reset_inst/sel                                                          | reset_inst/hold_counter[4]_i_1_n_0                              |                1 |              5 |         5.00 |
-|  ifclk_out_OBUF_BUFG | poten_i2c/byte_controller/bit_controller/fSCL[2]_i_2_n_0                | reset_inst/rst_reg_0                                            |                4 |              6 |         1.50 |
-| ~ifclk_out_OBUF_BUFG | config_man/poten1_value[7]_i_1_n_0                                      | reset_inst/rst                                                  |                2 |              8 |         4.00 |
+|  ifclk_out_OBUF_BUFG | poten_i2c/byte_controller/bit_controller/fSCL[2]_i_2_n_0                | reset_inst/rst_reg_0                                            |                2 |              6 |         3.00 |
+| ~ifclk_out_OBUF_BUFG | config_man/poten1_value[7]_i_1_n_0                                      | reset_inst/rst                                                  |                4 |              8 |         2.00 |
 |  ifclk_out_OBUF_BUFG | poten_i2c/txr[7]_i_1_n_0                                                |                                                                 |                2 |              8 |         4.00 |
 | ~ifclk_out_OBUF_BUFG |                                                                         | reset_inst/rst                                                  |                5 |              9 |         1.80 |
+| ~ifclk_out_OBUF_BUFG | config_man/prefix[15]_i_1_n_0                                           |                                                                 |                3 |             10 |         3.33 |
 |  ifclk_out_OBUF_BUFG |                                                                         | poten_i2c/byte_controller/bit_controller/filter_cnt[13]_i_1_n_0 |                4 |             10 |         2.50 |
-| ~ifclk_out_OBUF_BUFG | config_man/prefix[15]_i_1_n_0                                           |                                                                 |                4 |             10 |         2.50 |
-| ~ifclk_out_OBUF_BUFG | packetizer_inst/FSM_onehot_main_state[9]_i_1_n_0                        | reset_inst/rst                                                  |                2 |             10 |         5.00 |
+| ~ifclk_out_OBUF_BUFG | packetizer_inst/FSM_onehot_main_state[9]_i_1_n_0                        | reset_inst/rst                                                  |                4 |             10 |         2.50 |
 |  ifclk_out_OBUF_BUFG | poten_i2c/byte_controller/dcnt                                          |                                                                 |                3 |             11 |         3.67 |
-| ~ifclk_out_OBUF_BUFG |                                                                         |                                                                 |                5 |             12 |         2.40 |
+| ~ifclk_out_OBUF_BUFG |                                                                         |                                                                 |                6 |             12 |         2.00 |
 | ~ifclk_out_OBUF_BUFG | packetizer_inst/current_pkt_size[15]_i_2_n_0                            | packetizer_inst/current_pkt_size[15]_i_1_n_0                    |                4 |             14 |         3.50 |
-|  ifclk_out_OBUF_BUFG |                                                                         | reset_inst/rst                                                  |                5 |             14 |         2.80 |
+|  ifclk_out_OBUF_BUFG |                                                                         | reset_inst/rst                                                  |                7 |             14 |         2.00 |
 |  ifclk_out_OBUF_BUFG |                                                                         | packetizer_inst/timer                                           |                4 |             15 |         3.75 |
-|  ifclk_out_OBUF_BUFG | poten_i2c/byte_controller/bit_controller/slave_wait                     | poten_i2c/byte_controller/bit_controller/cnt[15]_i_1_n_0        |                5 |             16 |         3.20 |
-| ~ifclk_out_OBUF_BUFG | config_man/trigger_level[15]_i_1_n_0                                    | reset_inst/rst                                                  |                5 |             16 |         3.20 |
+| ~ifclk_out_OBUF_BUFG | slave_fifo/fifo_departure/FSM_onehot_main_state_reg[0]                  |                                                                 |                4 |             16 |         4.00 |
+|  ifclk_out_OBUF_BUFG | poten_i2c/byte_controller/bit_controller/slave_wait                     | poten_i2c/byte_controller/bit_controller/cnt[15]_i_1_n_0        |                4 |             16 |         4.00 |
+| ~ifclk_out_OBUF_BUFG | config_man/trigger_level[15]_i_1_n_0                                    | reset_inst/rst                                                  |                6 |             16 |         2.67 |
 | ~ifclk_out_OBUF_BUFG | trigger/rd_en                                                           | slave_fifo/rst_internal                                         |                4 |             16 |         4.00 |
 | ~ifclk_out_OBUF_BUFG | trigger/t_counter[0]_i_2_n_0                                            | trigger/t_counter[0]_i_1_n_0                                    |                4 |             16 |         4.00 |
-| ~ifclk_out_OBUF_BUFG | trigger/trigged_reg_0                                                   |                                                                 |                4 |             16 |         4.00 |
-|  ifclk_out_OBUF_BUFG | poten_i2c/byte_controller/bit_controller/FSM_onehot_c_state[17]_i_1_n_0 |                                                                 |                7 |             18 |         2.57 |
+|  ifclk_out_OBUF_BUFG | poten_i2c/byte_controller/bit_controller/FSM_onehot_c_state[17]_i_1_n_0 |                                                                 |                8 |             18 |         2.25 |
 |  ifclk_out_OBUF_BUFG | packetizer_inst/timer                                                   |                                                                 |                8 |             32 |         4.00 |
 | ~ifclk_out_OBUF_BUFG | config_man/sel                                                          | reset_inst/rst                                                  |                8 |             32 |         4.00 |
-|  ifclk_out_OBUF_BUFG | adc1/filter1/avg_binning1/E[0]                                          |                                                                 |               15 |             36 |         2.40 |
-|  ifclk_out_OBUF_BUFG | adc2/filter1/avg_binning1/E[0]                                          |                                                                 |               15 |             36 |         2.40 |
-|  ifclk_out_OBUF_BUFG | trigger/E[0]                                                            |                                                                 |               20 |             64 |         3.20 |
-|  ifclk_out_OBUF_BUFG |                                                                         |                                                                 |              106 |            313 |         2.95 |
-|  ifclk_out_OBUF_BUFG |                                                                         | slave_fifo/filter_rst                                           |              116 |            376 |         3.24 |
+|  ifclk_out_OBUF_BUFG | adc1/filter1/avg_binning1/E[0]                                          |                                                                 |               16 |             36 |         2.25 |
+|  ifclk_out_OBUF_BUFG | adc2/filter1/avg_binning1/E[0]                                          |                                                                 |               17 |             36 |         2.12 |
+|  ifclk_out_OBUF_BUFG | trigger/latched_input0                                                  |                                                                 |               23 |             64 |         2.78 |
+|  ifclk_out_OBUF_BUFG |                                                                         |                                                                 |              108 |            313 |         2.90 |
+|  ifclk_out_OBUF_BUFG |                                                                         | slave_fifo/filter_rst                                           |              114 |            376 |         3.30 |
 +----------------------+-------------------------------------------------------------------------+-----------------------------------------------------------------+------------------+----------------+--------------+
 
 

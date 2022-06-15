@@ -244,6 +244,7 @@ module zeabus_hydrophone #(
 
         .d_out(packetize_out),          // Output data
         .out_strobe(p_data_strobe),     // Data-valid signal to FX3 interface
+        .out_full(tx_full),             // Buffer is almost full
         .pkt_end(pkt_end)               // Current data word is the end of current packet
     );
 

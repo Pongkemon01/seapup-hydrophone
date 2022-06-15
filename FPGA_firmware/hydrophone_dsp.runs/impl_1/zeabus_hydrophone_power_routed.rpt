@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-| Date             : Wed Jun 15 11:20:33 2022
+| Date             : Wed Jun 15 12:45:49 2022
 | Host             : Seapup-dell running 64-bit Ubuntu 20.04.4 LTS
 | Command          : report_power -file zeabus_hydrophone_power_routed.rpt -pb zeabus_hydrophone_power_summary_routed.pb -rpx zeabus_hydrophone_power_routed.rpx
 | Design           : zeabus_hydrophone
@@ -53,13 +53,13 @@ Table of Contents
 | On-Chip        | Power (W) | Used     | Available | Utilization (%) |
 +----------------+-----------+----------+-----------+-----------------+
 | Clocks         |     0.005 |        6 |       --- |             --- |
-| Slice Logic    |    <0.001 |     3552 |       --- |             --- |
+| Slice Logic    |    <0.001 |     3551 |       --- |             --- |
 |   LUT as Logic |    <0.001 |     1528 |     10400 |           14.69 |
 |   CARRY4       |    <0.001 |      188 |      8150 |            2.31 |
 |   Register     |    <0.001 |     1141 |     20800 |            5.49 |
 |   F7/F8 Muxes  |    <0.001 |       16 |     32600 |            0.05 |
 |   Others       |     0.000 |       89 |       --- |             --- |
-| Signals        |    <0.001 |     2805 |       --- |             --- |
+| Signals        |    <0.001 |     2807 |       --- |             --- |
 | Block RAM      |     0.002 |        6 |        25 |           24.00 |
 | PLL            |     0.096 |        1 |         5 |           20.00 |
 | I/O            |     0.040 |       77 |       210 |           36.67 |
