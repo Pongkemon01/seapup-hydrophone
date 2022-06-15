@@ -216,7 +216,6 @@ module packetizer #(
 						out_sel <= OUT_ID;		// out header ID
 						main_state <= STATE_SEND_HEADER_SEQ;
 					end
-
 				end
 				// Slave FIFO has clock speed at 64MHz which is much faster than data sending rate.
 				// Therefore, we only save 1 backlog for header sending.
@@ -258,18 +257,18 @@ module packetizer #(
 					out_sel <= OUT_CH4;		// out CH4 sampling, latch ch3
 					if( ( current_pkt_size >= MAX_PKT_SIZE ) || !trigged )
 					begin
-					   pkt_end <= 1;
+						// Still have data but packet size reached max.
+						// Close current packet and start new packet
+					   	pkt_end <= 1;
 					end
 					main_state <= STATE_LATCH_LAST_WORD;
 				end
 				STATE_LATCH_LAST_WORD:
 				begin
 					out_strobe <= 0;
+					pkt_end <= 0;
 					if( ( current_pkt_size >= MAX_PKT_SIZE ) || !trigged )
 					begin
-						// Still have data but packet size reached max.
-						// Close current packet and start new packet
-						pkt_end <= 0;
 						//sending <= 0;
 						main_state <= STATE_IDLE;
 					end
@@ -292,6 +291,15 @@ module packetizer #(
 							main_state <= STATE_SEND_DATA_CH1;
 						end
 					end
+				end
+
+                default:        // Error!!! We should not be here
+                begin
+					out_sel <= OUT_ID;
+					pkt_end <= 0;
+					//sending <= 0;
+					out_strobe <= 0;
+					main_state <= #1 STATE_IDLE;
 				end
 			endcase
 		end

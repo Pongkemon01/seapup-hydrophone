@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-| Date         : Tue Jun 14 15:21:12 2022
+| Date         : Wed Jun 15 11:20:32 2022
 | Host         : Seapup-dell running 64-bit Ubuntu 20.04.4 LTS
 | Command      : report_methodology -file zeabus_hydrophone_methodology_drc_routed.rpt -pb zeabus_hydrophone_methodology_drc_routed.pb -rpx zeabus_hydrophone_methodology_drc_routed.rpx
 | Design       : zeabus_hydrophone
@@ -23,19 +23,23 @@ Table of Contents
           Floorplan: design_1
       Design limits: <entire design considered>
              Max violations: <unlimited>
-             Violations found: 24
+             Violations found: 8
 +-----------+----------+------------------------------+------------+
 | Rule      | Severity | Description                  | Violations |
 +-----------+----------+------------------------------+------------+
 | LUTAR-1   | Warning  | LUT drives async reset alert | 2          |
-| TIMING-16 | Warning  | Large setup violation        | 22         |
+| TIMING-16 | Warning  | Large setup violation        | 6          |
 +-----------+----------+------------------------------+------------+
 
 2. REPORT DETAILS
 -----------------
 LUTAR-1#1 Warning
 LUT drives async reset alert  
-LUT cell slave_fifo/fifo_departure_i_1, with 2 or more inputs, drives asynchronous preset/clear pin(s) slave_fifo/fifo_arrival/RST, slave_fifo/fifo_departure/RST. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+LUT cell slave_fifo/fifo_departure/genblk1[0].fifo_departure_inst_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) slave_fifo/fifo_arrival/RST,
+slave_fifo/fifo_departure/genblk1[0].fifo_departure_inst/RST,
+slave_fifo/fifo_departure/genblk1[1].fifo_departure_inst/RST,
+slave_fifo/fifo_departure/genblk1[2].fifo_departure_inst/RST
+slave_fifo/fifo_departure/genblk1[3].fifo_departure_inst/RST. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
 Related violations: <none>
 
 LUTAR-1#2 Warning
@@ -45,112 +49,32 @@ Related violations: <none>
 
 TIMING-16#1 Warning
 Large setup violation  
-There is a large setup violation of -1.356 ns between adc2/filter1/avg_binning1/d_out_reg[2]/C (clocked by sys_clk) and trigger/t_counter_reg[10]/R (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
+There is a large setup violation of -3.136 ns between slave_fifo/SLWR_reg/C (clocked by sys_clk) and SLWR (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
 Related violations: <none>
 
 TIMING-16#2 Warning
 Large setup violation  
-There is a large setup violation of -1.356 ns between adc2/filter1/avg_binning1/d_out_reg[2]/C (clocked by sys_clk) and trigger/t_counter_reg[11]/R (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
+There is a large setup violation of -3.140 ns between slave_fifo/SLOE_reg/C (clocked by sys_clk) and SLOE (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
 Related violations: <none>
 
 TIMING-16#3 Warning
 Large setup violation  
-There is a large setup violation of -1.356 ns between adc2/filter1/avg_binning1/d_out_reg[2]/C (clocked by sys_clk) and trigger/t_counter_reg[8]/R (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
+There is a large setup violation of -3.164 ns between slave_fifo/SLRD_reg/C (clocked by sys_clk) and SLRD (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
 Related violations: <none>
 
 TIMING-16#4 Warning
 Large setup violation  
-There is a large setup violation of -1.356 ns between adc2/filter1/avg_binning1/d_out_reg[2]/C (clocked by sys_clk) and trigger/t_counter_reg[9]/R (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
+There is a large setup violation of -3.167 ns between slave_fifo/SLCS_reg/C (clocked by sys_clk) and SLCS (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
 Related violations: <none>
 
 TIMING-16#5 Warning
 Large setup violation  
-There is a large setup violation of -1.486 ns between adc2/filter1/avg_binning1/d_out_reg[2]/C (clocked by sys_clk) and trigger/t_counter_reg[4]/R (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
+There is a large setup violation of -3.271 ns between slave_fifo/A0_reg/C (clocked by sys_clk) and A[0] (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
 Related violations: <none>
 
 TIMING-16#6 Warning
 Large setup violation  
-There is a large setup violation of -1.486 ns between adc2/filter1/avg_binning1/d_out_reg[2]/C (clocked by sys_clk) and trigger/t_counter_reg[5]/R (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
-Related violations: <none>
-
-TIMING-16#7 Warning
-Large setup violation  
-There is a large setup violation of -1.486 ns between adc2/filter1/avg_binning1/d_out_reg[2]/C (clocked by sys_clk) and trigger/t_counter_reg[6]/R (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
-Related violations: <none>
-
-TIMING-16#8 Warning
-Large setup violation  
-There is a large setup violation of -1.486 ns between adc2/filter1/avg_binning1/d_out_reg[2]/C (clocked by sys_clk) and trigger/t_counter_reg[7]/S (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
-Related violations: <none>
-
-TIMING-16#9 Warning
-Large setup violation  
-There is a large setup violation of -1.488 ns between adc2/filter1/avg_binning1/d_out_reg[2]/C (clocked by sys_clk) and trigger/t_counter_reg[0]/R (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
-Related violations: <none>
-
-TIMING-16#10 Warning
-Large setup violation  
-There is a large setup violation of -1.488 ns between adc2/filter1/avg_binning1/d_out_reg[2]/C (clocked by sys_clk) and trigger/t_counter_reg[1]/R (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
-Related violations: <none>
-
-TIMING-16#11 Warning
-Large setup violation  
-There is a large setup violation of -1.488 ns between adc2/filter1/avg_binning1/d_out_reg[2]/C (clocked by sys_clk) and trigger/t_counter_reg[2]/R (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
-Related violations: <none>
-
-TIMING-16#12 Warning
-Large setup violation  
-There is a large setup violation of -1.488 ns between adc2/filter1/avg_binning1/d_out_reg[2]/C (clocked by sys_clk) and trigger/t_counter_reg[3]/R (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
-Related violations: <none>
-
-TIMING-16#13 Warning
-Large setup violation  
-There is a large setup violation of -1.495 ns between adc2/filter1/avg_binning1/d_out_reg[2]/C (clocked by sys_clk) and trigger/t_counter_reg[12]/R (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
-Related violations: <none>
-
-TIMING-16#14 Warning
-Large setup violation  
-There is a large setup violation of -1.495 ns between adc2/filter1/avg_binning1/d_out_reg[2]/C (clocked by sys_clk) and trigger/t_counter_reg[13]/R (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
-Related violations: <none>
-
-TIMING-16#15 Warning
-Large setup violation  
-There is a large setup violation of -1.495 ns between adc2/filter1/avg_binning1/d_out_reg[2]/C (clocked by sys_clk) and trigger/t_counter_reg[14]/R (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
-Related violations: <none>
-
-TIMING-16#16 Warning
-Large setup violation  
-There is a large setup violation of -1.495 ns between adc2/filter1/avg_binning1/d_out_reg[2]/C (clocked by sys_clk) and trigger/t_counter_reg[15]/R (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
-Related violations: <none>
-
-TIMING-16#17 Warning
-Large setup violation  
-There is a large setup violation of -3.137 ns between slave_fifo/A0_reg/C (clocked by sys_clk) and A[0] (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
-Related violations: <none>
-
-TIMING-16#18 Warning
-Large setup violation  
-There is a large setup violation of -3.140 ns between slave_fifo/SLOE_reg/C (clocked by sys_clk) and SLOE (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
-Related violations: <none>
-
-TIMING-16#19 Warning
-Large setup violation  
-There is a large setup violation of -3.140 ns between slave_fifo/SLWR_reg/C (clocked by sys_clk) and SLWR (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
-Related violations: <none>
-
-TIMING-16#20 Warning
-Large setup violation  
-There is a large setup violation of -3.153 ns between slave_fifo/PKTEND_reg/C (clocked by sys_clk) and PKTEND (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
-Related violations: <none>
-
-TIMING-16#21 Warning
-Large setup violation  
-There is a large setup violation of -3.164 ns between slave_fifo/SLRD_reg/C (clocked by sys_clk) and SLRD (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
-Related violations: <none>
-
-TIMING-16#22 Warning
-Large setup violation  
-There is a large setup violation of -3.303 ns between slave_fifo/SLCS_reg/C (clocked by sys_clk) and SLCS (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
+There is a large setup violation of -3.286 ns between slave_fifo/PKTEND_reg/C (clocked by sys_clk) and PKTEND (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
 Related violations: <none>
 
 

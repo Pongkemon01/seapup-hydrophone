@@ -52,7 +52,7 @@ if __name__ == '__main__':
     print( 'Start acquisition' )
     f = open( 'data.bin', 'wb' )
     hp.release_soft_reset()
-    #hp.sent_dsp_param( 0.02, 0.1)
+    hp.sent_dsp_param( 0.0001, 0.1)
     hp.set_function_enable_pin()
     while( True ):
         try:
