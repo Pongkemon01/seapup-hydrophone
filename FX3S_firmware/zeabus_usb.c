@@ -871,7 +871,7 @@ static void ZeabusUSBAppStart( void )
         dmaCfg.size *= 4;
 
     /* Number of DMA buffers to be used. More buffers can give better throughput. */
-    dmaCfg.count = 32;
+    dmaCfg.count = 14;      /* USB2 => 32(max), USB3 => 14(max) */
 
     dmaCfg.prodSckId = ZEABUS_DMA_EP_USB_DATA_PRODUCER_SOCKET;
     dmaCfg.consSckId = CY_U3P_CPU_SOCKET_CONS;
