@@ -1,4 +1,4 @@
-`timescale 1ns / 10ps
+`timescale 1ns / 1ns
 
 // --------------------------------------------------------------------------------
 // Copyright 2019-2020 Akrapong Patchararungruang.
@@ -343,7 +343,7 @@ module poten_interface_tb ;
 	// module under test
 	i2c_slave_model #( .I2C_ADR(7'b0101_110) ) poten1 ( .scl(SCL), .sda(SDA) );
 	i2c_slave_model #( .I2C_ADR(7'b0101_111) ) poten2 ( .scl(SCL), .sda(SDA) );
-	poten_interface poten( .SDA(SDA), .SCL(SCL), .rst(rst), .clk_64MHz(clk_64MHz), .start_update(start_update),
+	poten_interface poten( .SDA(SDA), .SCL(SCL), .rst(rst), .clk(clk_64MHz), .start_update(start_update),
 							.p0_val(p0_val), .p1_val(p1_val), .p2_val(p2_val), .p3_val(p3_val) );
 	
 	initial

@@ -527,26 +527,29 @@ class hydrophone_usb:
     if( LNA_Gain_4 > 1 ):
       LNA_Gain_4 = 1
     
+    # Digital poten value varies from 0 to 10k ohm with 256 variation steps.
+    # For the hydrophone board, step number 0 means 10k, and 255 means 0 ohm.
+    # Thus, the resistence varies in invert proportion of step number
     if( LNA_Gain_1 >= 0 ):
       buffer[1] = buffer[1] | 0b00000100
 
-      buffer[gain_index] = np.uint8( 255 * LNA_Gain_1 )
+      buffer[gain_index] = np.uint8( 255 * (1.0 - LNA_Gain_1 ) )
 
       gain_index = gain_index + 1
       if( LNA_Gain_2 >= 0):
-        buffer[gain_index] = np.uint8( 255 * LNA_Gain_2 )
+        buffer[gain_index] = np.uint8( 255 * (1.0 - LNA_Gain_2 ) )
       else:
         buffer[gain_index] = buffer[4]
 
       gain_index = gain_index + 1
       if( LNA_Gain_3 >= 0):
-        buffer[gain_index] = np.uint8( 255 * LNA_Gain_3 )
+        buffer[gain_index] = np.uint8( 255 * (1.0 - LNA_Gain_3 ) )
       else:
         buffer[gain_index] = buffer[4]
 
       gain_index = gain_index + 1
       if( LNA_Gain_4 >= 0):
-        buffer[gain_index] = np.uint8( 255 * LNA_Gain_4 )
+        buffer[gain_index] = np.uint8( 255 * (1.0 - LNA_Gain_4 ) )
       else:
         buffer[gain_index] = buffer[4]
 

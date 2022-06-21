@@ -53,6 +53,11 @@ module poten_interface #(
 	*/
 	parameter i2c_clk_prescaler = 16'd63
 	) (
+	// Debug signal
+	output phase,		// Phase of I2C byte operation (0 = activate, 1 = wait for complete)
+	output [2:0] poten_state, // Poten update state
+	output [1:0] poten_sub_state, // Sub state
+
 	// Device pins
 	inout SDA,			// I2C Data
 	inout SCL,			// I2C Clock
@@ -118,6 +123,11 @@ module poten_interface #(
 	assign scl_pad_i = SCL;
 	assign sda_pad_i = SDA;
 	assign inprogress = ( cmd[1] | cmd[0] );
+
+	// Debug
+	assign phase = cmd_phase;
+	assign poten_state = main_state;
+	assign poten_sub_state = sub_state;
 	
 	// i2c instantiation
 	// hookup byte controller block
@@ -231,7 +241,7 @@ module poten_interface #(
 			begin \
 				txr <= #1 p_value; \
 				`activate_i2c( SUBSTATE_SEND_SLAVE_ADDR, (CMD_GEN_STOP | CMD_WRITE) ) \
-				if( sub_state == SUBSTATE_SEND_SLAVE_ADDR ) \
+				if( cmd_phase && !inprogress ) \
 					main_state <= #1 next_state; \
 			end \
 		endcase
