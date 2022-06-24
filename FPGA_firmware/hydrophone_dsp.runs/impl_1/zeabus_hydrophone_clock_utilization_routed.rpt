@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -----------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-| Date         : Tue Jun 21 15:46:54 2022
+| Date         : Fri Jun 24 12:08:53 2022
 | Host         : Seapup-dell running 64-bit Ubuntu 20.04.4 LTS
 | Command      : report_clock_utilization -file zeabus_hydrophone_clock_utilization_routed.rpt
 | Design       : zeabus_hydrophone

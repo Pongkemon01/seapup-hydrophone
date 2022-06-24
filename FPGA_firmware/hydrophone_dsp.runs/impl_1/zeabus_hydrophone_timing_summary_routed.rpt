@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-| Date         : Tue Jun 21 15:46:54 2022
+| Date         : Fri Jun 24 12:08:53 2022
 | Host         : Seapup-dell running 64-bit Ubuntu 20.04.4 LTS
 | Command      : report_timing_summary -max_paths 10 -file zeabus_hydrophone_timing_summary_routed.rpt -pb zeabus_hydrophone_timing_summary_routed.pb -rpx zeabus_hydrophone_timing_summary_routed.rpx -warn_on_violation
 | Design       : zeabus_hydrophone
@@ -128,7 +128,7 @@ Table of Contents
 
     WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
     -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
-     -3.303      -31.280                     22                 2404        0.072        0.000                      0                 2404        7.313        0.000                       0                  1217  
+     -3.303      -31.280                     22                 2404        0.047        0.000                      0                 2404        7.313        0.000                       0                  1217  
 
 
 Timing constraints are not met.
@@ -157,7 +157,7 @@ Clock             WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoin
 clk_in                                                                                                                                                         14.171        0.000                       0                     2  
   adc_clk                                                                                                                                                      13.470        0.000                       0                     2  
   pll_fb                                                                                                                                                       14.171        0.000                       0                     2  
-  sys_clk          -3.303      -31.280                     22                 2368        0.072        0.000                      0                 2368        7.313        0.000                       0                  1211  
+  sys_clk          -3.303      -31.280                     22                 2368        0.047        0.000                      0                 2368        7.313        0.000                       0                  1211  
 
 
 ------------------------------------------------------------------------------------------------
@@ -177,7 +177,7 @@ adc_clk       sys_clk             0.626        0.000                      0     
 
 Path Group         From Clock         To Clock               WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints  
 ----------         ----------         --------               -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------  
-**async_default**  sys_clk            sys_clk                  6.542        0.000                      0                    6        1.381        0.000                      0                    6  
+**async_default**  sys_clk            sys_clk                  6.534        0.000                      0                    6        1.372        0.000                      0                    6  
 
 
 ------------------------------------------------------------------------------------------------
@@ -268,7 +268,7 @@ From Clock:  sys_clk
   To Clock:  sys_clk
 
 Setup :           22  Failing Endpoints,  Worst Slack       -3.303ns,  Total Violation      -31.280ns
-Hold  :            0  Failing Endpoints,  Worst Slack        0.072ns,  Total Violation        0.000ns
+Hold  :            0  Failing Endpoints,  Worst Slack        0.047ns,  Total Violation        0.000ns
 PW    :            0  Failing Endpoints,  Worst Slack        7.313ns,  Total Violation        0.000ns
 ---------------------------------------------------------------------------------------------------
 
@@ -995,15 +995,15 @@ Slack (VIOLATED) :        -0.891ns  (required time - arrival time)
 
 Min Delay Paths
 --------------------------------------------------------------------------------------
-Slack (MET) :             0.072ns  (arrival time - required time)
-  Source:                 adc1/filter1/m_filter1/d_reg[1][3]/C
+Slack (MET) :             0.047ns  (arrival time - required time)
+  Source:                 adc1/filter1/m_filter1/d_reg[0][3]/C
                             (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
   Destination:            adc1/filter1/m_filter1/pipeline1_reg[0][3]/D
                             (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
   Path Group:             sys_clk
   Path Type:              Hold (Min at Fast Process Corner)
   Requirement:            0.000ns  (sys_clk rise@0.000ns - sys_clk rise@0.000ns)
-  Data Path Delay:        0.466ns  (logic 0.188ns (40.363%)  route 0.278ns (59.637%))
+  Data Path Delay:        0.441ns  (logic 0.212ns (48.071%)  route 0.229ns (51.929%))
   Logic Levels:           1  (LUT3=1)
   Clock Path Skew:        0.263ns (DCD - SCD - CPR)
     Destination Clock Delay (DCD):    3.412ns
@@ -1024,12 +1024,12 @@ Slack (MET) :             0.072ns  (arrival time - required time)
                          net (fo=1, routed)           0.501     1.996    ifclk_out_OBUF
     BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.026     2.022 r  ifclk_out_OBUF_BUFG_inst/O
                          net (fo=1210, routed)        0.559     2.580    adc1/filter1/m_filter1/ifclk_out_OBUF_BUFG
-    SLICE_X39Y13         FDRE                                         r  adc1/filter1/m_filter1/d_reg[1][3]/C
+    SLICE_X38Y13         FDRE                                         r  adc1/filter1/m_filter1/d_reg[0][3]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X39Y13         FDRE (Prop_fdre_C_Q)         0.141     2.721 r  adc1/filter1/m_filter1/d_reg[1][3]/Q
-                         net (fo=7, routed)           0.278     2.999    adc1/filter1/m_filter1/s1_0/pipeline1_reg[2][13][3]
-    SLICE_X34Y12         LUT3 (Prop_lut3_I0_O)        0.047     3.046 r  adc1/filter1/m_filter1/s1_0/pipeline1[0][3]_i_1/O
-                         net (fo=1, routed)           0.000     3.046    adc1/filter1/m_filter1/stage2[0]_14[3]
+    SLICE_X38Y13         FDRE (Prop_fdre_C_Q)         0.164     2.744 r  adc1/filter1/m_filter1/d_reg[0][3]/Q
+                         net (fo=6, routed)           0.229     2.973    adc1/filter1/m_filter1/s1_0/Q[3]
+    SLICE_X34Y12         LUT3 (Prop_lut3_I1_O)        0.048     3.021 r  adc1/filter1/m_filter1/s1_0/pipeline1[0][3]_i_1/O
+                         net (fo=1, routed)           0.000     3.021    adc1/filter1/m_filter1/stage2[0]_14[3]
     SLICE_X34Y12         FDRE                                         r  adc1/filter1/m_filter1/pipeline1_reg[0][3]/D
   -------------------------------------------------------------------    -------------------
 
@@ -1050,9 +1050,9 @@ Slack (MET) :             0.072ns  (arrival time - required time)
     SLICE_X34Y12         FDRE (Hold_fdre_C_D)         0.131     2.974    adc1/filter1/m_filter1/pipeline1_reg[0][3]
   -------------------------------------------------------------------
                          required time                         -2.974    
-                         arrival time                           3.046    
+                         arrival time                           3.021    
   -------------------------------------------------------------------
-                         slack                                  0.072    
+                         slack                                  0.047    
 
 Slack (MET) :             0.078ns  (arrival time - required time)
   Source:                 poten_i2c/byte_controller/bit_controller/fSDA_reg[0]/C
@@ -1402,63 +1402,6 @@ Slack (MET) :             0.100ns  (arrival time - required time)
   -------------------------------------------------------------------
                          slack                                  0.100    
 
-Slack (MET) :             0.103ns  (arrival time - required time)
-  Source:                 adc1/filter1/m_filter1/d_reg[2][8]/C
-                            (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
-  Destination:            adc1/filter1/m_filter1/d_reg[1][8]/D
-                            (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
-  Path Group:             sys_clk
-  Path Type:              Hold (Min at Fast Process Corner)
-  Requirement:            0.000ns  (sys_clk rise@0.000ns - sys_clk rise@0.000ns)
-  Data Path Delay:        0.427ns  (logic 0.141ns (32.990%)  route 0.286ns (67.010%))
-  Logic Levels:           0  
-  Clock Path Skew:        0.261ns (DCD - SCD - CPR)
-    Destination Clock Delay (DCD):    3.408ns
-    Source Clock Delay      (SCD):    2.578ns
-    Clock Pessimism Removal (CPR):    0.569ns
-
-    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
-  -------------------------------------------------------------------    -------------------
-                         (clock sys_clk rise edge)    0.000     0.000 r  
-    P15                                               0.000     0.000 r  clk_in (IN)
-                         net (fo=0)                   0.000     0.000    clk_in
-    P15                  IBUF (Prop_ibuf_I_O)         0.231     0.231 r  clk_in_IBUF_inst/O
-                         net (fo=1, routed)           0.634     0.865    clk_in_IBUF
-    BUFGCTRL_X0Y2        BUFG (Prop_bufg_I_O)         0.026     0.891 r  clock_buf/O
-                         net (fo=1, routed)           0.554     1.445    clk_in_buf
-    PLLE2_ADV_X1Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
-                                                      0.050     1.495 r  PLLE2_BASE_inst/CLKOUT1
-                         net (fo=1, routed)           0.501     1.996    ifclk_out_OBUF
-    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.026     2.022 r  ifclk_out_OBUF_BUFG_inst/O
-                         net (fo=1210, routed)        0.557     2.578    adc1/filter1/m_filter1/ifclk_out_OBUF_BUFG
-    SLICE_X39Y17         FDRE                                         r  adc1/filter1/m_filter1/d_reg[2][8]/C
-  -------------------------------------------------------------------    -------------------
-    SLICE_X39Y17         FDRE (Prop_fdre_C_Q)         0.141     2.719 r  adc1/filter1/m_filter1/d_reg[2][8]/Q
-                         net (fo=10, routed)          0.286     3.006    adc1/filter1/m_filter1/d_reg[2]_2[8]
-    SLICE_X34Y17         FDRE                                         r  adc1/filter1/m_filter1/d_reg[1][8]/D
-  -------------------------------------------------------------------    -------------------
-
-                         (clock sys_clk rise edge)    0.000     0.000 r  
-    P15                                               0.000     0.000 r  clk_in (IN)
-                         net (fo=0)                   0.000     0.000    clk_in
-    P15                  IBUF (Prop_ibuf_I_O)         0.419     0.419 r  clk_in_IBUF_inst/O
-                         net (fo=1, routed)           0.689     1.107    clk_in_IBUF
-    BUFGCTRL_X0Y2        BUFG (Prop_bufg_I_O)         0.029     1.136 r  clock_buf/O
-                         net (fo=1, routed)           0.822     1.958    clk_in_buf
-    PLLE2_ADV_X1Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
-                                                      0.053     2.011 r  PLLE2_BASE_inst/CLKOUT1
-                         net (fo=1, routed)           0.546     2.557    ifclk_out_OBUF
-    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.029     2.586 r  ifclk_out_OBUF_BUFG_inst/O
-                         net (fo=1210, routed)        0.823     3.408    adc1/filter1/m_filter1/ifclk_out_OBUF_BUFG
-    SLICE_X34Y17         FDRE                                         r  adc1/filter1/m_filter1/d_reg[1][8]/C
-                         clock pessimism             -0.569     2.839    
-    SLICE_X34Y17         FDRE (Hold_fdre_C_D)         0.063     2.902    adc1/filter1/m_filter1/d_reg[1][8]
-  -------------------------------------------------------------------
-                         required time                         -2.902    
-                         arrival time                           3.006    
-  -------------------------------------------------------------------
-                         slack                                  0.103    
-
 Slack (MET) :             0.106ns  (arrival time - required time)
   Source:                 adc1/filter1/m_filter1/d_reg[4][11]/C
                             (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
@@ -1518,19 +1461,19 @@ Slack (MET) :             0.106ns  (arrival time - required time)
   -------------------------------------------------------------------
                          slack                                  0.106    
 
-Slack (MET) :             0.129ns  (arrival time - required time)
-  Source:                 adc1/filter1/m_filter1/d_reg[0][5]/C
+Slack (MET) :             0.112ns  (arrival time - required time)
+  Source:                 adc1/filter1/m_filter1/d_reg[3][12]/C
                             (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
-  Destination:            adc1/filter1/m_filter1/pipeline1_reg[0][5]/D
+  Destination:            adc1/filter1/m_filter1/pipeline1_reg[4][12]/D
                             (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
   Path Group:             sys_clk
   Path Type:              Hold (Min at Fast Process Corner)
   Requirement:            0.000ns  (sys_clk rise@0.000ns - sys_clk rise@0.000ns)
-  Data Path Delay:        0.500ns  (logic 0.185ns (37.002%)  route 0.315ns (62.998%))
-  Logic Levels:           1  (LUT3=1)
-  Clock Path Skew:        0.264ns (DCD - SCD - CPR)
-    Destination Clock Delay (DCD):    3.413ns
-    Source Clock Delay      (SCD):    2.580ns
+  Data Path Delay:        0.480ns  (logic 0.192ns (40.021%)  route 0.288ns (59.979%))
+  Logic Levels:           1  (LUT5=1)
+  Clock Path Skew:        0.261ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    3.408ns
+    Source Clock Delay      (SCD):    2.578ns
     Clock Pessimism Removal (CPR):    0.569ns
 
     Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
@@ -1546,14 +1489,14 @@ Slack (MET) :             0.129ns  (arrival time - required time)
                                                       0.050     1.495 r  PLLE2_BASE_inst/CLKOUT1
                          net (fo=1, routed)           0.501     1.996    ifclk_out_OBUF
     BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.026     2.022 r  ifclk_out_OBUF_BUFG_inst/O
-                         net (fo=1210, routed)        0.559     2.580    adc1/filter1/m_filter1/ifclk_out_OBUF_BUFG
-    SLICE_X35Y12         FDRE                                         r  adc1/filter1/m_filter1/d_reg[0][5]/C
+                         net (fo=1210, routed)        0.557     2.578    adc1/filter1/m_filter1/ifclk_out_OBUF_BUFG
+    SLICE_X39Y17         FDRE                                         r  adc1/filter1/m_filter1/d_reg[3][12]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X35Y12         FDRE (Prop_fdre_C_Q)         0.141     2.721 r  adc1/filter1/m_filter1/d_reg[0][5]/Q
-                         net (fo=6, routed)           0.315     3.036    adc1/filter1/m_filter1/s1_0/Q[5]
-    SLICE_X36Y12         LUT3 (Prop_lut3_I1_O)        0.044     3.080 r  adc1/filter1/m_filter1/s1_0/pipeline1[0][5]_i_1/O
-                         net (fo=1, routed)           0.000     3.080    adc1/filter1/m_filter1/stage2[0]_14[5]
-    SLICE_X36Y12         FDRE                                         r  adc1/filter1/m_filter1/pipeline1_reg[0][5]/D
+    SLICE_X39Y17         FDRE (Prop_fdre_C_Q)         0.141     2.719 r  adc1/filter1/m_filter1/d_reg[3][12]/Q
+                         net (fo=10, routed)          0.288     3.007    adc1/filter1/m_filter1/s1_1/pipeline1_reg[3][13][12]
+    SLICE_X35Y17         LUT5 (Prop_lut5_I1_O)        0.051     3.058 r  adc1/filter1/m_filter1/s1_1/pipeline1[4][12]_i_1/O
+                         net (fo=1, routed)           0.000     3.058    adc1/filter1/m_filter1/stage2[4]_11[12]
+    SLICE_X35Y17         FDRE                                         r  adc1/filter1/m_filter1/pipeline1_reg[4][12]/D
   -------------------------------------------------------------------    -------------------
 
                          (clock sys_clk rise edge)    0.000     0.000 r  
@@ -1567,15 +1510,72 @@ Slack (MET) :             0.129ns  (arrival time - required time)
                                                       0.053     2.011 r  PLLE2_BASE_inst/CLKOUT1
                          net (fo=1, routed)           0.546     2.557    ifclk_out_OBUF
     BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.029     2.586 r  ifclk_out_OBUF_BUFG_inst/O
-                         net (fo=1210, routed)        0.828     3.413    adc1/filter1/m_filter1/ifclk_out_OBUF_BUFG
-    SLICE_X36Y12         FDRE                                         r  adc1/filter1/m_filter1/pipeline1_reg[0][5]/C
-                         clock pessimism             -0.569     2.844    
-    SLICE_X36Y12         FDRE (Hold_fdre_C_D)         0.107     2.951    adc1/filter1/m_filter1/pipeline1_reg[0][5]
+                         net (fo=1210, routed)        0.823     3.408    adc1/filter1/m_filter1/ifclk_out_OBUF_BUFG
+    SLICE_X35Y17         FDRE                                         r  adc1/filter1/m_filter1/pipeline1_reg[4][12]/C
+                         clock pessimism             -0.569     2.839    
+    SLICE_X35Y17         FDRE (Hold_fdre_C_D)         0.107     2.946    adc1/filter1/m_filter1/pipeline1_reg[4][12]
   -------------------------------------------------------------------
-                         required time                         -2.951    
-                         arrival time                           3.080    
+                         required time                         -2.946    
+                         arrival time                           3.058    
   -------------------------------------------------------------------
-                         slack                                  0.129    
+                         slack                                  0.112    
+
+Slack (MET) :             0.115ns  (arrival time - required time)
+  Source:                 adc1/filter1/m_filter1/d_reg[2][8]/C
+                            (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
+  Destination:            adc1/filter1/m_filter1/d_reg[1][8]/D
+                            (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
+  Path Group:             sys_clk
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (sys_clk rise@0.000ns - sys_clk rise@0.000ns)
+  Data Path Delay:        0.439ns  (logic 0.141ns (32.155%)  route 0.298ns (67.845%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.261ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    3.408ns
+    Source Clock Delay      (SCD):    2.578ns
+    Clock Pessimism Removal (CPR):    0.569ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock sys_clk rise edge)    0.000     0.000 r  
+    P15                                               0.000     0.000 r  clk_in (IN)
+                         net (fo=0)                   0.000     0.000    clk_in
+    P15                  IBUF (Prop_ibuf_I_O)         0.231     0.231 r  clk_in_IBUF_inst/O
+                         net (fo=1, routed)           0.634     0.865    clk_in_IBUF
+    BUFGCTRL_X0Y2        BUFG (Prop_bufg_I_O)         0.026     0.891 r  clock_buf/O
+                         net (fo=1, routed)           0.554     1.445    clk_in_buf
+    PLLE2_ADV_X1Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                      0.050     1.495 r  PLLE2_BASE_inst/CLKOUT1
+                         net (fo=1, routed)           0.501     1.996    ifclk_out_OBUF
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.026     2.022 r  ifclk_out_OBUF_BUFG_inst/O
+                         net (fo=1210, routed)        0.557     2.578    adc1/filter1/m_filter1/ifclk_out_OBUF_BUFG
+    SLICE_X39Y17         FDRE                                         r  adc1/filter1/m_filter1/d_reg[2][8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X39Y17         FDRE (Prop_fdre_C_Q)         0.141     2.719 r  adc1/filter1/m_filter1/d_reg[2][8]/Q
+                         net (fo=10, routed)          0.298     3.017    adc1/filter1/m_filter1/d_reg[2]_2[8]
+    SLICE_X34Y17         FDRE                                         r  adc1/filter1/m_filter1/d_reg[1][8]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock sys_clk rise edge)    0.000     0.000 r  
+    P15                                               0.000     0.000 r  clk_in (IN)
+                         net (fo=0)                   0.000     0.000    clk_in
+    P15                  IBUF (Prop_ibuf_I_O)         0.419     0.419 r  clk_in_IBUF_inst/O
+                         net (fo=1, routed)           0.689     1.107    clk_in_IBUF
+    BUFGCTRL_X0Y2        BUFG (Prop_bufg_I_O)         0.029     1.136 r  clock_buf/O
+                         net (fo=1, routed)           0.822     1.958    clk_in_buf
+    PLLE2_ADV_X1Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                      0.053     2.011 r  PLLE2_BASE_inst/CLKOUT1
+                         net (fo=1, routed)           0.546     2.557    ifclk_out_OBUF
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.029     2.586 r  ifclk_out_OBUF_BUFG_inst/O
+                         net (fo=1210, routed)        0.823     3.408    adc1/filter1/m_filter1/ifclk_out_OBUF_BUFG
+    SLICE_X34Y17         FDRE                                         r  adc1/filter1/m_filter1/d_reg[1][8]/C
+                         clock pessimism             -0.569     2.839    
+    SLICE_X34Y17         FDRE (Hold_fdre_C_D)         0.063     2.902    adc1/filter1/m_filter1/d_reg[1][8]
+  -------------------------------------------------------------------
+                         required time                         -2.902    
+                         arrival time                           3.017    
+  -------------------------------------------------------------------
+                         slack                                  0.115    
 
 
 
@@ -2889,13 +2889,80 @@ Path Group:  **async_default**
 From Clock:  sys_clk
   To Clock:  sys_clk
 
-Setup :            0  Failing Endpoints,  Worst Slack        6.542ns,  Total Violation        0.000ns
-Hold  :            0  Failing Endpoints,  Worst Slack        1.381ns,  Total Violation        0.000ns
+Setup :            0  Failing Endpoints,  Worst Slack        6.534ns,  Total Violation        0.000ns
+Hold  :            0  Failing Endpoints,  Worst Slack        1.372ns,  Total Violation        0.000ns
 ---------------------------------------------------------------------------------------------------
 
 
 Max Delay Paths
 --------------------------------------------------------------------------------------
+Slack (MET) :             6.534ns  (required time - arrival time)
+  Source:                 reset_inst/rst_reg/C
+                            (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
+  Destination:            trigger/FIFO36E1_inst/RST
+                            (recovery check against rising-edge clock sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
+  Path Group:             **async_default**
+  Path Type:              Recovery (Max at Slow Process Corner)
+  Requirement:            15.625ns  (sys_clk rise@15.625ns - sys_clk rise@0.000ns)
+  Data Path Delay:        6.619ns  (logic 0.704ns (10.637%)  route 5.915ns (89.363%))
+  Logic Levels:           2  (LUT3=1 LUT6=1)
+  Clock Path Skew:        -0.066ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    8.057ns = ( 23.682 - 15.625 ) 
+    Source Clock Delay      (SCD):    8.590ns
+    Clock Pessimism Removal (CPR):    0.467ns
+  Clock Uncertainty:      0.039ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.034ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock sys_clk rise edge)    0.000     0.000 r  
+    P15                                               0.000     0.000 r  clk_in (IN)
+                         net (fo=0)                   0.000     0.000    clk_in
+    P15                  IBUF (Prop_ibuf_I_O)         1.463     1.463 r  clk_in_IBUF_inst/O
+                         net (fo=1, routed)           1.972     3.435    clk_in_IBUF
+    BUFGCTRL_X0Y2        BUFG (Prop_bufg_I_O)         0.096     3.531 r  clock_buf/O
+                         net (fo=1, routed)           1.598     5.129    clk_in_buf
+    PLLE2_ADV_X1Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                      0.088     5.217 r  PLLE2_BASE_inst/CLKOUT1
+                         net (fo=1, routed)           1.655     6.872    ifclk_out_OBUF
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     6.968 r  ifclk_out_OBUF_BUFG_inst/O
+                         net (fo=1210, routed)        1.621     8.590    reset_inst/ifclk_out_OBUF_BUFG
+    SLICE_X1Y22          FDRE                                         r  reset_inst/rst_reg/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X1Y22          FDRE (Prop_fdre_C_Q)         0.456     9.046 f  reset_inst/rst_reg/Q
+                         net (fo=38, routed)          1.653    10.699    reset_inst/rst_0
+    SLICE_X33Y33         LUT3 (Prop_lut3_I2_O)        0.124    10.823 r  reset_inst/LED_GREEN_OBUF_inst_i_1/O
+                         net (fo=16, routed)          3.176    13.999    trigger/LED_GREEN_OBUF
+    SLICE_X0Y27          LUT6 (Prop_lut6_I3_O)        0.124    14.123 f  trigger/FIFO36E1_inst_i_2/O
+                         net (fo=1, routed)           1.086    15.208    trigger/fifo_rst_internal
+    RAMB36_X0Y3          FIFO36E1                                     f  trigger/FIFO36E1_inst/RST
+  -------------------------------------------------------------------    -------------------
+
+                         (clock sys_clk rise edge)   15.625    15.625 r  
+    P15                                               0.000    15.625 r  clk_in (IN)
+                         net (fo=0)                   0.000    15.625    clk_in
+    P15                  IBUF (Prop_ibuf_I_O)         1.393    17.018 r  clk_in_IBUF_inst/O
+                         net (fo=1, routed)           1.868    18.886    clk_in_IBUF
+    BUFGCTRL_X0Y2        BUFG (Prop_bufg_I_O)         0.091    18.977 r  clock_buf/O
+                         net (fo=1, routed)           1.479    20.456    clk_in_buf
+    PLLE2_ADV_X1Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                      0.083    20.539 r  PLLE2_BASE_inst/CLKOUT1
+                         net (fo=1, routed)           1.576    22.115    ifclk_out_OBUF
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    22.206 r  ifclk_out_OBUF_BUFG_inst/O
+                         net (fo=1210, routed)        1.476    23.682    trigger/ifclk_out_OBUF_BUFG
+    RAMB36_X0Y3          FIFO36E1                                     r  trigger/FIFO36E1_inst/RDCLK
+                         clock pessimism              0.467    24.149    
+                         clock uncertainty           -0.039    24.110    
+    RAMB36_X0Y3          FIFO36E1 (Recov_fifo36e1_RDCLK_RST)
+                                                     -2.368    21.742    trigger/FIFO36E1_inst
+  -------------------------------------------------------------------
+                         required time                         21.742    
+                         arrival time                         -15.208    
+  -------------------------------------------------------------------
+                         slack                                  6.534    
+
 Slack (MET) :             6.542ns  (required time - arrival time)
   Source:                 reset_inst/rst_reg/C
                             (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
@@ -3029,73 +3096,6 @@ Slack (MET) :             6.880ns  (required time - arrival time)
                          arrival time                         -14.797    
   -------------------------------------------------------------------
                          slack                                  6.880    
-
-Slack (MET) :             7.158ns  (required time - arrival time)
-  Source:                 reset_inst/rst_reg/C
-                            (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
-  Destination:            trigger/FIFO36E1_inst/RST
-                            (recovery check against rising-edge clock sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
-  Path Group:             **async_default**
-  Path Type:              Recovery (Max at Slow Process Corner)
-  Requirement:            15.625ns  (sys_clk rise@15.625ns - sys_clk rise@0.000ns)
-  Data Path Delay:        5.994ns  (logic 0.704ns (11.744%)  route 5.290ns (88.256%))
-  Logic Levels:           2  (LUT3=1 LUT6=1)
-  Clock Path Skew:        -0.066ns (DCD - SCD + CPR)
-    Destination Clock Delay (DCD):    8.057ns = ( 23.682 - 15.625 ) 
-    Source Clock Delay      (SCD):    8.590ns
-    Clock Pessimism Removal (CPR):    0.467ns
-  Clock Uncertainty:      0.039ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
-    Total System Jitter     (TSJ):    0.071ns
-    Discrete Jitter          (DJ):    0.034ns
-    Phase Error              (PE):    0.000ns
-
-    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
-  -------------------------------------------------------------------    -------------------
-                         (clock sys_clk rise edge)    0.000     0.000 r  
-    P15                                               0.000     0.000 r  clk_in (IN)
-                         net (fo=0)                   0.000     0.000    clk_in
-    P15                  IBUF (Prop_ibuf_I_O)         1.463     1.463 r  clk_in_IBUF_inst/O
-                         net (fo=1, routed)           1.972     3.435    clk_in_IBUF
-    BUFGCTRL_X0Y2        BUFG (Prop_bufg_I_O)         0.096     3.531 r  clock_buf/O
-                         net (fo=1, routed)           1.598     5.129    clk_in_buf
-    PLLE2_ADV_X1Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
-                                                      0.088     5.217 r  PLLE2_BASE_inst/CLKOUT1
-                         net (fo=1, routed)           1.655     6.872    ifclk_out_OBUF
-    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     6.968 r  ifclk_out_OBUF_BUFG_inst/O
-                         net (fo=1210, routed)        1.621     8.590    reset_inst/ifclk_out_OBUF_BUFG
-    SLICE_X1Y22          FDRE                                         r  reset_inst/rst_reg/C
-  -------------------------------------------------------------------    -------------------
-    SLICE_X1Y22          FDRE (Prop_fdre_C_Q)         0.456     9.046 f  reset_inst/rst_reg/Q
-                         net (fo=38, routed)          1.653    10.699    reset_inst/rst_0
-    SLICE_X33Y33         LUT3 (Prop_lut3_I2_O)        0.124    10.823 r  reset_inst/LED_GREEN_OBUF_inst_i_1/O
-                         net (fo=16, routed)          2.551    13.374    trigger/LED_GREEN_OBUF
-    SLICE_X0Y27          LUT6 (Prop_lut6_I3_O)        0.124    13.498 f  trigger/FIFO36E1_inst_i_2/O
-                         net (fo=1, routed)           1.086    14.584    trigger/fifo_rst_internal
-    RAMB36_X0Y3          FIFO36E1                                     f  trigger/FIFO36E1_inst/RST
-  -------------------------------------------------------------------    -------------------
-
-                         (clock sys_clk rise edge)   15.625    15.625 r  
-    P15                                               0.000    15.625 r  clk_in (IN)
-                         net (fo=0)                   0.000    15.625    clk_in
-    P15                  IBUF (Prop_ibuf_I_O)         1.393    17.018 r  clk_in_IBUF_inst/O
-                         net (fo=1, routed)           1.868    18.886    clk_in_IBUF
-    BUFGCTRL_X0Y2        BUFG (Prop_bufg_I_O)         0.091    18.977 r  clock_buf/O
-                         net (fo=1, routed)           1.479    20.456    clk_in_buf
-    PLLE2_ADV_X1Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
-                                                      0.083    20.539 r  PLLE2_BASE_inst/CLKOUT1
-                         net (fo=1, routed)           1.576    22.115    ifclk_out_OBUF
-    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    22.206 r  ifclk_out_OBUF_BUFG_inst/O
-                         net (fo=1210, routed)        1.476    23.682    trigger/ifclk_out_OBUF_BUFG
-    RAMB36_X0Y3          FIFO36E1                                     r  trigger/FIFO36E1_inst/RDCLK
-                         clock pessimism              0.467    24.149    
-                         clock uncertainty           -0.039    24.110    
-    RAMB36_X0Y3          FIFO36E1 (Recov_fifo36e1_RDCLK_RST)
-                                                     -2.368    21.742    trigger/FIFO36E1_inst
-  -------------------------------------------------------------------
-                         required time                         21.742    
-                         arrival time                         -14.584    
-  -------------------------------------------------------------------
-                         slack                                  7.158    
 
 Slack (MET) :             7.980ns  (required time - arrival time)
   Source:                 reset_inst/rst_reg/C
@@ -3304,7 +3304,7 @@ Slack (MET) :             8.205ns  (required time - arrival time)
 
 Min Delay Paths
 --------------------------------------------------------------------------------------
-Slack (MET) :             1.381ns  (arrival time - required time)
+Slack (MET) :             1.372ns  (arrival time - required time)
   Source:                 slave_fifo/rst_d_reg/C
                             (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
   Destination:            trigger/FIFO36E1_inst/RST
@@ -3312,7 +3312,7 @@ Slack (MET) :             1.381ns  (arrival time - required time)
   Path Group:             **async_default**
   Path Type:              Removal (Min at Fast Process Corner)
   Requirement:            0.000ns  (sys_clk rise@0.000ns - sys_clk rise@0.000ns)
-  Data Path Delay:        0.845ns  (logic 0.186ns (22.013%)  route 0.659ns (77.987%))
+  Data Path Delay:        0.836ns  (logic 0.186ns (22.251%)  route 0.650ns (77.749%))
   Logic Levels:           1  (LUT6=1)
   Clock Path Skew:        0.052ns (DCD - SCD - CPR)
     Destination Clock Delay (DCD):    3.457ns
@@ -3336,9 +3336,9 @@ Slack (MET) :             1.381ns  (arrival time - required time)
     SLICE_X0Y28          FDRE                                         r  slave_fifo/rst_d_reg/C
   -------------------------------------------------------------------    -------------------
     SLICE_X0Y28          FDRE (Prop_fdre_C_Q)         0.141     2.747 f  slave_fifo/rst_d_reg/Q
-                         net (fo=5, routed)           0.158     2.906    trigger/rst_d
-    SLICE_X0Y27          LUT6 (Prop_lut6_I2_O)        0.045     2.951 f  trigger/FIFO36E1_inst_i_2/O
-                         net (fo=1, routed)           0.501     3.451    trigger/fifo_rst_internal
+                         net (fo=5, routed)           0.149     2.897    trigger/rst_d
+    SLICE_X0Y27          LUT6 (Prop_lut6_I2_O)        0.045     2.942 f  trigger/FIFO36E1_inst_i_2/O
+                         net (fo=1, routed)           0.501     3.442    trigger/fifo_rst_internal
     RAMB36_X0Y3          FIFO36E1                                     f  trigger/FIFO36E1_inst/RST
   -------------------------------------------------------------------    -------------------
 
@@ -3360,11 +3360,11 @@ Slack (MET) :             1.381ns  (arrival time - required time)
                                                      -0.589     2.070    trigger/FIFO36E1_inst
   -------------------------------------------------------------------
                          required time                         -2.070    
-                         arrival time                           3.451    
+                         arrival time                           3.442    
   -------------------------------------------------------------------
-                         slack                                  1.381    
+                         slack                                  1.372    
 
-Slack (MET) :             1.442ns  (arrival time - required time)
+Slack (MET) :             1.433ns  (arrival time - required time)
   Source:                 slave_fifo/rst_d_reg/C
                             (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
   Destination:            slave_fifo/fifo_arrival/RST
@@ -3372,7 +3372,7 @@ Slack (MET) :             1.442ns  (arrival time - required time)
   Path Group:             **async_default**
   Path Type:              Removal (Min at Fast Process Corner)
   Requirement:            0.000ns  (sys_clk rise@0.000ns - sys_clk rise@0.000ns)
-  Data Path Delay:        0.910ns  (logic 0.186ns (20.434%)  route 0.724ns (79.566%))
+  Data Path Delay:        0.901ns  (logic 0.186ns (20.639%)  route 0.715ns (79.361%))
   Logic Levels:           1  (LUT6=1)
   Clock Path Skew:        0.057ns (DCD - SCD - CPR)
     Destination Clock Delay (DCD):    3.462ns
@@ -3396,9 +3396,9 @@ Slack (MET) :             1.442ns  (arrival time - required time)
     SLICE_X0Y28          FDRE                                         r  slave_fifo/rst_d_reg/C
   -------------------------------------------------------------------    -------------------
     SLICE_X0Y28          FDRE (Prop_fdre_C_Q)         0.141     2.747 f  slave_fifo/rst_d_reg/Q
-                         net (fo=5, routed)           0.156     2.904    slave_fifo/fifo_departure/is_outgoing_reg
-    SLICE_X0Y27          LUT6 (Prop_lut6_I1_O)        0.045     2.949 f  slave_fifo/fifo_departure/genblk1[0].fifo_departure_inst_i_2/O
-                         net (fo=9, routed)           0.568     3.516    slave_fifo/fifo_rst_internal
+                         net (fo=5, routed)           0.147     2.895    slave_fifo/fifo_departure/is_outgoing_reg
+    SLICE_X0Y27          LUT6 (Prop_lut6_I1_O)        0.045     2.940 f  slave_fifo/fifo_departure/genblk1[0].fifo_departure_inst_i_2/O
+                         net (fo=9, routed)           0.568     3.507    slave_fifo/fifo_rst_internal
     RAMB36_X0Y7          FIFO36E1                                     f  slave_fifo/fifo_arrival/RST
   -------------------------------------------------------------------    -------------------
 
@@ -3420,11 +3420,11 @@ Slack (MET) :             1.442ns  (arrival time - required time)
                                                      -0.589     2.075    slave_fifo/fifo_arrival
   -------------------------------------------------------------------
                          required time                         -2.075    
-                         arrival time                           3.516    
+                         arrival time                           3.507    
   -------------------------------------------------------------------
-                         slack                                  1.442    
+                         slack                                  1.433    
 
-Slack (MET) :             1.525ns  (arrival time - required time)
+Slack (MET) :             1.516ns  (arrival time - required time)
   Source:                 slave_fifo/rst_d_reg/C
                             (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
   Destination:            slave_fifo/fifo_departure/genblk1[0].fifo_departure_inst/RST
@@ -3432,7 +3432,7 @@ Slack (MET) :             1.525ns  (arrival time - required time)
   Path Group:             **async_default**
   Path Type:              Removal (Min at Fast Process Corner)
   Requirement:            0.000ns  (sys_clk rise@0.000ns - sys_clk rise@0.000ns)
-  Data Path Delay:        0.994ns  (logic 0.186ns (18.721%)  route 0.808ns (81.279%))
+  Data Path Delay:        0.985ns  (logic 0.186ns (18.893%)  route 0.799ns (81.107%))
   Logic Levels:           1  (LUT6=1)
   Clock Path Skew:        0.057ns (DCD - SCD - CPR)
     Destination Clock Delay (DCD):    3.462ns
@@ -3456,9 +3456,9 @@ Slack (MET) :             1.525ns  (arrival time - required time)
     SLICE_X0Y28          FDRE                                         r  slave_fifo/rst_d_reg/C
   -------------------------------------------------------------------    -------------------
     SLICE_X0Y28          FDRE (Prop_fdre_C_Q)         0.141     2.747 f  slave_fifo/rst_d_reg/Q
-                         net (fo=5, routed)           0.156     2.904    slave_fifo/fifo_departure/is_outgoing_reg
-    SLICE_X0Y27          LUT6 (Prop_lut6_I1_O)        0.045     2.949 f  slave_fifo/fifo_departure/genblk1[0].fifo_departure_inst_i_2/O
-                         net (fo=9, routed)           0.651     3.600    slave_fifo/fifo_departure/fifo_rst_internal
+                         net (fo=5, routed)           0.147     2.895    slave_fifo/fifo_departure/is_outgoing_reg
+    SLICE_X0Y27          LUT6 (Prop_lut6_I1_O)        0.045     2.940 f  slave_fifo/fifo_departure/genblk1[0].fifo_departure_inst_i_2/O
+                         net (fo=9, routed)           0.651     3.591    slave_fifo/fifo_departure/fifo_rst_internal
     RAMB36_X0Y2          FIFO36E1                                     f  slave_fifo/fifo_departure/genblk1[0].fifo_departure_inst/RST
   -------------------------------------------------------------------    -------------------
 
@@ -3480,11 +3480,11 @@ Slack (MET) :             1.525ns  (arrival time - required time)
                                                      -0.589     2.075    slave_fifo/fifo_departure/genblk1[0].fifo_departure_inst
   -------------------------------------------------------------------
                          required time                         -2.075    
-                         arrival time                           3.600    
+                         arrival time                           3.591    
   -------------------------------------------------------------------
-                         slack                                  1.525    
+                         slack                                  1.516    
 
-Slack (MET) :             1.541ns  (arrival time - required time)
+Slack (MET) :             1.532ns  (arrival time - required time)
   Source:                 slave_fifo/rst_d_reg/C
                             (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
   Destination:            slave_fifo/fifo_departure/genblk1[3].fifo_departure_inst/RST
@@ -3492,7 +3492,7 @@ Slack (MET) :             1.541ns  (arrival time - required time)
   Path Group:             **async_default**
   Path Type:              Removal (Min at Fast Process Corner)
   Requirement:            0.000ns  (sys_clk rise@0.000ns - sys_clk rise@0.000ns)
-  Data Path Delay:        1.011ns  (logic 0.186ns (18.397%)  route 0.825ns (81.603%))
+  Data Path Delay:        1.002ns  (logic 0.186ns (18.563%)  route 0.816ns (81.437%))
   Logic Levels:           1  (LUT6=1)
   Clock Path Skew:        0.059ns (DCD - SCD - CPR)
     Destination Clock Delay (DCD):    3.464ns
@@ -3516,9 +3516,9 @@ Slack (MET) :             1.541ns  (arrival time - required time)
     SLICE_X0Y28          FDRE                                         r  slave_fifo/rst_d_reg/C
   -------------------------------------------------------------------    -------------------
     SLICE_X0Y28          FDRE (Prop_fdre_C_Q)         0.141     2.747 f  slave_fifo/rst_d_reg/Q
-                         net (fo=5, routed)           0.156     2.904    slave_fifo/fifo_departure/is_outgoing_reg
-    SLICE_X0Y27          LUT6 (Prop_lut6_I1_O)        0.045     2.949 f  slave_fifo/fifo_departure/genblk1[0].fifo_departure_inst_i_2/O
-                         net (fo=9, routed)           0.669     3.617    slave_fifo/fifo_departure/fifo_rst_internal
+                         net (fo=5, routed)           0.147     2.895    slave_fifo/fifo_departure/is_outgoing_reg
+    SLICE_X0Y27          LUT6 (Prop_lut6_I1_O)        0.045     2.940 f  slave_fifo/fifo_departure/genblk1[0].fifo_departure_inst_i_2/O
+                         net (fo=9, routed)           0.669     3.608    slave_fifo/fifo_departure/fifo_rst_internal
     RAMB36_X0Y1          FIFO36E1                                     f  slave_fifo/fifo_departure/genblk1[3].fifo_departure_inst/RST
   -------------------------------------------------------------------    -------------------
 
@@ -3540,11 +3540,11 @@ Slack (MET) :             1.541ns  (arrival time - required time)
                                                      -0.589     2.077    slave_fifo/fifo_departure/genblk1[3].fifo_departure_inst
   -------------------------------------------------------------------
                          required time                         -2.077    
-                         arrival time                           3.617    
+                         arrival time                           3.608    
   -------------------------------------------------------------------
-                         slack                                  1.541    
+                         slack                                  1.532    
 
-Slack (MET) :             1.855ns  (arrival time - required time)
+Slack (MET) :             1.846ns  (arrival time - required time)
   Source:                 slave_fifo/rst_d_reg/C
                             (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
   Destination:            slave_fifo/fifo_departure/genblk1[1].fifo_departure_inst/RST
@@ -3552,7 +3552,7 @@ Slack (MET) :             1.855ns  (arrival time - required time)
   Path Group:             **async_default**
   Path Type:              Removal (Min at Fast Process Corner)
   Requirement:            0.000ns  (sys_clk rise@0.000ns - sys_clk rise@0.000ns)
-  Data Path Delay:        1.553ns  (logic 0.186ns (11.978%)  route 1.367ns (88.022%))
+  Data Path Delay:        1.544ns  (logic 0.186ns (12.048%)  route 1.358ns (87.952%))
   Logic Levels:           1  (LUT6=1)
   Clock Path Skew:        0.286ns (DCD - SCD - CPR)
     Destination Clock Delay (DCD):    3.462ns
@@ -3576,9 +3576,9 @@ Slack (MET) :             1.855ns  (arrival time - required time)
     SLICE_X0Y28          FDRE                                         r  slave_fifo/rst_d_reg/C
   -------------------------------------------------------------------    -------------------
     SLICE_X0Y28          FDRE (Prop_fdre_C_Q)         0.141     2.747 f  slave_fifo/rst_d_reg/Q
-                         net (fo=5, routed)           0.156     2.904    slave_fifo/fifo_departure/is_outgoing_reg
-    SLICE_X0Y27          LUT6 (Prop_lut6_I1_O)        0.045     2.949 f  slave_fifo/fifo_departure/genblk1[0].fifo_departure_inst_i_2/O
-                         net (fo=9, routed)           1.210     4.159    slave_fifo/fifo_departure/fifo_rst_internal
+                         net (fo=5, routed)           0.147     2.895    slave_fifo/fifo_departure/is_outgoing_reg
+    SLICE_X0Y27          LUT6 (Prop_lut6_I1_O)        0.045     2.940 f  slave_fifo/fifo_departure/genblk1[0].fifo_departure_inst_i_2/O
+                         net (fo=9, routed)           1.210     4.150    slave_fifo/fifo_departure/fifo_rst_internal
     RAMB36_X1Y2          FIFO36E1                                     f  slave_fifo/fifo_departure/genblk1[1].fifo_departure_inst/RST
   -------------------------------------------------------------------    -------------------
 
@@ -3600,11 +3600,11 @@ Slack (MET) :             1.855ns  (arrival time - required time)
                                                      -0.589     2.304    slave_fifo/fifo_departure/genblk1[1].fifo_departure_inst
   -------------------------------------------------------------------
                          required time                         -2.304    
-                         arrival time                           4.159    
+                         arrival time                           4.150    
   -------------------------------------------------------------------
-                         slack                                  1.855    
+                         slack                                  1.846    
 
-Slack (MET) :             1.991ns  (arrival time - required time)
+Slack (MET) :             1.982ns  (arrival time - required time)
   Source:                 slave_fifo/rst_d_reg/C
                             (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@7.813ns period=15.625ns})
   Destination:            slave_fifo/fifo_departure/genblk1[2].fifo_departure_inst/RST
@@ -3612,7 +3612,7 @@ Slack (MET) :             1.991ns  (arrival time - required time)
   Path Group:             **async_default**
   Path Type:              Removal (Min at Fast Process Corner)
   Requirement:            0.000ns  (sys_clk rise@0.000ns - sys_clk rise@0.000ns)
-  Data Path Delay:        1.691ns  (logic 0.186ns (11.001%)  route 1.505ns (88.999%))
+  Data Path Delay:        1.682ns  (logic 0.186ns (11.060%)  route 1.496ns (88.940%))
   Logic Levels:           1  (LUT6=1)
   Clock Path Skew:        0.288ns (DCD - SCD - CPR)
     Destination Clock Delay (DCD):    3.464ns
@@ -3636,9 +3636,9 @@ Slack (MET) :             1.991ns  (arrival time - required time)
     SLICE_X0Y28          FDRE                                         r  slave_fifo/rst_d_reg/C
   -------------------------------------------------------------------    -------------------
     SLICE_X0Y28          FDRE (Prop_fdre_C_Q)         0.141     2.747 f  slave_fifo/rst_d_reg/Q
-                         net (fo=5, routed)           0.156     2.904    slave_fifo/fifo_departure/is_outgoing_reg
-    SLICE_X0Y27          LUT6 (Prop_lut6_I1_O)        0.045     2.949 f  slave_fifo/fifo_departure/genblk1[0].fifo_departure_inst_i_2/O
-                         net (fo=9, routed)           1.348     4.297    slave_fifo/fifo_departure/fifo_rst_internal
+                         net (fo=5, routed)           0.147     2.895    slave_fifo/fifo_departure/is_outgoing_reg
+    SLICE_X0Y27          LUT6 (Prop_lut6_I1_O)        0.045     2.940 f  slave_fifo/fifo_departure/genblk1[0].fifo_departure_inst_i_2/O
+                         net (fo=9, routed)           1.348     4.288    slave_fifo/fifo_departure/fifo_rst_internal
     RAMB36_X1Y1          FIFO36E1                                     f  slave_fifo/fifo_departure/genblk1[2].fifo_departure_inst/RST
   -------------------------------------------------------------------    -------------------
 
@@ -3660,9 +3660,9 @@ Slack (MET) :             1.991ns  (arrival time - required time)
                                                      -0.589     2.306    slave_fifo/fifo_departure/genblk1[2].fifo_departure_inst
   -------------------------------------------------------------------
                          required time                         -2.306    
-                         arrival time                           4.297    
+                         arrival time                           4.288    
   -------------------------------------------------------------------
-                         slack                                  1.991    
+                         slack                                  1.982    
 
 
 

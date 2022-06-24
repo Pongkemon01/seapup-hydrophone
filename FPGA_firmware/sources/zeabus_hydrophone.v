@@ -248,6 +248,12 @@ module zeabus_hydrophone #(
         .pkt_end(pkt_end)               // Current data word is the end of current packet
     );
 
+    // Concat all channels
+    wire comb_strb;
+    wire [63:0] adc_out;
+	assign comb_strb = adc_strb_1 & adc_strb_2 & adc_strb_3 & adc_strb_4;
+    assign adc_out = { adc2_2_out, adc2_1_out, adc1_2_out, adc1_1_out };
+
     hydrophone_trigger #( .header(trigger_head), .trigged_tailed(trigger_tail) ) trigger(
         .rst(rst),                      // system reset (active high)
         .clk(sys_clk),                  // Master clock
@@ -258,9 +264,9 @@ module zeabus_hydrophone #(
         .abs_data(abs_data),            // Debug signal
         .abs_trig(abs_trig),            // Debug signal
 
-        .d_in( { adc2_2_out, adc2_1_out, adc1_2_out, adc1_1_out } ),// data input (concatenation of 4 16-bit data with channel 1 first)
+        .d_in( adc_out ),               // data input (concatenation of 4 16-bit data with channel 1 first)
         .trigger_level(trigger_level),  // level of the trigger in 16-bit signed integer
-        .strb_ch1(adc_strb_1), .strb_ch2(adc_strb_2), .strb_ch3(adc_strb_3), .strb_ch4(adc_strb_4), // Strobe from ADC
+        .input_strobe(comb_strb),       // Strobe from ADC
 
         .d_out(trigged_out),            // data output
         .output_strobe(trigger_strobe), // Strobe to read from trigger FIFO

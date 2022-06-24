@@ -54,8 +54,8 @@ module hydrophone_trigger
 	input clk,					// signal clock (64 MHz)
 	input enable,				// enable trigger funtion (aka. start of the capture function)
 	input [63:0] d_in,			// data input (concatenation of 4 16-bit data) all in format Q13.6
+	input input_strobe,			// Strobe signal from each channel
 	input [15:0] trigger_level,	// level of the trigger in 16-bit signed integer in format Q13.2
-	input strb_ch1, strb_ch2, strb_ch3, strb_ch4,	// Strobe signal from each channel
 	output [63:0] d_out,		// data output  all in format Q13.6
 	output output_strobe,		// Combined strobe signal from all channels plus edge detected
 	output reg trigged			// indicates that the data is part of packet of trigged signal
@@ -70,7 +70,6 @@ module hydrophone_trigger
 	reg strb_d, strb_dd;		// Delay line of strobe signal to detect rising edge
 	reg rst_d, rst_dd, rst_3d, rst_4d, rst_5d, rst_6d, rst_7d, rst_8d;	// Delay line for reset signal to make the internal reset time greater than 5 clk
 
-	wire strb_all;				// Combined strobe from all channels
 	wire rst_internal;			// Internal reset signal
 	wire fifo_rst_internal;		// Internal reset for fifo module
 	wire almost_full;			// FIFO is almost full
@@ -83,7 +82,6 @@ module hydrophone_trigger
 	// Combine all strobe signals
 	assign fifo_rst_internal = rst | rst_d | rst_dd | rst_3d | rst_4d | rst_5d;
 	assign rst_internal = fifo_rst_internal | rst_6d | rst_7d | rst_8d;
-	assign strb_all = strb_ch1 & strb_ch2 & strb_ch3 & strb_ch4;
 	assign output_strobe = strb_d & ~strb_dd & ~rst_internal;
 	assign fifo_wr_en = output_strobe;
 	assign fifo_rd_en = (rd_en | almost_full) & output_strobe & ~rst_internal ;		// Enable read when FIFO almost full too.
@@ -143,7 +141,7 @@ module hydrophone_trigger
 		else
 		begin
 			strb_dd <= strb_d;
-			strb_d <= strb_all;
+			strb_d <= input_strobe;
 		end
 	end
 	
