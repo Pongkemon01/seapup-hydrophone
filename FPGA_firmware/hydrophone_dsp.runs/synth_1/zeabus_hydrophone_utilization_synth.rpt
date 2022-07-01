@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -----------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-| Date         : Fri Jun 24 12:07:01 2022
+| Date         : Fri Jul  1 15:40:29 2022
 | Host         : Seapup-dell running 64-bit Ubuntu 20.04.4 LTS
 | Command      : report_utilization -file zeabus_hydrophone_utilization_synth.rpt -pb zeabus_hydrophone_utilization_synth.pb
 | Design       : zeabus_hydrophone
@@ -30,8 +30,8 @@ Table of Contents
 +-------------------------+------+-------+-----------+-------+
 |        Site Type        | Used | Fixed | Available | Util% |
 +-------------------------+------+-------+-----------+-------+
-| Slice LUTs*             | 1594 |     0 |     10400 | 15.33 |
-|   LUT as Logic          | 1594 |     0 |     10400 | 15.33 |
+| Slice LUTs*             | 1615 |     0 |     10400 | 15.53 |
+|   LUT as Logic          | 1615 |     0 |     10400 | 15.53 |
 |   LUT as Memory         |    0 |     0 |      9600 |  0.00 |
 | Slice Registers         | 1167 |     0 |     20800 |  5.61 |
 |   Register as Flip Flop | 1167 |     0 |     20800 |  5.61 |
@@ -64,14 +64,14 @@ Table of Contents
 2. Memory
 ---------
 
-+-------------------+------+-------+-----------+-------+
-|     Site Type     | Used | Fixed | Available | Util% |
-+-------------------+------+-------+-----------+-------+
-| Block RAM Tile    |    6 |     0 |        25 | 24.00 |
-|   RAMB36/FIFO*    |    6 |     0 |        25 | 24.00 |
-|     FIFO36E1 only |    6 |       |           |       |
-|   RAMB18          |    0 |     0 |        50 |  0.00 |
-+-------------------+------+-------+-----------+-------+
++-------------------+------+-------+-----------+--------+
+|     Site Type     | Used | Fixed | Available |  Util% |
++-------------------+------+-------+-----------+--------+
+| Block RAM Tile    |   25 |     0 |        25 | 100.00 |
+|   RAMB36/FIFO*    |   25 |     0 |        25 | 100.00 |
+|     FIFO36E1 only |   25 |       |           |        |
+|   RAMB18          |    0 |     0 |        50 |   0.00 |
++-------------------+------+-------+-----------+--------+
 * Note: Each Block RAM Tile only has one FIFO logic available and therefore can accommodate only one FIFO36E1 or one FIFO18E1. However, if a FIFO18E1 occupies a Block RAM Tile, that tile can still accommodate a RAMB18E1
 
 
@@ -149,20 +149,20 @@ Table of Contents
 |  Ref Name | Used | Functional Category |
 +-----------+------+---------------------+
 | FDRE      | 1118 |        Flop & Latch |
-| LUT6      |  551 |                 LUT |
-| LUT3      |  469 |                 LUT |
-| LUT5      |  442 |                 LUT |
+| LUT6      |  552 |                 LUT |
+| LUT3      |  468 |                 LUT |
+| LUT5      |  443 |                 LUT |
 | LUT4      |  384 |                 LUT |
 | CARRY4    |  188 |          CarryLogic |
+| LUT2      |  157 |                 LUT |
 | LUT1      |  156 |                 LUT |
-| LUT2      |  139 |                 LUT |
 | IBUF      |   53 |                  IO |
 | FDSE      |   49 |        Flop & Latch |
 | IDDR      |   30 |                  IO |
+| FIFO36E1  |   25 |        Block Memory |
 | OBUF      |   24 |                  IO |
 | OBUFT     |   18 |                  IO |
 | MUXF7     |   16 |               MuxFx |
-| FIFO36E1  |    6 |        Block Memory |
 | BUFG      |    2 |               Clock |
 | PLLE2_ADV |    1 |               Clock |
 +-----------+------+---------------------+

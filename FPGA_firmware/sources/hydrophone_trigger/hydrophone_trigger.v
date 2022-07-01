@@ -33,6 +33,123 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // --------------------------------------------------------------------------------
 
+// Cascading FIFO for longer prefix
+module CascadedFIFO64bit #( 
+	parameter DEPTH = 20,
+	parameter BACKLOG_SIZE = 10000
+) (
+    input clk,
+    input rst,
+    input wr_en,
+    input rd_en,
+    input [63:0] d_in,  // 17-bit data (16-bit sampling + 1-bit pktend)
+
+    output [63:0] d_out,  // 17-bit data (16-bit sampling + 1-bit pktend)
+    output is_empty,       // Fifo is empty
+    output is_almost_full  // Fifo is almost full
+);
+
+	localparam ALMOST_FULL_TH = (DEPTH * 512) - BACKLOG_SIZE;
+
+    //************************************************************
+    // IP Instances
+    //************************************************************
+    // Connecting logic
+    wire [63:0] din[0:DEPTH - 1];
+    wire [63:0] dout[0:DEPTH - 1];
+    wire rden[0:DEPTH - 1], wren[0:DEPTH - 1];
+    wire empty[0:DEPTH - 1], almost_empty[0:DEPTH - 1];
+    wire full[0:DEPTH - 1], almost_full[0:DEPTH - 1];
+
+    // Generate "DEPTH" instances and assign port connections
+    genvar x;
+
+    generate
+    for( x = 0; x < DEPTH; x = x + 1 )
+    begin
+    // FIFO36E1: 36Kb FIFO (First-In-First-Out) Block RAM Memory
+    //           7 Series
+    // Xilinx HDL Language Template, version 2021.2
+
+    FIFO36E1 #(
+        .ALMOST_EMPTY_OFFSET(13'h0080),    // Sets the almost empty threshold
+        .ALMOST_FULL_OFFSET(ALMOST_FULL_TH), // Sets almost full threshold to 20 available entries
+		.DATA_WIDTH(72),                   // Sets data width to 4-72
+		.DO_REG(1),                        // Enable output register (1-0) Must be 1 if EN_SYN = FALSE
+		.EN_ECC_READ("FALSE"),             // Enable ECC decoder, FALSE, TRUE
+		.EN_ECC_WRITE("FALSE"),            // Enable ECC encoder, FALSE, TRUE
+		.EN_SYN("FALSE"),                  // Specifies FIFO as Asynchronous (FALSE) or Synchronous (TRUE)
+		.FIFO_MODE("FIFO36_72"),              // Sets mode to "FIFO36" or "FIFO36_72"
+		.FIRST_WORD_FALL_THROUGH("TRUE"),  // Sets the FIFO FWFT to FALSE, TRUE
+		.INIT(72'h000000000000000000),     // Initial values on output port
+		.SIM_DEVICE("7SERIES"),            // Must be set to "7SERIES" for simulation behavior
+		.SRVAL(72'h000000000000000000)     // Set/Reset value for output port
+    )
+    fifo_departure_inst (
+        // ECC Signals: 1-bit (each) output: Error Correction Circuitry ports
+        .DBITERR(),                    // 1-bit output: Double bit error status
+        .ECCPARITY(),                  // 8-bit output: Generated error correction parity
+        .SBITERR(),                    // 1-bit output: Single bit error status
+        // Read Data: 64-bit (each) output: Read output data
+        .DO(dout[x]),                   // 64-bit output: (Data output + pkt_end associated with that word)
+        .DOP(),                        // 8-bit output: Parity data output
+        // Status: 1-bit (each) output: Flags and other FIFO status outputs
+        .ALMOSTEMPTY(almost_empty[x]), // 1-bit output: Almost empty flag
+        .ALMOSTFULL(almost_full[x]),   // 1-bit output: Almost full flag
+        .EMPTY(empty[x]),              // 1-bit output: Empty flag
+        .FULL(full[x]),                // 1-bit output: Full flag
+        .RDCOUNT(),                    // 13-bit output: Read count
+        .RDERR(),                      // 1-bit output: Read error
+        .WRCOUNT(),                    // 13-bit output: Write count
+        .WRERR(),                      // 1-bit output: Write error
+        // ECC Signals: 1-bit (each) input: Error Correction Circuitry ports
+        .INJECTDBITERR(1'b0),              // 1-bit input: Inject a double bit error input
+        .INJECTSBITERR(1'b0),
+        // Read Control Signals: 1-bit (each) input: Read clock, enable and reset input signals
+        .RDCLK(clk),                   // 1-bit input: Read clock
+        .RDEN(rden[x]),                // 1-bit input: Read enable
+        .REGCE(1'b1),                  // 1-bit input: Clock enable
+        .RST(rst),                     // 1-bit input: Reset
+        .RSTREG(1'b0),                 // 1-bit input: Output register set/reset
+        // Write Control Signals: 1-bit (each) input: Write clock and enable input signals
+        .WRCLK(clk),                   // 1-bit input: Rising edge write clock.
+        .WREN(wren[x]),                // 1-bit input: Write enable
+        // Write Data: 64-bit (each) input: Write input data
+        .DI(din[x]),                  // 64-bit input: ( Data input + Packet ending signal)
+        .DIP(8'b0)                     // 2-bit input: Parity input
+    );
+    // End of FIFO36E1_inst instantiation
+    end
+    endgenerate
+
+    // Connect all generated FIFO instance to cascade their depth
+    // Referred to UG473 in Xilinx web
+    assign din[0] = d_in;
+    assign wren[0] = wr_en;
+    assign rden[DEPTH - 1] = rd_en;
+    assign is_almost_full = almost_full[0];
+    assign is_empty = empty[DEPTH - 1];
+    assign d_out = dout[DEPTH - 1];
+
+    // Input Layer
+    assign rden[0] = wren[1];
+
+    // generate middle layer fifo connection
+    genvar y;
+    generate
+        for( y = 1; y < DEPTH - 1; y = y + 1 )
+        begin
+            assign din[y] = dout[y - 1];
+            assign wren[y] = ~(empty[y - 1] | full[y]);
+            assign rden[y] = wren[y + 1];            
+        end
+    endgenerate
+    // Output layer
+    assign din[DEPTH - 1] = dout[DEPTH - 2];
+    assign wren[DEPTH - 1] = ~(empty[DEPTH - 2] | full[DEPTH - 1]);
+
+endmodule
+
 // Helper module to get absolute value
 module absolute( input [15:0] in, output [15:0] out );
 	assign out = in[15] ? -in : in;
@@ -198,57 +315,7 @@ module hydrophone_trigger
 		end
 	end
 
-	// FIFO36E1: 36Kb FIFO (First-In-First-Out) Block RAM Memory
-	//           7 Series
-	// Xilinx HDL Language Template, version 2021.2
-
-	FIFO36E1 #(
-		.ALMOST_EMPTY_OFFSET(13'h0080),    // Sets the almost empty threshold
-		.ALMOST_FULL_OFFSET(13'd10),       // Sets almost full threshold to 10 available entries
-		.DATA_WIDTH(72),                   // Sets data width to 4-72
-		.DO_REG(1),                        // Enable output register (1-0) Must be 1 if EN_SYN = FALSE
-		.EN_ECC_READ("FALSE"),             // Enable ECC decoder, FALSE, TRUE
-		.EN_ECC_WRITE("FALSE"),            // Enable ECC encoder, FALSE, TRUE
-		.EN_SYN("FALSE"),                  // Specifies FIFO as Asynchronous (FALSE) or Synchronous (TRUE)
-		.FIFO_MODE("FIFO36_72"),              // Sets mode to "FIFO36" or "FIFO36_72"
-		.FIRST_WORD_FALL_THROUGH("TRUE"),  // Sets the FIFO FWFT to FALSE, TRUE
-		.INIT(72'h000000000000000000),     // Initial values on output port
-		.SIM_DEVICE("7SERIES"),            // Must be set to "7SERIES" for simulation behavior
-		.SRVAL(72'h000000000000000000)     // Set/Reset value for output port
-	)
-	FIFO36E1_inst (
-		// ECC Signals: 1-bit (each) output: Error Correction Circuitry ports
-		.DBITERR(),             	   // 1-bit output: Double bit error status
-		.ECCPARITY(),         		   // 8-bit output: Generated error correction parity
-		.SBITERR(),             	   // 1-bit output: Single bit error status
-		// Read Data: 64-bit (each) output: Read output data
-		.DO(d_out),                    // 64-bit output: Data output
-		.DOP(),                        // 8-bit output: Parity data output
-		// Status: 1-bit (each) output: Flags and other FIFO status outputs
-		.ALMOSTEMPTY(),     	   	   // 1-bit output: Almost empty flag
-		.ALMOSTFULL(almost_full),      // 1-bit output: Almost full flag
-		.EMPTY(),                 	   // 1-bit output: Empty flag
-		.FULL(),                   	   // 1-bit output: Full flag
-		.RDCOUNT(),             	   // 13-bit output: Read count
-		.RDERR(),                 	   // 1-bit output: Read error
-		.WRCOUNT(),             	   // 13-bit output: Write count
-		.WRERR(),                 	   // 1-bit output: Write error
-		// ECC Signals: 1-bit (each) input: Error Correction Circuitry ports
-		.INJECTDBITERR(1'b0), 			   // 1-bit input: Inject a double bit error input
-		.INJECTSBITERR(1'b0),
-		// Read Control Signals: 1-bit (each) input: Read clock, enable and reset input signals
-		.RDCLK(clk),                   // 1-bit input: Read clock
-		.RDEN(fifo_rd_en),             // 1-bit input: Read enable
-		.REGCE(1'b1),             	   // 1-bit input: Clock enable
-		.RST(fifo_rst_internal),       // 1-bit input: Reset
-		.RSTREG(1'b0),                 // 1-bit input: Output register set/reset
-		// Write Control Signals: 1-bit (each) input: Write clock and enable input signals
-		.WRCLK(clk),                   // 1-bit input: Rising edge write clock.
-		.WREN(fifo_wr_en),             // 1-bit input: Write enable
-		// Write Data: 64-bit (each) input: Write input data
-		.DI(d_in),                     // 64-bit input: Data input
-		.DIP(8'h00)                    // 8-bit input: Parity input
-	);
-
-	// End of FIFO36E1_inst instantiation
+	// FIFO for backlog
+	CascadedFIFO64bit backlog(.clk(clk), .rst(fifo_rst_internal), .d_in(d_in), .d_out(d_out), 
+				.rd_en(fifo_rd_en), .wr_en(fifo_wr_en), .is_almost_full(almost_full), .is_empty() );
 endmodule
