@@ -47,12 +47,12 @@ if __name__ == '__main__':
 
     # Main data acquisition loop
     # We record only the first MaxRec trigs packet to the file
-    MaxRec = 1
+    MaxRec = 20
     reccount = 0
     print( 'Start acquisition' )
     f = open( 'data.bin', 'wb' )
     hp.release_soft_reset()
-    hp.sent_dsp_param( 0.5, 0.1)
+    #hp.sent_dsp_param( 0.5, 0.1)
     hp.set_function_enable_pin()
     while( True ):
         try:

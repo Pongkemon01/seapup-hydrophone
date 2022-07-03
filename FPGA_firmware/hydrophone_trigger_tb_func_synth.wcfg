@@ -12,14 +12,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="112fs"></ZoomEndTime>
-      <Cursor1Time time="12252fs"></Cursor1Time>
+      <ZoomEndTime time="15061fs"></ZoomEndTime>
+      <Cursor1Time time="100fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="298"></NameColumnWidth>
-      <ValueColumnWidth column_width="134"></ValueColumnWidth>
+      <NameColumnWidth column_width="296"></NameColumnWidth>
+      <ValueColumnWidth column_width="128"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="23" />
+   <WVObjectSize size="22" />
    <wvobject type="array" fp_name="/hydrophone_trigger_tb/clk_toggle_period">
       <obj_property name="ElementShortName">clk_toggle_period[31:0]</obj_property>
       <obj_property name="ObjectShortName">clk_toggle_period[31:0]</obj_property>
@@ -64,6 +64,10 @@
       <obj_property name="ElementShortName">d_out[63:0]</obj_property>
       <obj_property name="ObjectShortName">d_out[63:0]</obj_property>
    </wvobject>
+   <wvobject type="logic" fp_name="/hydrophone_trigger_tb/trigger_event">
+      <obj_property name="ElementShortName">trigger_event</obj_property>
+      <obj_property name="ObjectShortName">trigger_event</obj_property>
+   </wvobject>
    <wvobject type="logic" fp_name="/hydrophone_trigger_tb/trigged">
       <obj_property name="ElementShortName">trigged</obj_property>
       <obj_property name="ObjectShortName">trigged</obj_property>
@@ -84,10 +88,6 @@
       <obj_property name="ElementShortName">trigger_rdy</obj_property>
       <obj_property name="ObjectShortName">trigger_rdy</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/hydrophone_trigger_tb/trigger_full">
-      <obj_property name="ElementShortName">trigger_full</obj_property>
-      <obj_property name="ObjectShortName">trigger_full</obj_property>
-   </wvobject>
    <wvobject type="logic" fp_name="/hydrophone_trigger_tb/trigger_fifo_rdy">
       <obj_property name="ElementShortName">trigger_fifo_rdy</obj_property>
       <obj_property name="ObjectShortName">trigger_fifo_rdy</obj_property>
@@ -95,10 +95,6 @@
    <wvobject type="logic" fp_name="/hydrophone_trigger_tb/trigger_strobe">
       <obj_property name="ElementShortName">trigger_strobe</obj_property>
       <obj_property name="ObjectShortName">trigger_strobe</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/hydrophone_trigger_tb/backlog_size">
-      <obj_property name="ElementShortName">backlog_size[12:0]</obj_property>
-      <obj_property name="ObjectShortName">backlog_size[12:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/hydrophone_trigger_tb/abs_data">
       <obj_property name="ElementShortName">abs_data[63:0]</obj_property>

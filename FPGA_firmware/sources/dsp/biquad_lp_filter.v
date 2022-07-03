@@ -33,6 +33,117 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // --------------------------------------------------------------------------------
 
+// Helper module to hide many static configurations
+//
+// It performs: dout = (A * B) + Cascade_in
+//
+// Input and output ports have full width. If the actual data have different 
+// word length, the external module must extended the data explicitly
+module DSP(
+	input clk,
+	input rst,
+	input [29:0] A,
+	input [17:0] B,
+	input [47:0] Cascade_in,
+	output [47:0] dout
+);
+	// DSP48E1: 48-bit Multi-Functional Arithmetic Block
+	//          7 Series
+	// Xilinx HDL Language Template, version 2022.1
+
+	DSP48E1 #(
+   		// Feature Control Attributes: Data Path Selection
+   		.A_INPUT("DIRECT"),               // Selects A input source, "DIRECT" (A port) or "CASCADE" (ACIN port)
+   		.B_INPUT("DIRECT"),               // Selects B input source, "DIRECT" (B port) or "CASCADE" (BCIN port)
+   		.USE_DPORT("FALSE"),              // Select D port usage (TRUE or FALSE)
+   		.USE_MULT("MULTIPLY"),            // Select multiplier usage ("MULTIPLY", "DYNAMIC", or "NONE")
+   		.USE_SIMD("ONE48"),               // SIMD selection ("ONE48", "TWO24", "FOUR12")
+   		// Pattern Detector Attributes: Pattern Detection Configuration
+   		.AUTORESET_PATDET("NO_RESET"),    // "NO_RESET", "RESET_MATCH", "RESET_NOT_MATCH"
+   		.MASK(48'h3fffffffffff),          // 48-bit mask value for pattern detect (1=ignore)
+   		.PATTERN(48'h000000000000),       // 48-bit pattern match for pattern detect
+   		.SEL_MASK("MASK"),                // "C", "MASK", "ROUNDING_MODE1", "ROUNDING_MODE2"
+   		.SEL_PATTERN("PATTERN"),          // Select pattern value ("PATTERN" or "C")
+   		.USE_PATTERN_DETECT("NO_PATDET"), // Enable pattern detect ("PATDET" or "NO_PATDET")
+   		// Register Control Attributes: Pipeline Register Configuration
+   		.ACASCREG(0),                     // Number of pipeline stages between A/ACIN and ACOUT (0, 1 or 2)
+   		.ADREG(0),                        // Number of pipeline stages for pre-adder (0 or 1)
+   		.ALUMODEREG(0),                   // Number of pipeline stages for ALUMODE (0 or 1)
+   		.AREG(0),                         // Number of pipeline stages for A (0, 1 or 2)
+   		.BCASCREG(0),                     // Number of pipeline stages between B/BCIN and BCOUT (0, 1 or 2)
+   		.BREG(0),                         // Number of pipeline stages for B (0, 1 or 2)
+   		.CARRYINREG(0),                   // Number of pipeline stages for CARRYIN (0 or 1)
+   		.CARRYINSELREG(0),                // Number of pipeline stages for CARRYINSEL (0 or 1)
+   		.CREG(0),                         // Number of pipeline stages for C (0 or 1)
+   		.DREG(0),                         // Number of pipeline stages for D (0 or 1)
+   		.INMODEREG(0),                    // Number of pipeline stages for INMODE (0 or 1)
+   		.MREG(0),                         // Number of multiplier pipeline stages (0 or 1)
+   		.OPMODEREG(0),                    // Number of pipeline stages for OPMODE (0 or 1)
+   		.PREG(0)                          // Number of pipeline stages for P (0 or 1)
+	)
+	DSP48E1_inst (
+   		// Cascade: 30-bit (each) output: Cascade Ports
+   		.ACOUT(ACOUT),              // 30-bit output: A port cascade output
+   		.BCOUT(),                   // 18-bit output: B port cascade output
+   		.CARRYCASCOUT(),     		// 1-bit output: Cascade carry output
+   		.MULTSIGNOUT(),       		// 1-bit output: Multiplier sign cascade output
+   		.PCOUT(),                   // 48-bit output: Cascade output
+   		// Control: 1-bit (each) output: Control Inputs/Status Bits
+   		.OVERFLOW(),             	// 1-bit output: Overflow in add/acc output
+   		.PATTERNBDETECT(), 			// 1-bit output: Pattern bar detect output
+   		.PATTERNDETECT(),   		// 1-bit output: Pattern detect output
+   		.UNDERFLOW(),           	// 1-bit output: Underflow in add/acc output
+   		// Data: 4-bit (each) output: Data Ports
+  	 	.CARRYOUT(),             	// 4-bit output: Carry output
+   		.P(dout),                   // 48-bit output: Primary data output
+   		// Cascade: 30-bit (each) input: Cascade Ports
+   		.ACIN(30'b0),               // 30-bit input: A cascade data input
+   		.BCIN(18'b0),               // 18-bit input: B cascade input
+   		.CARRYCASCIN(0),       		// 1-bit input: Cascade carry input
+   		.MULTSIGNIN(0),    			// 1-bit input: Multiplier sign input
+   		.PCIN(Cascade_in),  		// 48-bit input: P cascade input
+   		// Data: 30-bit (each) input: Data Ports
+   		.A(A),                      // 30-bit input: A data input
+   		.B(B),                      // 18-bit input: B data input
+   		.C(48'b0),                  // 48-bit input: C data input
+   		.CARRYIN(0),               	// 1-bit input: Carry input signal
+   		.D(25'b0),                  // 25-bit input: D data input
+
+   		// Control: 4-bit (each) input: Control Inputs/Status Bits
+   		.ALUMODE(4'b0),             // 4-bit input: ALU control input (UG479 page 35)
+   		.CARRYINSEL(3'b0),         	// 3-bit input: Carry select input (UG479 page 37)
+   		.CLK(clk),                  // 1-bit input: Clock input
+   		.INMODE(5'b00000),          // 5-bit input: INMODE control input (UG479 pages 31 - 32)
+   		.OPMODE(7'b001_0101),       // 7-bit input: Operation mode input (UG479 page 34)
+   		// Reset/Clock Enable: 1-bit (each) input: Reset/Clock Enable Inputs
+   		.CEA1(0),                   // 1-bit input: Clock enable input for 1st stage AREG
+   		.CEA2(0),                   // 1-bit input: Clock enable input for 2nd stage AREG
+   		.CEAD(0),                   // 1-bit input: Clock enable input for ADREG
+   		.CEALUMODE(0),           	// 1-bit input: Clock enable input for ALUMODE
+   		.CEB1(0),                   // 1-bit input: Clock enable input for 1st stage BREG
+   		.CEB2(0),                   // 1-bit input: Clock enable input for 2nd stage BREG
+   		.CEC(0),                    // 1-bit input: Clock enable input for CREG
+   		.CECARRYIN(0),           	// 1-bit input: Clock enable input for CARRYINREG
+   		.CECTRL(0),                 // 1-bit input: Clock enable input for OPMODEREG and CARRYINSELREG
+   		.CED(0),                    // 1-bit input: Clock enable input for DREG
+   		.CEINMODE(0),             	// 1-bit input: Clock enable input for INMODEREG
+   		.CEM(0),                    // 1-bit input: Clock enable input for MREG
+   		.CEP(0),                    // 1-bit input: Clock enable input for PREG
+   		.RSTA(rst),                 // 1-bit input: Reset input for AREG
+   		.RSTALLCARRYIN(rst),   // 1-bit input: Reset input for CARRYINREG
+   		.RSTALUMODE(rst),         	// 1-bit input: Reset input for ALUMODEREG
+   		.RSTB(rst),                 // 1-bit input: Reset input for BREG
+   		.RSTC(rst),                 // 1-bit input: Reset input for CREG
+   		.RSTCTRL(rst),              // 1-bit input: Reset input for OPMODEREG and CARRYINSELREG
+   		.RSTD(rst),                 // 1-bit input: Reset input for DREG and ADREG
+   		.RSTINMODE(rst),            // 1-bit input: Reset input for INMODEREG
+   		.RSTM(rst),                 // 1-bit input: Reset input for MREG
+   		.RSTP(rst)                  // 1-bit input: Reset input for PREG
+	);
+
+	// End of DSP48E1_inst instantiation
+endmodule
+
 /*
  * Implementation of Biquad IIR filter operates as low-pass filter with the 
  * minimum pass-band frequency. From Matlab, Biquad filter is unstable with
@@ -45,116 +156,115 @@
  * 0.01 x fs.
  */
 
-// This module decimates the input data at the rate of 1:5 and then applys a low-pass filter upon them.
-// The cut-off frequency is fixed at 0.01 times of data sampling rate, now 200kHz. 
-// The coefficients are:
-//   Numerator : b0 = 0.25, b1 = 0.5, b2 = 0.25
-//   Denominator : a0 = 1 (always), a1 = -1.91, a2 = 0.93
-//   Gain : 0.01 (Original gain given by Matlab is 0.005 but later changed by the author)
+// This module designed to fit with Seapup filter specifiaton, which set b0 and b2 to 1
+// **** All Qm.n designation are in AMD convension, where m + n is the total bits including sign bit ****
+// The module has 1 clock delay as it must latch the input first.
 //
 // All IP modules here are combinational implementation. Therefore, the final result
 // runs directly from the computaion stage to the next stage without any pipeline.
 // Therefore, further synchronization should be performed in the packetizer module.
 module biquad_lp_filter( 
-	input clk_200kHz, 		// 200 kHz sampling clock
-	input [19:0] din, 		// Input from IQ demod. This input connects to trigger's FIFO output through some IQ-demod logic
-							// The input data is actually in the form of Q13.6. However, we pretend to divide it by 2^13 to be Q.19
+	input clk, 				// 64 MHz system clock
+	input rst,				// System reset
+	input strobe,			// Strobe signal for din
+
+	// Input and output data
+	input signed [15:0] din, // Input from IQ demod. This input connects to trigger's FIFO output through some IQ-demod logic
+							// The input data is actually in the form of Q14.2. However, we pretend to divide it by 2^13 to be Q.19
 							// This pretending does not cause any extra operation as we just scale it with the same bit length.
-	output [15:0] dout 	// Output of the filter in the format of Q.15
+	output signed [15:0] dout // Output of the filter in the format of Q.15
+
+	// Coefficients both are 18 bits wide in Q2.16 format.
+	input signed [17:0] b2,
+	input signed [17:0] minus_a1,	// a1 must be inverted as it is a part of denomonator
+	input signed [17:0] minus_a2	// a2 is also a part of denominator; thus, it should be inverted
 	);
 
-	// Numerators and denominators are represented in 18-bit fixed point number (Q1.16) 
-	// Data input to multipliers are in the form of Q.24
-	// Therefore, the output from each multiplier is in the form Q2.40.
-	// The result from DSP48E1 multiplier is signed extended to become Q7.40 for further addition
-	parameter coef_minus_a1 = 18'b01_1110_1000_1111_0110;		// 1.91 in Q1.16
-	parameter coef_minus_a2 = 18'b11_0001_0001_1110_1100;		// -0.93 in Q1.16			
+	// Input must be signed-extended to 16 bits (Q14.2). All delayed lines are defined in this format
+	reg signed [15:0] input_latch;
+	reg signed [15:0] numerator_delay_line[0:1];
 
-	// Since all nominators are in the form of 2^n (n = -1 and -2). We can use shifting instead of multiplication.
-	// The common factor is -2 Therefore, we can pre-divide the data before entering the process
-	// The coefficients aree [0.25 0.5 0.25] = [2^-2 2^-1 2^-2]
-	reg [47:0] din_by_minus_2;
-	reg [47:0] din_by_minus_2_d;
-	reg [47:0] din_by_minus_2_dd;
-	wire [47:0] din_by_minus_4;
-	wire [47:0] din_dd_by_minus_4;
-	
+	// Strobe delay line for edge detection
+	reg strb_d, strb_dd, is_strobe;
+	assign is_strobe = strb_d & (~strb_dd);
+
 	initial
 	begin
-		din_by_minus_2 <= #1 48'b0;
-		din_by_minus_2_d <= #1 48'b0;
-		din_by_minus_2_dd <= #1 48'b0;
+		input_latch <= 18'b0;
+		numerator_delay_line[0] <= 18'b0;
+		numerator_delay_line[1] <= 18'b0;
+		strb_d <= 0;
+		strb_dd <= 0;
 	end
-	
-	// Forward part (Numerator). This part can be performed by combinational logic.
-	assign din_by_minus_4 = { din_by_minus_2[47], din_by_minus_2[47:1] };
-	assign din_dd_by_minus_4 = { din_by_minus_2_dd[47], din_by_minus_2_dd[47:1] };
 
-	always @(posedge clk_200kHz)
+	// Strobe edge detection line
+	always @(posedge clk)
 	begin
-		din_by_minus_2_dd <= #1 din_by_minus_2_d;
-		din_by_minus_2_d <= #1 din_by_minus_2;
-		din_by_minus_2 <= #1 { {9{din[19]}}, din[18:0], 20'b0 };	// Change from Q.19	into Q7.40 and scale by 1/2
+		strb_dd <= strb_d;
+		strb_d <= strobe;
 	end
 	
-	// Sum the forward part
-	wire [47:0] FIR_part;
-	assign FIR_part = din_by_minus_4 + din_by_minus_2_d + din_dd_by_minus_4;
+	// Forward part (Numerator). Delay line.
+	always @(posedge clk)
+	begin
+		if( is_strobe )
+		begin
+			numerator_delay_line[1] <= numerator_delay_line[0];
+			numerator_delay_line[0] <= input_latch;
+			input_latch <= din;			// Signed extended din from Q14.2 to Q16.2
+		end
+	end
+	
+	// Input data is Q14.2 and Coefficients are Q2.16. Therefore, their multiplication generates
+	// Q16.18 data. They should be extended to Q30.18 (48 bits)
+	wire signed [33:0]raw_mult;
+	wire signed [47:0] numerator_res[0:2];
+	assign raw_mult = numerator_delay_line[0] * b2;		// Signed multiplication. Result is in Q16.18
+	assign numerator_res[0] = { {16(input_latch[15])}, input_latch, 16'b0 }; // b0 = 1; just extend bits
+	assign numerator_res[1] = { {14(raw_mult[33])}, raw_mult }				// Extended to Q30.18
+	assign numerator_res[2] = { {16(numerator_delay_line[1][15])}, numerator_delay_line[1], 16'b0 }; // b2 = 1
+
+	// Sum the forward part. The actual input was signed extended; thus, we have enough head room for the result.
+	wire [47:0] FIR_part;		// It is in Q30.18
+	assign FIR_part = numerator_res[0] + numerator_res[1] + numerator_res[2];
 
 	// Backward part (Denominator). This part must be perform by DSP slices or actual multiplication.
-	// The DSP slice require input with length of 25 bits. The denominator coefficients are not in the form of 2^n
-	// Therefore, we must perform actual multiplication here.
-	// "out" is the result from 5 additions; thus, its value may be greater than 1.0. This is correct here.
-	// The true output will be gained by 0.005 later. Hence, the rounded stage here will be from Q7.40 to Q5.24
-	// As "out" is from adding 5 numbers together, Therefore, 3 bits addition is enough.
-	wire [47:0] out;		// Final summation Q7.40
-	wire [29:0] round_out;	// Rounded to Q5.24 of final 
-	reg [29:0] out_d;		// Q5.24
-	reg [29:0] out_dd;		// Q5.24
+	// The DSP slice require 2 inputs with length of 30 bits and 18 bits. 
+	wire [47:0] out;					// Final summation before rounding in Q30.18
+	wire [29:0] round_out;				// Rounded "out" to Q28.2 
+	reg [29:0] denom_delay_line[1:0];	// Q28.2
 	
 	initial
 	begin
-		out_d <= #1 30'b0;
-		out_dd <= #1 30'b0;
+		denom_delay_line[0] <= 30'b0;
+		denom_delay_line[1] <= 30'b0;
 	end
 	
-	assign round_out = { out[47], out[44:16] } + { 29'b0, out[15] };	// Rounding Q7.40 to Q5.24
-	always @(posedge clk_200kHz)
+	// Create delay line
+	assign round_out = { out[47], out[44:16] } + { 29'b0, out[15] };	// Rounding Q30.18 to Q28.2
+	always @(posedge clk)
 	begin
-		out_dd <= #1 out_d;
-		out_d <= #1 (round_out === 30'bX) ? 30'b0 : round_out;
+		if( is_strobe )
+		begin
+			denom_delay_line[1] <= denom_delay_line[0];
+			denom_delay_line[0] <= (round_out === 30'bX) ? 30'b0 : round_out; // Prevent unknown data at start
+		end
 	end
 	
 	// IP module for multiply-add
-	wire [47:0] mul1_out;		// Result from mul_minus_a2 Q7.40
-	wire [47:0] mul2_out;		// Result from mul_minus_a2 Q7.40
-	mult_30b_18b mul_minus_a2 (
-		.A(out_dd),           	// input wire [29 : 0] A (Q5.24)
-		.B(coef_minus_a2),    	// input wire [17 : 0] B (Q1.16)
-		.P(mul1_out)      		// output wire [47 : 0] P (Q7.40)
-	);
-	mult_30b_18b mul_minus_a1 (
-		.A(out_d),            	// input wire [29 : 0] A (Q5.24)
-		.B(coef_minus_a1),    	// input wire [17 : 0] B (Q1.16)
-		.P(mul2_out)           // output wire [47 : 0] P (Q7.40)
-	);
-	assign out = mul1_out + mul2_out + FIR_part;
+	wire [47:0] denom_a2_out;	// Result from mul_minus_a2 Q30.18
 
-	// Finally, the filter output is multiply by filter gain. This gain is stored in Q.17 format
-	// 0.01 = +0.0000_0010_1000_1111_0101_1100_0010_1000
-	//      = +1_0100_0111_1010_1110 (Q.17 * 2^-6)
-	//      = { 1'b0, 17'd83886 } (Q.17 * 2^-6)
-	// Data input is already rounded to the form Q5.24. Hence, the multiplication yields Q6.41 * 2^-6 (48 bits)
-	// However, since the MSB of the gain is 0 (+ sign). The IP generator already truncates the extra MSB automatically.
-	// Hence, the "raw_output" is in form (Q5.41 * 2^-5)
-	wire [46:0] raw_output;
-	gain0_005_mult gmult (
-		.A(round_out),  		// input wire [29 : 0] A (Q5.24)
-		.P(raw_output)  		// output wire [46 : 0] P (Q5.41 * 2^-5)
-	);
+	DSP denom_a1 ( .clk(clk), .rst(rst), 
+		.A(denom_delay_line[0]), .B(minus_a1), .Cascade_in(denum_a2_out), .dout(out));
+	DSP denom_a2 ( .clk(clk), .rst(rst), 
+		.A(denom_delay_line[1]), .B(minus_a2), .Cascade_in(FIR_part), .dout(denom_a2_out));
 
-	// Rounding the final result "out" to Q.15 format.
-	// However, the "raw_output" should be multiplied by 2^-5 first. Considering the "raw_output" format,
-	// which is Q5.41, the rounded result is just the normal rounding without any further shifting. 
-	assign dout = raw_output[46:31] + { 15'b0, out[30] };	// Rounding Q5.41 to Q.15
+	// The "true" output (round_out) is Q28.2.
+	// Total significant bits in output is 20 bit max.
+	// However, we has only 16 bits space available for output.
+	// Therefore, we need to scaled the output by 1/16 (Q28.2 => Q24.6)
+	// then rounding and cutting to get Q16.0.
+	// Scaling and rounding are simply bit selection.
+
+	assign dout = round_out[21:6] + { 15'b0, round_out[5] };
 endmodule

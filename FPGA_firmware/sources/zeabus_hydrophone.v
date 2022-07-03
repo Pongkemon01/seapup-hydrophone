@@ -37,8 +37,8 @@
 // https://forums.xilinx.com/t5/Implementation/Drc-23-20-Rule-violation-REQP-1712-Input-clock-driver/td-p/586641
 
 module zeabus_hydrophone #(
-    parameter trigger_head = 64,// Number of sampling preceded of the trigged points
-    parameter trigger_tail = 64 // Number of sampling include in a valid data packet after the trigger level is not satisfied
+    parameter trigger_head = 10000,// Number of sampling preceded of the trigged points
+    parameter trigger_tail = 10000 // Number of sampling include in a valid data packet after the trigger level is not satisfied
     )(
     // Debug signals
     //output [15:0] trigger_level_set,
@@ -141,8 +141,8 @@ module zeabus_hydrophone #(
 	//assign LED_GREEN_3 = trigged;
 	
     assign LED_RED_1 = RST;
-    assign LED_YELLOW_1 = trigged;
-    assign LED_GREEN_1 = slave_fifo_rdy;
+    assign LED_YELLOW_1 = trigger_event;
+    assign LED_GREEN_1 = trigged; // slave_fifo_rdy;
 	
     assign LED_RED_2 = rx_oe;
     assign LED_YELLOW_2 = pkt_end;
@@ -254,23 +254,36 @@ module zeabus_hydrophone #(
 	assign comb_strb = adc_strb_1 & adc_strb_2 & adc_strb_3 & adc_strb_4;
     assign adc_out = { adc2_2_out, adc2_1_out, adc1_2_out, adc1_1_out };
 
-    hydrophone_trigger #( .header(trigger_head), .trigged_tailed(trigger_tail) ) trigger(
+    wire trigger_event;
+
+    hydrophone_trigger_backlog #( .PRETRIG_SAMPLING(trigger_head), .POSTTRIG_SAMPLING(trigger_tail) ) 
+        trigger_backlog(
         .rst(rst),                      // system reset (active high)
         .clk(sys_clk),                  // Master clock
-		.enable(FUNC_EN),				// Enable trigger module
 
         .rdy(trigger_rdy),              // Debug signal
         .fifo_rdy(trigger_fifo_rdy),    // Debug signal
-        .abs_data(abs_data),            // Debug signal
-        .abs_trig(abs_trig),            // Debug signal
 
         .d_in( adc_out ),               // data input (concatenation of 4 16-bit data with channel 1 first)
-        .trigger_level(trigger_level),  // level of the trigger in 16-bit signed integer
         .input_strobe(comb_strb),       // Strobe from ADC
+        .trigger_event(trigger_event),  // Event from trigger activation
 
         .d_out(trigged_out),            // data output
         .output_strobe(trigger_strobe), // Strobe to read from trigger FIFO
         .trigged(trigged)               // indicates that the data is part of packet of trigged signal
+    );
+
+    hydrophone_simple_trigger simple_trigger (
+	    .abs_data(),
+	    .abs_trig(),
+
+        .rst(rst),                      // system reset (active high)
+        .clk(sys_clk),                  // Master clock
+		.enable(FUNC_EN),				// Enable trigger module
+        .d_in( adc_out ),               // data input (concatenation of 4 16-bit data with channel 1 first)
+        .input_strobe(comb_strb),       // Strobe from ADC
+	    .trigger_level(trigger_level),	// level of the trigger in 16-bit signed integer in format Q13.2
+	    .trigged(trigger_event)			// indicates that the data is part of packet of trigged signal
     );
 
     //

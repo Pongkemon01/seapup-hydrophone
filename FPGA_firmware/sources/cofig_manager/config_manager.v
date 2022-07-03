@@ -75,6 +75,8 @@ module hydrophone_config_manager #(
 	output reg [7:0] poten3_value,	// Value of potentiometer 3 (defines gain of channel 3)
 	output reg [7:0] poten4_value	// Value of potentiometer 4 (defines gain of channel 4)
 );
+	localparam DEFAULT_POTEN = 8'd230;		// Default value of potentiometers (making gain = 1)
+	localparam DEFAULT_TRIG_LEVEL = 16'd16383;	// Default trigger level
 
 	// State value
 	localparam state_wait_prefix = 3'd0;	// Waiting for the prefix
@@ -103,11 +105,11 @@ module hydrophone_config_manager #(
 		counter <= 0;
 		config_d_oe <= 1'b0;
 		update_poten <= 1'b0;
-		trigger_level <= 16'd16383;
-		poten1_value <= 8'd25;
-		poten2_value <= 8'd25;
-		poten3_value <= 8'd25;
-		poten4_value <= 8'd25;
+		trigger_level <= DEFAULT_TRIG_LEVEL;
+		poten1_value <= DEFAULT_POTEN;
+		poten2_value <= DEFAULT_POTEN;
+		poten3_value <= DEFAULT_POTEN;
+		poten4_value <= DEFAULT_POTEN;
 	end
 
 	always @( negedge clk )
@@ -118,11 +120,11 @@ module hydrophone_config_manager #(
 			counter <= 0;
 			config_d_oe <= 1'b0;
 			update_poten <= 1'b0;
-			trigger_level <= 16'd16383;
-			poten1_value <= 8'd25;
-			poten2_value <= 8'd25;
-			poten3_value <= 8'd25;
-			poten4_value <= 8'd25;
+			trigger_level <= DEFAULT_TRIG_LEVEL;
+			poten1_value <= DEFAULT_POTEN;
+			poten2_value <= DEFAULT_POTEN;
+			poten3_value <= DEFAULT_POTEN;
+			poten4_value <= DEFAULT_POTEN;
 		end
 		else
 		begin
