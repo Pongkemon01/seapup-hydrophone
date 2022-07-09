@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
     # Main data acquisition loop
     # We record only the first MaxRec trigs packet to the file
-    MaxRec = 20
+    MaxRec = 1
     reccount = 0
     print( 'Start acquisition' )
     f = open( 'data.bin', 'wb' )

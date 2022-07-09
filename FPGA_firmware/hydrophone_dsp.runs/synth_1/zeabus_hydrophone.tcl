@@ -70,7 +70,6 @@ proc create_report { reportName command } {
   }
 }
 OPTRACE "synth_1" START { ROLLUP_AUTO }
-set_param chipscope.maxJobs 1
 OPTRACE "Creating in-memory project" START { }
 create_project -in_memory -part xc7a15tcsg324-1
 
@@ -95,6 +94,7 @@ read_verilog -library xil_defaultlib {
   /home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/packetizer/packetize.v
   /home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/poten_interface/poten_interface.v
   /home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/reset_subs/reset_subs.v
+  /home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/dsp/strobe_decimator.v
   /home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v
 }
 OPTRACE "Adding files" END { }

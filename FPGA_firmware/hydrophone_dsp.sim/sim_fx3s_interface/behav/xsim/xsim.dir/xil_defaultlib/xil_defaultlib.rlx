@@ -1,0 +1,11 @@
+0.7
+2020.2
+Nov 18 2020
+09:20:35
+/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/hydrophone_dsp.sim/sim_fx3s_interface/behav/xsim/glbl.v,1605673889,verilog,,,,glbl,,,,,,,,
+/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/cofig_manager/config_manager.v,1656832639,verilog,,/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/fx3s_interface/fx3s_interface.v,,hydrophone_config_manager,,,,,,,,
+/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/dsp/strobe_decimator.v,1656844401,verilog,,/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/fx3s_interface_tb.v,,strobe_decimator,,,,,,,,
+/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/fx3s_interface/fx3s_interface.v,1655267941,verilog,,/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/hydrophone_trigger/hydrophone_trigger.v,,CascadedFIFO32bit;fx3s_interface,,,,,,,,
+/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/fx3s_interface_tb.v,1656851240,verilog,,,,fx3_interface_tb,,,,,,,,
+/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/hydrophone_trigger/hydrophone_trigger.v,1656851914,verilog,,/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/packetizer/packetize.v,,CascadedFIFO64bit;absolute;hydrophone_simple_trigger;hydrophone_trigger_backlog,,,,,,,,
+/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/packetizer/packetize.v,1655268083,verilog,,/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/dsp/strobe_decimator.v,,packetizer,,,,,,,,

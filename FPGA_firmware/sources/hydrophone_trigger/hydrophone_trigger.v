@@ -154,10 +154,6 @@ endmodule
 // Module to manage trigger header and tailer
 // Outut data is valid at the rising edge of the next clock after the "trigged" signal
 //
-// *** CAUTION : Because of delay in FIFO, there are 11 clocks delay for "almost_full" flags.
-// Moreover, the minimum backlog threshold is 7. Therefore, the required backlog size
-// must be at least 18.
-//
 module hydrophone_trigger_backlog
 	#(
 	parameter PRETRIG_SAMPLING = 10000,	// Number of d_in samples preceded of the trigged points
@@ -176,37 +172,39 @@ module hydrophone_trigger_backlog
 	output trigged			// indicates that the data is part of valid packet
 );
 	// Constants
-	localparam TOTAL_TAIL = (PRETRIG_SAMPLING + POSTTRIG_SAMPLING);
-	localparam ALMOST_FULL_THRESHOLD = PRETRIG_SAMPLING - 11;	// 11 overhead clocks
+	localparam PRETRIG_MINUS_1 = PRETRIG_SAMPLING - 1;
+	localparam TOTAL_TAIL = PRETRIG_SAMPLING + POSTTRIG_SAMPLING;
 
 	reg [15:0] t_counter;		// Counter for packet tailing
+	reg [15:0] h_counter;		// Counter for packet heading
 	reg tail_trigged;			// Trigger delay for tailing
+	reg rd_en;					// Enable FIFO reading
 	reg strb_d, strb_dd;		// Delay line of strobe signal to detect rising edge
 	reg rst_d, rst_dd, rst_3d, rst_4d, rst_5d, rst_6d, rst_7d, rst_8d;	// Delay line for reset signal to make the internal reset time greater than 5 clk
 
 	wire rst_internal;			// Internal reset signal
 	wire fifo_rst_internal;		// Internal reset for fifo module
-	wire almost_full;			// FIFO is almost full
 	wire strobe_all;			// Combined strobe signals
 	wire fifo_rd_en, fifo_wr_en;	// Combined read and write enable of all signal
-
 	
 	// Combine all strobe signals
 	assign fifo_rst_internal = rst | rst_d | rst_dd | rst_3d | rst_4d | rst_5d;
 	assign rst_internal = fifo_rst_internal | rst_6d | rst_7d | rst_8d;
 	assign output_strobe = strb_d & ~strb_dd & ~rst_internal;
 	assign fifo_wr_en = output_strobe;
-	assign fifo_rd_en = almost_full & output_strobe & ~rst_internal ;// Enable read when FIFO almost full too.
+	assign fifo_rd_en = rd_en & output_strobe & ~rst_internal ;// Enable read when FIFO almost full too.
 	assign trigged = trigger_event | tail_trigged;	// Trigger comes from actual event plus tailing
 
 	// Debug signals
 	assign rdy = ~rst_internal;
-	assign fifo_rdy = almost_full;
+	assign fifo_rdy = rd_en;
 
 	// Initial block
 	initial
 	begin
 		t_counter <= TOTAL_TAIL;
+		h_counter <= PRETRIG_MINUS_1;
+		rd_en <= 0;
 		tail_trigged <= 0;
 		strb_d <= 0;
 		strb_dd <= 0;
@@ -255,28 +253,34 @@ module hydrophone_trigger_backlog
 		begin
 			// Reset signal asserted. Just initialize state
 			t_counter <= TOTAL_TAIL;
+			h_counter <= PRETRIG_MINUS_1;
+			rd_en <= 0;
 			tail_trigged <= 0;
 		end
 		else
 		begin
-			if( almost_full )
+			if( trigger_event && rd_en )
 			begin
-				if( trigger_event )
+				tail_trigged <= 1;
+				t_counter <= TOTAL_TAIL;
+			end
+
+			// clk freq. is higher than data rate, so we use the Strobe signal indicates each datum
+			if( output_strobe )
+			begin
+				if( h_counter != 0 )
 				begin
-					// Trigged
-					tail_trigged <= 1;
-					t_counter <= TOTAL_TAIL;
+					h_counter <= h_counter - 1;
+					rd_en <= 0;
 				end
 				else
 				begin
-					// clk freq. is higher than data rate, so we use the Strobe signal indicates each datum
-					if( output_strobe )
-					begin
-						if( tail_trigged && t_counter != 0 )
-							t_counter <= t_counter - 1;
-						else
-							tail_trigged <= 0;
-					end
+					rd_en <= 1;
+
+					if( tail_trigged && t_counter != 0 )
+						t_counter <= t_counter - 1;
+					else
+						tail_trigged <= 0;
 				end
 			end
 		end
@@ -284,9 +288,8 @@ module hydrophone_trigger_backlog
 
 
 	// FIFO for backlog
-	CascadedFIFO64bit #(.BACKLOG_SIZE(ALMOST_FULL_THRESHOLD)) 
-				backlog(.clk(clk), .rst(fifo_rst_internal), .d_in(d_in), .d_out(d_out), 
-				.rd_en(fifo_rd_en), .wr_en(fifo_wr_en), .is_almost_full(almost_full), .is_empty() );
+	CascadedFIFO64bit backlog(.clk(clk), .rst(fifo_rst_internal), .d_in(d_in), .d_out(d_out), 
+				.rd_en(fifo_rd_en), .wr_en(fifo_wr_en), .is_almost_full(), .is_empty() );
 
 endmodule
 

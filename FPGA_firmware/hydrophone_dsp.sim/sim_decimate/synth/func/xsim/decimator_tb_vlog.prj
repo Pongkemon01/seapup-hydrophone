@@ -1,0 +1,8 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"decimator_tb_func_synth.v" \
+"../../../../../sources/dsp/strobe_decimator.v" \
+"../../../../../sources/decimator_tb.v" \
+
+# Do not sort compile order
+nosort

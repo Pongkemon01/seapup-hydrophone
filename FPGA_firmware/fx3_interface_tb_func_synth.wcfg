@@ -11,22 +11,18 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="140392fs"></ZoomStartTime>
-      <ZoomEndTime time="170143fs"></ZoomEndTime>
-      <Cursor1Time time="128000fs"></Cursor1Time>
+      <ZoomStartTime time="79853166fs"></ZoomStartTime>
+      <ZoomEndTime time="80040167fs"></ZoomEndTime>
+      <Cursor1Time time="80009000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="266"></NameColumnWidth>
-      <ValueColumnWidth column_width="66"></ValueColumnWidth>
+      <NameColumnWidth column_width="306"></NameColumnWidth>
+      <ValueColumnWidth column_width="128"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="67" />
+   <WVObjectSize size="71" />
    <wvobject type="array" fp_name="/fx3_interface_tb/out_file">
       <obj_property name="ElementShortName">out_file[31:0]</obj_property>
       <obj_property name="ObjectShortName">out_file[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/fx3_interface_tb/pkt_strobe_d">
-      <obj_property name="ElementShortName">pkt_strobe_d</obj_property>
-      <obj_property name="ObjectShortName">pkt_strobe_d</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/fx3_interface_tb/FX3S_DMA_Size">
       <obj_property name="ElementShortName">FX3S_DMA_Size[31:0]</obj_property>
@@ -84,9 +80,25 @@
       <obj_property name="ObjectShortName">d_in[63:0]</obj_property>
       <obj_property name="label">ADC_input[63:0]</obj_property>
    </wvobject>
+   <wvobject type="logic" fp_name="/fx3_interface_tb/trigger_rdy">
+      <obj_property name="ElementShortName">trigger_rdy</obj_property>
+      <obj_property name="ObjectShortName">trigger_rdy</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/fx3_interface_tb/trigger_fifo_rdy">
+      <obj_property name="ElementShortName">trigger_fifo_rdy</obj_property>
+      <obj_property name="ObjectShortName">trigger_fifo_rdy</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/fx3_interface_tb/strobe">
+      <obj_property name="ElementShortName">strobe</obj_property>
+      <obj_property name="ObjectShortName">strobe</obj_property>
+   </wvobject>
    <wvobject type="logic" fp_name="/fx3_interface_tb/trigged">
       <obj_property name="ElementShortName">trigged</obj_property>
       <obj_property name="ObjectShortName">trigged</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/fx3_interface_tb/trigger_event">
+      <obj_property name="ElementShortName">trigger_event</obj_property>
+      <obj_property name="ObjectShortName">trigger_event</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/fx3_interface_tb/t_d_out">
       <obj_property name="DisplayName">label</obj_property>
@@ -117,6 +129,10 @@
       <obj_property name="ElementShortName">p_d_out[15:0]</obj_property>
       <obj_property name="ObjectShortName">p_d_out[15:0]</obj_property>
       <obj_property name="label">pkt_d_out[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/fx3_interface_tb/down_strb">
+      <obj_property name="ElementShortName">down_strb</obj_property>
+      <obj_property name="ObjectShortName">down_strb</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/fx3_interface_tb/packetize_strobe">
       <obj_property name="ElementShortName">packetize_strobe</obj_property>

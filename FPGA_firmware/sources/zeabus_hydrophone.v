@@ -37,8 +37,8 @@
 // https://forums.xilinx.com/t5/Implementation/Drc-23-20-Rule-violation-REQP-1712-Input-clock-driver/td-p/586641
 
 module zeabus_hydrophone #(
-    parameter trigger_head = 10000,// Number of sampling preceded of the trigged points
-    parameter trigger_tail = 10000 // Number of sampling include in a valid data packet after the trigger level is not satisfied
+    parameter trigger_head = 64,// Number of sampling preceded of the trigged points
+    parameter trigger_tail = 64 // Number of sampling include in a valid data packet after the trigger level is not satisfied
     )(
     // Debug signals
     //output [15:0] trigger_level_set,
@@ -210,6 +210,7 @@ module zeabus_hydrophone #(
         .update_poten(poten_update_start), // Trigger for potentiometer register updating. (rising edge)
 
         // Register
+        .pinger_freq(),                 // Frequency of the pinger under interest
         .trigger_level(trigger_level),  // hydrophone signal level
         .poten1_value(poten0),          // Value of potentiometer 1 (defines gain of channel 1)
         .poten2_value(poten1),          // Value of potentiometer 2 (defines gain of channel 2)
@@ -241,6 +242,7 @@ module zeabus_hydrophone #(
         .d_in(trigged_out),             // Data from trigger detection
         .trigged(trigged),              // Data-valid signal from trigger
         .in_strobe(trigger_strobe),     // Strobe to read a datum from trigger FIFO
+        //.in_strobe(dummy_strb),     // Strobe to read a datum from trigger FIFO
 
         .d_out(packetize_out),          // Output data
         .out_strobe(p_data_strobe),     // Data-valid signal to FX3 interface
@@ -284,6 +286,17 @@ module zeabus_hydrophone #(
         .input_strobe(comb_strb),       // Strobe from ADC
 	    .trigger_level(trigger_level),	// level of the trigger in 16-bit signed integer in format Q13.2
 	    .trigged(trigger_event)			// indicates that the data is part of packet of trigged signal
+    );
+
+    //
+    // Down sampling
+    //
+    wire dummy_strb;
+    strobe_decimator #( .MAX_COUNTING(10) ) down_sampling (
+        .clk(sys_clk),          // System clock
+        .rst(rst),              // Reset (active high)
+        .in_strobe(trigger_strobe),
+        .out_strobe(dummy_strb)
     );
 
     //

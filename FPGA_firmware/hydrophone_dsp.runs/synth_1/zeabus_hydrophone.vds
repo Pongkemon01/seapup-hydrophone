@@ -2,8 +2,8 @@
 # Vivado v2020.2 (64-bit)
 # SW Build 3064766 on Wed Nov 18 09:12:47 MST 2020
 # IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
-# Start of session at: Sun Jul  3 13:57:59 2022
-# Process ID: 67923
+# Start of session at: Sat Jul  9 11:39:55 2022
+# Process ID: 8003
 # Current directory: /home/stp/seapup/zeabus_hydrophone/FPGA_firmware/hydrophone_dsp.runs/synth_1
 # Command line: vivado -log zeabus_hydrophone.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source zeabus_hydrophone.tcl
 # Log file: /home/stp/seapup/zeabus_hydrophone/FPGA_firmware/hydrophone_dsp.runs/synth_1/zeabus_hydrophone.vds
@@ -17,14 +17,14 @@ INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a15t
 INFO: [Device 21-403] Loading part xc7a15tcsg324-1
 INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 4 processes.
 INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
-INFO: [Synth 8-7075] Helper process launched with PID 67998
+INFO: [Synth 8-7075] Helper process launched with PID 8056
 WARNING: [Synth 8-6901] identifier 'trigger_event' is used before its declaration [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:144]
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 2389.781 ; gain = 0.000 ; free physical = 4797 ; free virtual = 11809
+Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:05 . Memory (MB): peak = 2389.785 ; gain = 0.000 ; free physical = 6529 ; free virtual = 12995
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-6157] synthesizing module 'zeabus_hydrophone' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:39]
-	Parameter trigger_head bound to: 10000 - type: integer 
-	Parameter trigger_tail bound to: 10000 - type: integer 
+	Parameter trigger_head bound to: 64 - type: integer 
+	Parameter trigger_tail bound to: 64 - type: integer 
 INFO: [Synth 8-6157] synthesizing module 'reset_subs' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/reset_subs/reset_subs.v:39]
 	Parameter reset_hold_time bound to: 16 - type: integer 
 INFO: [Synth 8-6155] done synthesizing module 'reset_subs' (1#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/reset_subs/reset_subs.v:39]
@@ -43,6 +43,7 @@ INFO: [Synth 8-6157] synthesizing module 'fx3s_interface' [/home/stp/seapup/zeab
 	Parameter state_read_word bound to: 4'b1000 
 	Parameter state_read_post_1 bound to: 4'b1001 
 	Parameter state_read_post_2 bound to: 4'b1010 
+	Parameter state_zlp bound to: 4'b1011 
 INFO: [Synth 8-6157] synthesizing module 'CascadedFIFO32bit' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/fx3s_interface/fx3s_interface.v:36]
 	Parameter DEPTH bound to: 4 - type: integer 
 INFO: [Synth 8-6157] synthesizing module 'FIFO36E1' [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:14374]
@@ -90,9 +91,15 @@ INFO: [Synth 8-6157] synthesizing module 'FIFO36E1__parameterized0' [/home/stp/a
 	Parameter SIM_DEVICE bound to: 7SERIES - type: string 
 	Parameter SRVAL bound to: 72'b000000000000000000000000000000000000000000000000000000000000000000000000 
 INFO: [Synth 8-6155] done synthesizing module 'FIFO36E1__parameterized0' (3#1) [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:14374]
-WARNING: [Synth 8-689] width (16) of port connection 'DO' does not match port width (64) of module 'FIFO36E1__parameterized0' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/fx3s_interface/fx3s_interface.v:581]
+WARNING: [Synth 8-689] width (16) of port connection 'DO' does not match port width (64) of module 'FIFO36E1__parameterized0' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/fx3s_interface/fx3s_interface.v:593]
 INFO: [Synth 8-6155] done synthesizing module 'fx3s_interface' (4#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/fx3s_interface/fx3s_interface.v:147]
-INFO: [Synth 8-6157] synthesizing module 'hydrophone_config_manager' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/cofig_manager/config_manager.v:52]
+WARNING: [Synth 8-7071] port 'state' of module 'fx3s_interface' is unconnected for instance 'slave_fifo' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:169]
+WARNING: [Synth 8-7071] port 'TxEmpty' of module 'fx3s_interface' is unconnected for instance 'slave_fifo' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:169]
+WARNING: [Synth 8-7071] port 'outgoing' of module 'fx3s_interface' is unconnected for instance 'slave_fifo' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:169]
+WARNING: [Synth 8-7071] port 'pkt_end_out' of module 'fx3s_interface' is unconnected for instance 'slave_fifo' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:169]
+WARNING: [Synth 8-7071] port 'is_sending' of module 'fx3s_interface' is unconnected for instance 'slave_fifo' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:169]
+WARNING: [Synth 8-7023] instance 'slave_fifo' of module 'fx3s_interface' has 26 connections declared, but only 21 given [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:169]
+INFO: [Synth 8-6157] synthesizing module 'hydrophone_config_manager' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/cofig_manager/config_manager.v:73]
 	Parameter config_prefix bound to: 8'b11011100 
 	Parameter rst_delay bound to: 8 - type: integer 
 	Parameter DEFAULT_POTEN bound to: 8'b11100110 
@@ -105,9 +112,9 @@ INFO: [Synth 8-6157] synthesizing module 'hydrophone_config_manager' [/home/stp/
 	Parameter state_read_poten1_2 bound to: 3'b101 
 	Parameter state_wait_poten3_4 bound to: 3'b110 
 	Parameter state_read_poten3_4 bound to: 3'b111 
-INFO: [Synth 8-251] Config : Start config [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/cofig_manager/config_manager.v:143]
-INFO: [Synth 8-155] case statement is not full and has no default [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/cofig_manager/config_manager.v:133]
-INFO: [Synth 8-6155] done synthesizing module 'hydrophone_config_manager' (5#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/cofig_manager/config_manager.v:52]
+INFO: [Synth 8-251] Config : Start config [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/cofig_manager/config_manager.v:167]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/cofig_manager/config_manager.v:157]
+INFO: [Synth 8-6155] done synthesizing module 'hydrophone_config_manager' (5#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/cofig_manager/config_manager.v:73]
 INFO: [Synth 8-6157] synthesizing module 'poten_interface' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/poten_interface/poten_interface.v:40]
 	Parameter i2c_address_1 bound to: 8'b01011100 
 	Parameter i2c_address_2 bound to: 8'b01011110 
@@ -158,13 +165,13 @@ INFO: [Synth 8-155] case statement is not full and has no default [/home/stp/sea
 INFO: [Synth 8-155] case statement is not full and has no default [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/poten_interface/poten_interface.v:287]
 INFO: [Synth 8-155] case statement is not full and has no default [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/poten_interface/poten_interface.v:263]
 INFO: [Synth 8-6155] done synthesizing module 'poten_interface' (8#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/poten_interface/poten_interface.v:40]
-WARNING: [Synth 8-7071] port 'phase' of module 'poten_interface' is unconnected for instance 'poten_i2c' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:220]
-WARNING: [Synth 8-7071] port 'poten_state' of module 'poten_interface' is unconnected for instance 'poten_i2c' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:220]
-WARNING: [Synth 8-7071] port 'poten_sub_state' of module 'poten_interface' is unconnected for instance 'poten_i2c' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:220]
-WARNING: [Synth 8-7023] instance 'poten_i2c' of module 'poten_interface' has 12 connections declared, but only 9 given [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:220]
+WARNING: [Synth 8-7071] port 'phase' of module 'poten_interface' is unconnected for instance 'poten_i2c' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:221]
+WARNING: [Synth 8-7071] port 'poten_state' of module 'poten_interface' is unconnected for instance 'poten_i2c' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:221]
+WARNING: [Synth 8-7071] port 'poten_sub_state' of module 'poten_interface' is unconnected for instance 'poten_i2c' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:221]
+WARNING: [Synth 8-7023] instance 'poten_i2c' of module 'poten_interface' has 12 connections declared, but only 9 given [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:221]
 INFO: [Synth 8-6157] synthesizing module 'packetizer' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/packetizer/packetize.v:36]
 	Parameter SAMPLING_PER_PACKET bound to: 1000 - type: integer 
-	Parameter MAX_PKT_SIZE bound to: 4004 - type: integer 
+	Parameter MAX_PKT_SIZE bound to: 4000 - type: integer 
 	Parameter STATE_IDLE bound to: 5'b00000 
 	Parameter STATE_SEND_HEADER_SEQ bound to: 5'b00001 
 	Parameter STATE_SEND_HEADER_TIME_H bound to: 5'b00010 
@@ -184,19 +191,23 @@ INFO: [Synth 8-6157] synthesizing module 'packetizer' [/home/stp/seapup/zeabus_h
 	Parameter OUT_CH3 bound to: 3'b110 
 	Parameter OUT_CH4 bound to: 3'b111 
 INFO: [Synth 8-6155] done synthesizing module 'packetizer' (9#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/packetizer/packetize.v:36]
-INFO: [Synth 8-6157] synthesizing module 'hydrophone_trigger_backlog' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/hydrophone_trigger/hydrophone_trigger.v:161]
-	Parameter PRETRIG_SAMPLING bound to: 10000 - type: integer 
-	Parameter POSTTRIG_SAMPLING bound to: 10000 - type: integer 
-	Parameter TOTAL_TAIL bound to: 20000 - type: integer 
-	Parameter ALMOST_FULL_THRESHOLD bound to: 9989 - type: integer 
+WARNING: [Synth 8-7071] port 'debug_main_state' of module 'packetizer' is unconnected for instance 'packetizer_inst' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:238]
+WARNING: [Synth 8-7071] port 'debug_strb_d' of module 'packetizer' is unconnected for instance 'packetizer_inst' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:238]
+WARNING: [Synth 8-7071] port 'pkt_size_counter' of module 'packetizer' is unconnected for instance 'packetizer_inst' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:238]
+WARNING: [Synth 8-7023] instance 'packetizer_inst' of module 'packetizer' has 12 connections declared, but only 9 given [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:238]
+INFO: [Synth 8-6157] synthesizing module 'hydrophone_trigger_backlog' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/hydrophone_trigger/hydrophone_trigger.v:157]
+	Parameter PRETRIG_SAMPLING bound to: 64 - type: integer 
+	Parameter POSTTRIG_SAMPLING bound to: 64 - type: integer 
+	Parameter PRETRIG_MINUS_1 bound to: 63 - type: integer 
+	Parameter TOTAL_TAIL bound to: 128 - type: integer 
 INFO: [Synth 8-6157] synthesizing module 'CascadedFIFO64bit' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/hydrophone_trigger/hydrophone_trigger.v:37]
 	Parameter DEPTH bound to: 20 - type: integer 
-	Parameter BACKLOG_SIZE bound to: 9989 - type: integer 
-	Parameter ALMOST_FULL_TH bound to: 251 - type: integer 
+	Parameter BACKLOG_SIZE bound to: 10000 - type: integer 
+	Parameter ALMOST_FULL_TH bound to: 240 - type: integer 
 	Parameter ALMOST_FULL_FIFO bound to: 0 - type: integer 
 INFO: [Synth 8-6157] synthesizing module 'FIFO36E1__parameterized1' [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:14374]
 	Parameter ALMOST_EMPTY_OFFSET bound to: 13'b0000010000000 
-	Parameter ALMOST_FULL_OFFSET bound to: 251 - type: integer 
+	Parameter ALMOST_FULL_OFFSET bound to: 240 - type: integer 
 	Parameter DATA_WIDTH bound to: 72 - type: integer 
 	Parameter DO_REG bound to: 1 - type: integer 
 	Parameter EN_ECC_READ bound to: FALSE - type: string 
@@ -215,11 +226,15 @@ INFO: [Synth 8-6157] synthesizing module 'FIFO36E1__parameterized1' [/home/stp/a
 	Parameter SRVAL bound to: 72'b000000000000000000000000000000000000000000000000000000000000000000000000 
 INFO: [Synth 8-6155] done synthesizing module 'FIFO36E1__parameterized1' (9#1) [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:14374]
 INFO: [Synth 8-6155] done synthesizing module 'CascadedFIFO64bit' (10#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/hydrophone_trigger/hydrophone_trigger.v:37]
-INFO: [Synth 8-6155] done synthesizing module 'hydrophone_trigger_backlog' (11#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/hydrophone_trigger/hydrophone_trigger.v:161]
-INFO: [Synth 8-6157] synthesizing module 'hydrophone_simple_trigger' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/hydrophone_trigger/hydrophone_trigger.v:300]
-INFO: [Synth 8-6157] synthesizing module 'absolute' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/hydrophone_trigger/hydrophone_trigger.v:294]
-INFO: [Synth 8-6155] done synthesizing module 'absolute' (12#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/hydrophone_trigger/hydrophone_trigger.v:294]
-INFO: [Synth 8-6155] done synthesizing module 'hydrophone_simple_trigger' (13#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/hydrophone_trigger/hydrophone_trigger.v:300]
+INFO: [Synth 8-6155] done synthesizing module 'hydrophone_trigger_backlog' (11#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/hydrophone_trigger/hydrophone_trigger.v:157]
+INFO: [Synth 8-6157] synthesizing module 'hydrophone_simple_trigger' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/hydrophone_trigger/hydrophone_trigger.v:303]
+INFO: [Synth 8-6157] synthesizing module 'absolute' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/hydrophone_trigger/hydrophone_trigger.v:297]
+INFO: [Synth 8-6155] done synthesizing module 'absolute' (12#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/hydrophone_trigger/hydrophone_trigger.v:297]
+INFO: [Synth 8-6155] done synthesizing module 'hydrophone_simple_trigger' (13#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/hydrophone_trigger/hydrophone_trigger.v:303]
+INFO: [Synth 8-6157] synthesizing module 'strobe_decimator' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/dsp/strobe_decimator.v:37]
+	Parameter MAX_COUNTING bound to: 10 - type: integer 
+	Parameter MAX_COUNT_MINUS_1 bound to: 9 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'strobe_decimator' (14#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/dsp/strobe_decimator.v:37]
 INFO: [Synth 8-6157] synthesizing module 'adc_interface' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:255]
 INFO: [Synth 8-6157] synthesizing module 'IDDR' [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:34938]
 	Parameter DDR_CLK_EDGE bound to: SAME_EDGE_PIPELINED - type: string 
@@ -228,30 +243,30 @@ INFO: [Synth 8-6157] synthesizing module 'IDDR' [/home/stp/asset/xilinx/Vivado/2
 	Parameter IS_C_INVERTED bound to: 1'b0 
 	Parameter IS_D_INVERTED bound to: 1'b0 
 	Parameter SRTYPE bound to: SYNC - type: string 
-INFO: [Synth 8-6155] done synthesizing module 'IDDR' (14#1) [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:34938]
+INFO: [Synth 8-6155] done synthesizing module 'IDDR' (15#1) [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:34938]
 INFO: [Synth 8-6157] synthesizing module 'adc_filter' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:210]
 	Parameter is_dummy bound to: 0 - type: integer 
 	Parameter dummy_max bound to: 680 - type: integer 
 INFO: [Synth 8-6157] synthesizing module 'median_filter' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:46]
 INFO: [Synth 8-6157] synthesizing module 'sort' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:34]
-INFO: [Synth 8-6155] done synthesizing module 'sort' (15#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:34]
-INFO: [Synth 8-6155] done synthesizing module 'median_filter' (16#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:46]
+INFO: [Synth 8-6155] done synthesizing module 'sort' (16#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:34]
+INFO: [Synth 8-6155] done synthesizing module 'median_filter' (17#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:46]
 INFO: [Synth 8-6157] synthesizing module 'avg64_binning' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:129]
 	Parameter is_dummy bound to: 0 - type: integer 
 	Parameter dummy_max bound to: 680 - type: integer 
-INFO: [Synth 8-6155] done synthesizing module 'avg64_binning' (17#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:129]
-INFO: [Synth 8-6155] done synthesizing module 'adc_filter' (18#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:210]
+INFO: [Synth 8-6155] done synthesizing module 'avg64_binning' (18#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:129]
+INFO: [Synth 8-6155] done synthesizing module 'adc_filter' (19#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:210]
 INFO: [Synth 8-6157] synthesizing module 'adc_filter__parameterized0' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:210]
 	Parameter is_dummy bound to: 0 - type: integer 
 	Parameter dummy_max bound to: 100 - type: integer 
 INFO: [Synth 8-6157] synthesizing module 'avg64_binning__parameterized0' [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:129]
 	Parameter is_dummy bound to: 0 - type: integer 
 	Parameter dummy_max bound to: 100 - type: integer 
-INFO: [Synth 8-6155] done synthesizing module 'avg64_binning__parameterized0' (18#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:129]
-INFO: [Synth 8-6155] done synthesizing module 'adc_filter__parameterized0' (18#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:210]
-INFO: [Synth 8-6155] done synthesizing module 'adc_interface' (19#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:255]
+INFO: [Synth 8-6155] done synthesizing module 'avg64_binning__parameterized0' (19#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:129]
+INFO: [Synth 8-6155] done synthesizing module 'adc_filter__parameterized0' (19#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:210]
+INFO: [Synth 8-6155] done synthesizing module 'adc_interface' (20#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/adc_filter/adc_filter.v:255]
 INFO: [Synth 8-6157] synthesizing module 'BUFG' [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1083]
-INFO: [Synth 8-6155] done synthesizing module 'BUFG' (20#1) [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1083]
+INFO: [Synth 8-6155] done synthesizing module 'BUFG' (21#1) [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:1083]
 INFO: [Synth 8-6157] synthesizing module 'PLLE2_BASE' [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:61605]
 	Parameter BANDWIDTH bound to: OPTIMIZED - type: string 
 	Parameter CLKFBOUT_MULT bound to: 32 - type: integer 
@@ -278,21 +293,21 @@ INFO: [Synth 8-6157] synthesizing module 'PLLE2_BASE' [/home/stp/asset/xilinx/Vi
 	Parameter DIVCLK_DIVIDE bound to: 1 - type: integer 
 	Parameter REF_JITTER1 bound to: 0.000000 - type: double 
 	Parameter STARTUP_WAIT bound to: FALSE - type: string 
-INFO: [Synth 8-6155] done synthesizing module 'PLLE2_BASE' (21#1) [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:61605]
-INFO: [Synth 8-6155] done synthesizing module 'zeabus_hydrophone' (22#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:39]
+INFO: [Synth 8-6155] done synthesizing module 'PLLE2_BASE' (22#1) [/home/stp/asset/xilinx/Vivado/2020.2/scripts/rt/data/unisim_comp.v:61605]
+INFO: [Synth 8-6155] done synthesizing module 'zeabus_hydrophone' (23#1) [/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v:39]
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 2389.781 ; gain = 0.000 ; free physical = 5507 ; free virtual = 12521
+Finished RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:07 . Memory (MB): peak = 2389.785 ; gain = 0.000 ; free physical = 7311 ; free virtual = 13784
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 2389.781 ; gain = 0.000 ; free physical = 5569 ; free virtual = 12583
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:05 ; elapsed = 00:00:07 . Memory (MB): peak = 2389.785 ; gain = 0.000 ; free physical = 7310 ; free virtual = 13785
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 2389.781 ; gain = 0.000 ; free physical = 5569 ; free virtual = 12583
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:05 ; elapsed = 00:00:07 . Memory (MB): peak = 2389.785 ; gain = 0.000 ; free physical = 7310 ; free virtual = 13785
 ---------------------------------------------------------------------------------
-Netlist sorting complete. Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.02 . Memory (MB): peak = 2389.781 ; gain = 0.000 ; free physical = 5561 ; free virtual = 12574
+Netlist sorting complete. Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.05 . Memory (MB): peak = 2389.785 ; gain = 0.000 ; free physical = 7301 ; free virtual = 13776
 INFO: [Netlist 29-17] Analyzing 56 Unisim elements for replacement
 CRITICAL WARNING: [Netlist 29-346] The CLKOUT0_PHASE for PLLE2_ADV (PLLE2_BASE_inst) is being adjusted from -140.0 to -141.9. The CLKOUT0_PHASE value needs to be in increments of 1/56 the FVCO and/or increments depending on CLKOUT_DIVIDE. Refer to the Clocking Resources User Guide of the device family for details.
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
@@ -307,27 +322,27 @@ INFO: [Project 1-236] Implementation specific constraints were found while readi
 Resolution: To avoid this warning, move constraints listed in [.Xil/zeabus_hydrophone_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2475.500 ; gain = 0.000 ; free physical = 5472 ; free virtual = 12486
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2480.504 ; gain = 0.000 ; free physical = 7205 ; free virtual = 13694
 INFO: [Project 1-111] Unisim Transformation Summary:
   A total of 1 instances were transformed.
   PLLE2_BASE => PLLE2_ADV: 1 instance 
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.01 . Memory (MB): peak = 2475.500 ; gain = 0.000 ; free physical = 5472 ; free virtual = 12486
+Constraint Validation Runtime : Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.01 . Memory (MB): peak = 2480.504 ; gain = 0.000 ; free physical = 7205 ; free virtual = 13694
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:10 ; elapsed = 00:00:11 . Memory (MB): peak = 2475.500 ; gain = 85.719 ; free physical = 5545 ; free virtual = 12559
+Finished Constraint Validation : Time (s): cpu = 00:00:10 ; elapsed = 00:00:14 . Memory (MB): peak = 2480.504 ; gain = 90.719 ; free physical = 7289 ; free virtual = 13779
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7a15tcsg324-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:10 ; elapsed = 00:00:11 . Memory (MB): peak = 2475.500 ; gain = 85.719 ; free physical = 5545 ; free virtual = 12559
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:10 ; elapsed = 00:00:14 . Memory (MB): peak = 2480.504 ; gain = 90.719 ; free physical = 7289 ; free virtual = 13779
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:10 ; elapsed = 00:00:11 . Memory (MB): peak = 2475.500 ; gain = 85.719 ; free physical = 5545 ; free virtual = 12559
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:10 ; elapsed = 00:00:14 . Memory (MB): peak = 2480.504 ; gain = 90.719 ; free physical = 7289 ; free virtual = 13779
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'hydrophone_config_manager'
 INFO: [Synth 8-802] inferred FSM for state register 'c_state_reg' in module 'i2c_master_bit_ctrl'
@@ -413,7 +428,7 @@ STATE_SEND_HEADER_TIME_L |                       0000001000 |                   
 ---------------------------------------------------------------------------------------------------
 INFO: [Synth 8-3354] encoded FSM with state register 'main_state_reg' using encoding 'one-hot' in module 'packetizer'
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:11 ; elapsed = 00:00:13 . Memory (MB): peak = 2475.500 ; gain = 85.719 ; free physical = 5534 ; free virtual = 12548
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:12 ; elapsed = 00:00:15 . Memory (MB): peak = 2480.504 ; gain = 90.719 ; free physical = 7284 ; free virtual = 13777
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start RTL Component Statistics 
@@ -421,26 +436,27 @@ Start RTL Component Statistics
 Detailed RTL Component Info : 
 +---Adders : 
 	   2 Input   20 Bit       Adders := 8     
-	   2 Input   16 Bit       Adders := 8     
+	   2 Input   16 Bit       Adders := 10    
 	   2 Input   14 Bit       Adders := 1     
 	   2 Input    8 Bit       Adders := 1     
 	   2 Input    6 Bit       Adders := 4     
 	   2 Input    3 Bit       Adders := 1     
 +---Registers : 
 	               64 Bit    Registers := 1     
+	               32 Bit    Registers := 1     
 	               20 Bit    Registers := 8     
-	               16 Bit    Registers := 5     
+	               16 Bit    Registers := 7     
 	               14 Bit    Registers := 41    
 	                8 Bit    Registers := 7     
-	                6 Bit    Registers := 5     
-	                4 Bit    Registers := 3     
+	                6 Bit    Registers := 4     
+	                4 Bit    Registers := 4     
 	                3 Bit    Registers := 4     
 	                2 Bit    Registers := 2     
-	                1 Bit    Registers := 83    
+	                1 Bit    Registers := 87    
 +---Muxes : 
 	   2 Input   20 Bit        Muxes := 4     
 	  24 Input   18 Bit        Muxes := 1     
-	   2 Input   16 Bit        Muxes := 6     
+	   2 Input   16 Bit        Muxes := 9     
 	  10 Input   16 Bit        Muxes := 1     
 	   2 Input   14 Bit        Muxes := 82    
 	  10 Input   10 Bit        Muxes := 1     
@@ -448,21 +464,22 @@ Detailed RTL Component Info :
 	   2 Input    8 Bit        Muxes := 2     
 	   4 Input    8 Bit        Muxes := 4     
 	   5 Input    8 Bit        Muxes := 1     
-	   2 Input    4 Bit        Muxes := 7     
+	  10 Input    5 Bit        Muxes := 1     
+	   2 Input    4 Bit        Muxes := 9     
 	   6 Input    4 Bit        Muxes := 1     
 	   4 Input    4 Bit        Muxes := 1     
 	   5 Input    4 Bit        Muxes := 1     
-	   2 Input    3 Bit        Muxes := 7     
+	   2 Input    3 Bit        Muxes := 6     
 	  15 Input    3 Bit        Muxes := 1     
 	   5 Input    3 Bit        Muxes := 2     
 	  10 Input    3 Bit        Muxes := 1     
 	   4 Input    2 Bit        Muxes := 1     
 	   2 Input    2 Bit        Muxes := 7     
 	   3 Input    2 Bit        Muxes := 1     
-	  12 Input    1 Bit        Muxes := 21    
-	   2 Input    1 Bit        Muxes := 50    
+	   2 Input    1 Bit        Muxes := 59    
+	  13 Input    1 Bit        Muxes := 22    
 	   5 Input    1 Bit        Muxes := 6     
-	   4 Input    1 Bit        Muxes := 14    
+	   4 Input    1 Bit        Muxes := 15    
 	  18 Input    1 Bit        Muxes := 5     
 	   6 Input    1 Bit        Muxes := 6     
 	  10 Input    1 Bit        Muxes := 8     
@@ -482,25 +499,25 @@ Finished Part Resource Summary
 Start Cross Boundary and Area Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:18 ; elapsed = 00:00:20 . Memory (MB): peak = 2475.500 ; gain = 85.719 ; free physical = 5495 ; free virtual = 12528
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:20 ; elapsed = 00:00:24 . Memory (MB): peak = 2480.504 ; gain = 90.719 ; free physical = 7260 ; free virtual = 13780
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:24 ; elapsed = 00:00:26 . Memory (MB): peak = 2475.500 ; gain = 85.719 ; free physical = 5346 ; free virtual = 12430
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:24 ; elapsed = 00:00:29 . Memory (MB): peak = 2480.504 ; gain = 90.719 ; free physical = 7124 ; free virtual = 13657
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:00:25 ; elapsed = 00:00:28 . Memory (MB): peak = 2475.500 ; gain = 85.719 ; free physical = 5295 ; free virtual = 12339
+Finished Timing Optimization : Time (s): cpu = 00:00:26 ; elapsed = 00:00:30 . Memory (MB): peak = 2480.504 ; gain = 90.719 ; free physical = 7096 ; free virtual = 13630
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Technology Mapping
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:00:28 ; elapsed = 00:00:31 . Memory (MB): peak = 2475.500 ; gain = 85.719 ; free physical = 5213 ; free virtual = 12274
+Finished Technology Mapping : Time (s): cpu = 00:00:27 ; elapsed = 00:00:32 . Memory (MB): peak = 2480.504 ; gain = 90.719 ; free physical = 7095 ; free virtual = 13629
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start IO Insertion
@@ -518,37 +535,37 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:00:31 ; elapsed = 00:00:34 . Memory (MB): peak = 2482.438 ; gain = 92.656 ; free physical = 5217 ; free virtual = 12278
+Finished IO Insertion : Time (s): cpu = 00:00:30 ; elapsed = 00:00:35 . Memory (MB): peak = 2483.473 ; gain = 93.688 ; free physical = 7108 ; free virtual = 13640
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:00:31 ; elapsed = 00:00:34 . Memory (MB): peak = 2482.438 ; gain = 92.656 ; free physical = 5217 ; free virtual = 12277
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:30 ; elapsed = 00:00:35 . Memory (MB): peak = 2483.473 ; gain = 93.688 ; free physical = 7108 ; free virtual = 13640
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:32 ; elapsed = 00:00:34 . Memory (MB): peak = 2482.438 ; gain = 92.656 ; free physical = 5226 ; free virtual = 12276
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:30 ; elapsed = 00:00:35 . Memory (MB): peak = 2483.473 ; gain = 93.688 ; free physical = 7107 ; free virtual = 13640
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:00:32 ; elapsed = 00:00:34 . Memory (MB): peak = 2482.438 ; gain = 92.656 ; free physical = 5226 ; free virtual = 12276
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:30 ; elapsed = 00:00:35 . Memory (MB): peak = 2483.473 ; gain = 93.688 ; free physical = 7107 ; free virtual = 13640
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:32 ; elapsed = 00:00:34 . Memory (MB): peak = 2482.438 ; gain = 92.656 ; free physical = 5227 ; free virtual = 12278
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:30 ; elapsed = 00:00:35 . Memory (MB): peak = 2483.473 ; gain = 93.688 ; free physical = 7107 ; free virtual = 13640
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:00:32 ; elapsed = 00:00:34 . Memory (MB): peak = 2482.438 ; gain = 92.656 ; free physical = 5227 ; free virtual = 12278
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:30 ; elapsed = 00:00:35 . Memory (MB): peak = 2483.473 ; gain = 93.688 ; free physical = 7107 ; free virtual = 13640
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -565,47 +582,47 @@ Report Cell Usage:
 |      |Cell       |Count |
 +------+-----------+------+
 |1     |BUFG       |     2|
-|2     |CARRY4     |   184|
+|2     |CARRY4     |   188|
 |3     |FIFO36E1   |    25|
 |6     |IDDR       |    30|
-|7     |LUT1       |   140|
-|8     |LUT2       |   163|
-|9     |LUT3       |   471|
-|10    |LUT4       |   382|
-|11    |LUT5       |   438|
-|12    |LUT6       |   551|
+|7     |LUT1       |   155|
+|8     |LUT2       |   158|
+|9     |LUT3       |   477|
+|10    |LUT4       |   331|
+|11    |LUT5       |   564|
+|12    |LUT6       |   439|
 |13    |MUXF7      |    16|
 |14    |PLLE2_BASE |     1|
-|15    |FDRE       |  1093|
-|16    |FDSE       |    60|
+|15    |FDRE       |  1134|
+|16    |FDSE       |    62|
 |17    |IBUF       |    35|
 |18    |IOBUF      |    18|
 |19    |OBUF       |    24|
 +------+-----------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:00:32 ; elapsed = 00:00:34 . Memory (MB): peak = 2482.438 ; gain = 92.656 ; free physical = 5227 ; free virtual = 12278
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:30 ; elapsed = 00:00:35 . Memory (MB): peak = 2483.473 ; gain = 93.688 ; free physical = 7107 ; free virtual = 13640
 ---------------------------------------------------------------------------------
 Synthesis finished with 0 errors, 0 critical warnings and 0 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:00:30 ; elapsed = 00:00:32 . Memory (MB): peak = 2482.438 ; gain = 6.938 ; free physical = 5285 ; free virtual = 12335
-Synthesis Optimization Complete : Time (s): cpu = 00:00:32 ; elapsed = 00:00:35 . Memory (MB): peak = 2482.445 ; gain = 92.656 ; free physical = 5285 ; free virtual = 12335
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:28 ; elapsed = 00:00:32 . Memory (MB): peak = 2483.473 ; gain = 2.969 ; free physical = 7161 ; free virtual = 13694
+Synthesis Optimization Complete : Time (s): cpu = 00:00:30 ; elapsed = 00:00:35 . Memory (MB): peak = 2483.480 ; gain = 93.688 ; free physical = 7161 ; free virtual = 13694
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:00.05 ; elapsed = 00:00:00.06 . Memory (MB): peak = 2482.445 ; gain = 0.000 ; free physical = 5391 ; free virtual = 12415
-INFO: [Netlist 29-17] Analyzing 274 Unisim elements for replacement
+Netlist sorting complete. Time (s): cpu = 00:00:00.04 ; elapsed = 00:00:00.04 . Memory (MB): peak = 2483.480 ; gain = 0.000 ; free physical = 7153 ; free virtual = 13689
+INFO: [Netlist 29-17] Analyzing 278 Unisim elements for replacement
 CRITICAL WARNING: [Netlist 29-346] The CLKOUT0_PHASE for PLLE2_ADV (PLLE2_BASE_inst) is being adjusted from -140.0 to -141.9. The CLKOUT0_PHASE value needs to be in increments of 1/56 the FVCO and/or increments depending on CLKOUT_DIVIDE. Refer to the Clocking Resources User Guide of the device family for details.
-INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Netlist 29-28] Unisim Transformation completed in 5 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00 . Memory (MB): peak = 2482.445 ; gain = 0.000 ; free physical = 5333 ; free virtual = 12349
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2483.480 ; gain = 0.000 ; free physical = 7183 ; free virtual = 13719
 INFO: [Project 1-111] Unisim Transformation Summary:
   A total of 19 instances were transformed.
   IOBUF => IOBUF (IBUF, OBUFT): 18 instances
   PLLE2_BASE => PLLE2_ADV: 1 instance 
 
 INFO: [Common 17-83] Releasing license: Synthesis
-89 Infos, 10 Warnings, 2 Critical Warnings and 0 Errors encountered.
+91 Infos, 20 Warnings, 2 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:00:41 ; elapsed = 00:00:39 . Memory (MB): peak = 2482.445 ; gain = 92.742 ; free physical = 5473 ; free virtual = 12489
+synth_design: Time (s): cpu = 00:00:41 ; elapsed = 00:00:56 . Memory (MB): peak = 2483.480 ; gain = 93.773 ; free physical = 7330 ; free virtual = 13866
 INFO: [runtcl-6] Synthesis results are not added to the cache due to CRITICAL_WARNING
 INFO: [Common 17-1381] The checkpoint '/home/stp/seapup/zeabus_hydrophone/FPGA_firmware/hydrophone_dsp.runs/synth_1/zeabus_hydrophone.dcp' has been generated.
 INFO: [runtcl-4] Executing : report_utilization -file zeabus_hydrophone_utilization_synth.rpt -pb zeabus_hydrophone_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Sun Jul  3 13:58:51 2022...
+INFO: [Common 17-206] Exiting Vivado at Sat Jul  9 11:41:02 2022...

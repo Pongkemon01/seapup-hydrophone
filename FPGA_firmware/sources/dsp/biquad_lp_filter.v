@@ -217,7 +217,7 @@ module biquad_lp_filter(
 	
 	// Input data is Q14.2 and Coefficients are Q2.16. Therefore, their multiplication generates
 	// Q16.18 data. They should be extended to Q30.18 (48 bits)
-	wire signed [33:0]raw_mult;
+	wire signed [33:0] raw_mult;
 	wire signed [47:0] numerator_res[0:2];
 	assign raw_mult = numerator_delay_line[0] * b2;		// Signed multiplication. Result is in Q16.18
 	assign numerator_res[0] = { {16(input_latch[15])}, input_latch, 16'b0 }; // b0 = 1; just extend bits
@@ -232,7 +232,7 @@ module biquad_lp_filter(
 	// The DSP slice require 2 inputs with length of 30 bits and 18 bits. 
 	wire [47:0] out;					// Final summation before rounding in Q30.18
 	wire [29:0] round_out;				// Rounded "out" to Q28.2 
-	reg [29:0] denom_delay_line[1:0];	// Q28.2
+	reg [29:0] denom_delay_line[0:1];	// Q28.2
 	
 	initial
 	begin
