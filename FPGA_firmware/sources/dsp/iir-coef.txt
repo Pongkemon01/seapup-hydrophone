@@ -1,0 +1,27 @@
+Section 1
+
+    a1 = -1.951934814453125 (-127922, 10_0000_1100_0100_1110) (its opposite number is 01_1111_0011_1011_0010)
+    a2 = 0.9556884765625    (62632  , 00_1111_0100_1010_1000) (its opposite number is 11_0000_1011_0101_1000)
+
+    b0 = 1
+    b1 = -1.95855712890625  (-128356, 10_0000_1010_1001_1100)
+    b2 = 1
+
+Section 2
+
+    a1 = -1.884246826171875 (-123486, 10_0001_1101_1010_0010) (its opposite number is 01_1110_0010_0101_1110)
+    a2 = 0.88818359375      (58208  , 00_1110_0011_0110_0000) (its opposite number is 11_0001_1100_1010_0000)
+
+    b0 = 1
+    b1 = -1.76995849609375  (-115996, 10_0011_1010_1110_0100)
+    b2 = 1
+
+All Fixed-point numbers are Q2.16
+
+There are 8 streams of data. Each requires 2 Biquads. Each Biquad contain 3 multiplication.
+Therefore, we require 48 (8 * 2 * 3) multiplication units.
+Our FPGA (XC7A15T) has 45 DSP units. Hencce, we need to implement extra multiplication units.
+
+Max input witdth = 16 bits (-32768 -> 32767)
+FIR parts generates 18 bits witdth
+IIR parts add more 2 bits to 20 bits

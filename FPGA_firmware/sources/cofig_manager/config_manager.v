@@ -40,7 +40,7 @@
  *  1 bytes: Configuration fields
  *      The configuraton fields are Bit-fields indicates which configuration to set.
  *      This field also indicates what data would follow. Each bit has meaning as:
- *          bit 7 - 4: (Reserved)
+ *          bit 7 - 4: Pinger frequency index the list of frequency is shown below
  *          bit 3: 1 = enable trigger level setting
  *          bit 2: 1 = enable amplifier gains setting
  *          bit 1 - bit 0: (Reserved)
@@ -48,6 +48,27 @@
  *  4 bytes: New amplifier gain for each channel. Each channel can have it gain different
  *      from others. (Thie field exists only when 2nd bit of the prefix is set)
  *
+ * Pinger frequency table (for IQ demodulation)
+ * +---------+-----------+
+ * |  index  | frequency |
+ * +---------+-----------+
+ * | 4'b0000 |   25kHz   |
+ * | 4'b0001 |   26kHz   |
+ * | 4'b0010 |   27kHz   |
+ * | 4'b0011 |   28kHz   |
+ * | 4'b0100 |   29kHz   |
+ * | 4'b0101 |   30kHz   |
+ * | 4'b0110 |   31kHz   |
+ * | 4'b0111 |   32kHz   |
+ * | 4'b1000 |   33kHz   |
+ * | 4'b1001 |   34kHz   |
+ * | 4'b1010 |   35kHz   |
+ * | 4'b1011 |   36kHz   |
+ * | 4'b1100 |   37kHz   |
+ * | 4'b1101 |   38kHz   |
+ * | 4'b1110 |   39kHz   |
+ * | 4'b1111 |   40kHz   |
+ * +---------+-----------+
  */
 module hydrophone_config_manager #(
 	// constants
@@ -69,12 +90,15 @@ module hydrophone_config_manager #(
 	output reg update_poten,		// Trigger for potentiometer register updating. (rising edge)
 	
 	// Register
+	output reg [3:0] pinger_freq,	// Frequency of the pinger
 	output reg [15:0] trigger_level,// hydrophone signal level
 	output reg [7:0] poten1_value,	// Value of potentiometer 1 (defines gain of channel 1)
 	output reg [7:0] poten2_value,	// Value of potentiometer 2 (defines gain of channel 2)
 	output reg [7:0] poten3_value,	// Value of potentiometer 3 (defines gain of channel 3)
 	output reg [7:0] poten4_value	// Value of potentiometer 4 (defines gain of channel 4)
 );
+	localparam DEFAULT_POTEN = 8'd230;		// Default value of potentiometers (making gain = 1)
+	localparam DEFAULT_TRIG_LEVEL = 16'd16383;	// Default trigger level
 
 	// State value
 	localparam state_wait_prefix = 3'd0;	// Waiting for the prefix
@@ -103,11 +127,12 @@ module hydrophone_config_manager #(
 		counter <= 0;
 		config_d_oe <= 1'b0;
 		update_poten <= 1'b0;
-		trigger_level <= 16'd16383;
-		poten1_value <= 8'd25;
-		poten2_value <= 8'd25;
-		poten3_value <= 8'd25;
-		poten4_value <= 8'd25;
+		pinger_freq <= 4'b1111;
+		trigger_level <= DEFAULT_TRIG_LEVEL;
+		poten1_value <= DEFAULT_POTEN;
+		poten2_value <= DEFAULT_POTEN;
+		poten3_value <= DEFAULT_POTEN;
+		poten4_value <= DEFAULT_POTEN;
 	end
 
 	always @( negedge clk )
@@ -118,11 +143,12 @@ module hydrophone_config_manager #(
 			counter <= 0;
 			config_d_oe <= 1'b0;
 			update_poten <= 1'b0;
-			trigger_level <= 16'd16383;
-			poten1_value <= 8'd25;
-			poten2_value <= 8'd25;
-			poten3_value <= 8'd25;
-			poten4_value <= 8'd25;
+			pinger_freq <= 4'b1111;
+			trigger_level <= DEFAULT_TRIG_LEVEL;
+			poten1_value <= DEFAULT_POTEN;
+			poten2_value <= DEFAULT_POTEN;
+			poten3_value <= DEFAULT_POTEN;
+			poten4_value <= DEFAULT_POTEN;
 		end
 		else
 		begin
@@ -139,6 +165,7 @@ module hydrophone_config_manager #(
 							if( prefix[15:8] == config_prefix )
 							begin
 								$display("Config : Start config");
+								pinger_freq <= prefix[7:4];	// Get pinger frequency
 								if( prefix[3] )
 								begin
 									state <= state_read_trigger;

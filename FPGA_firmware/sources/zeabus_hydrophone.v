@@ -141,8 +141,8 @@ module zeabus_hydrophone #(
 	//assign LED_GREEN_3 = trigged;
 	
     assign LED_RED_1 = RST;
-    assign LED_YELLOW_1 = trigged;
-    assign LED_GREEN_1 = slave_fifo_rdy;
+    assign LED_YELLOW_1 = trigger_event;
+    assign LED_GREEN_1 = trigged; // slave_fifo_rdy;
 	
     assign LED_RED_2 = rx_oe;
     assign LED_YELLOW_2 = pkt_end;
@@ -210,6 +210,7 @@ module zeabus_hydrophone #(
         .update_poten(poten_update_start), // Trigger for potentiometer register updating. (rising edge)
 
         // Register
+        .pinger_freq(),                 // Frequency of the pinger under interest
         .trigger_level(trigger_level),  // hydrophone signal level
         .poten1_value(poten0),          // Value of potentiometer 1 (defines gain of channel 1)
         .poten2_value(poten1),          // Value of potentiometer 2 (defines gain of channel 2)
@@ -241,6 +242,7 @@ module zeabus_hydrophone #(
         .d_in(trigged_out),             // Data from trigger detection
         .trigged(trigged),              // Data-valid signal from trigger
         .in_strobe(trigger_strobe),     // Strobe to read a datum from trigger FIFO
+        //.in_strobe(dummy_strb),     // Strobe to read a datum from trigger FIFO
 
         .d_out(packetize_out),          // Output data
         .out_strobe(p_data_strobe),     // Data-valid signal to FX3 interface
@@ -254,23 +256,47 @@ module zeabus_hydrophone #(
 	assign comb_strb = adc_strb_1 & adc_strb_2 & adc_strb_3 & adc_strb_4;
     assign adc_out = { adc2_2_out, adc2_1_out, adc1_2_out, adc1_1_out };
 
-    hydrophone_trigger #( .header(trigger_head), .trigged_tailed(trigger_tail) ) trigger(
+    wire trigger_event;
+
+    hydrophone_trigger_backlog #( .PRETRIG_SAMPLING(trigger_head), .POSTTRIG_SAMPLING(trigger_tail) ) 
+        trigger_backlog(
         .rst(rst),                      // system reset (active high)
         .clk(sys_clk),                  // Master clock
-		.enable(FUNC_EN),				// Enable trigger module
 
         .rdy(trigger_rdy),              // Debug signal
         .fifo_rdy(trigger_fifo_rdy),    // Debug signal
-        .abs_data(abs_data),            // Debug signal
-        .abs_trig(abs_trig),            // Debug signal
 
         .d_in( adc_out ),               // data input (concatenation of 4 16-bit data with channel 1 first)
-        .trigger_level(trigger_level),  // level of the trigger in 16-bit signed integer
         .input_strobe(comb_strb),       // Strobe from ADC
+        .trigger_event(trigger_event),  // Event from trigger activation
 
         .d_out(trigged_out),            // data output
         .output_strobe(trigger_strobe), // Strobe to read from trigger FIFO
         .trigged(trigged)               // indicates that the data is part of packet of trigged signal
+    );
+
+    hydrophone_simple_trigger simple_trigger (
+	    .abs_data(),
+	    .abs_trig(),
+
+        .rst(rst),                      // system reset (active high)
+        .clk(sys_clk),                  // Master clock
+		.enable(FUNC_EN),				// Enable trigger module
+        .d_in( adc_out ),               // data input (concatenation of 4 16-bit data with channel 1 first)
+        .input_strobe(comb_strb),       // Strobe from ADC
+	    .trigger_level(trigger_level),	// level of the trigger in 16-bit signed integer in format Q13.2
+	    .trigged(trigger_event)			// indicates that the data is part of packet of trigged signal
+    );
+
+    //
+    // Down sampling
+    //
+    wire dummy_strb;
+    strobe_decimator #( .MAX_COUNTING(10) ) down_sampling (
+        .clk(sys_clk),          // System clock
+        .rst(rst),              // Reset (active high)
+        .in_strobe(trigger_strobe),
+        .out_strobe(dummy_strb)
     );
 
     //

@@ -261,6 +261,25 @@ class hydrophone_usb:
   The usb communication to interface with hydrophone v3
   """
 
+  # Enumeration for pinger frequency setting
+  class pinger_freq:
+    F25K = np.uint8( 0b00000000 )
+    F26K = np.uint8( 0b00010000 )
+    F27K = np.uint8( 0b00100000 )
+    F28K = np.uint8( 0b00110000 )
+    F29K = np.uint8( 0b01000000 )
+    F30K = np.uint8( 0b01010000 )
+    F31K = np.uint8( 0b01100000 )
+    F32K = np.uint8( 0b01110000 )
+    F33K = np.uint8( 0b10000000 )
+    F34K = np.uint8( 0b10010000 )
+    F35K = np.uint8( 0b10100000 )
+    F36K = np.uint8( 0b10110000 )
+    F37K = np.uint8( 0b11000000 )
+    F38K = np.uint8( 0b11010000 )
+    F39K = np.uint8( 0b11100000 )
+    F40K = np.uint8( 0b11110000 )
+
   def __init__( self ):
     # find our device
     self.dev = usb.core.find( idVendor=VENDOR_ID, idProduct=PRODUCT_ID )
@@ -485,7 +504,8 @@ class hydrophone_usb:
   # LNA_Gain_2 to LNA_Gain_4 = amplifier gain for channel 2 - 4. The basic conditions are same as channel 1
   #     except that if any of these gain has negative value, gain of the corresponding channel is set to
   #     the same value of channel 1
-  def sent_dsp_param( self, threshold = 0, LNA_Gain_1 = -1, LNA_Gain_2 = -1, LNA_Gain_3 = -1, LNA_Gain_4 = -1 ):
+  # Pinger frequency must come from class pinger_freq defined above
+  def sent_dsp_param( self, threshold = 0, LNA_Gain_1 = -1, LNA_Gain_2 = -1, LNA_Gain_3 = -1, LNA_Gain_4 = -1, Pinger_freq = pinger_freq.F40K ):
     buf_size = 2
     if( threshold > 0 ):
       buf_size = buf_size + 2
@@ -553,6 +573,9 @@ class hydrophone_usb:
       else:
         buffer[gain_index] = buffer[4]
 
+    # Embed pinger frequency into prefix
+    bubffer[1] = buffer[1] | ( Pinger_freq & 0b11110000 )
+
     # Send the buffer to FPGA through control endpoint
     self.send_control_to_fpga( buffer )
 
@@ -576,7 +599,7 @@ class hydrophone_usb:
       if(len(buffer) == 0):
         print('Got an empty packet')
       else:
-        print(f'Got an incorrect packet with id {buffer[0]:X}, and {buffer[1]:X}')
+        print(f'Got an incorrect packet with id {buffer[0]:X}, and {buffer[1]:X}. Its first 4 words are {buffer[0]:X}-{buffer[1]:X}-{buffer[2]:X}-{buffer[3]:X}')
 
     # If reach here, the error count have reached 100
     # We return empty signal with sequence number and time stamp equal to 0

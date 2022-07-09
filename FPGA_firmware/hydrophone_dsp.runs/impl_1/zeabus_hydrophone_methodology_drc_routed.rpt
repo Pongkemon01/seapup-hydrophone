@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.2 (lin64) Build 3064766 Wed Nov 18 09:12:47 MST 2020
-| Date         : Fri Jun 24 12:08:51 2022
+| Date         : Sat Jul  9 11:42:19 2022
 | Host         : Seapup-dell running 64-bit Ubuntu 20.04.4 LTS
 | Command      : report_methodology -file zeabus_hydrophone_methodology_drc_routed.rpt -pb zeabus_hydrophone_methodology_drc_routed.pb -rpx zeabus_hydrophone_methodology_drc_routed.rpx
 | Design       : zeabus_hydrophone
@@ -35,7 +35,7 @@ Table of Contents
 -----------------
 LUTAR-1#1 Warning
 LUT drives async reset alert  
-LUT cell slave_fifo/fifo_departure/genblk1[0].fifo_departure_inst_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) slave_fifo/fifo_arrival/RST,
+LUT cell simple_trigger/genblk1[0].fifo_departure_inst_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) slave_fifo/fifo_arrival/RST,
 slave_fifo/fifo_departure/genblk1[0].fifo_departure_inst/RST,
 slave_fifo/fifo_departure/genblk1[1].fifo_departure_inst/RST,
 slave_fifo/fifo_departure/genblk1[2].fifo_departure_inst/RST
@@ -44,7 +44,22 @@ Related violations: <none>
 
 LUTAR-1#2 Warning
 LUT drives async reset alert  
-LUT cell trigger/FIFO36E1_inst_i_2, with 2 or more inputs, drives asynchronous preset/clear pin(s) trigger/FIFO36E1_inst/RST. The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
+LUT cell simple_trigger/genblk1[0].fifo_departure_inst_i_2__0, with 2 or more inputs, drives asynchronous preset/clear pin(s) trigger_backlog/backlog/genblk1[0].fifo_departure_inst/RST,
+trigger_backlog/backlog/genblk1[10].fifo_departure_inst/RST,
+trigger_backlog/backlog/genblk1[11].fifo_departure_inst/RST,
+trigger_backlog/backlog/genblk1[12].fifo_departure_inst/RST,
+trigger_backlog/backlog/genblk1[13].fifo_departure_inst/RST,
+trigger_backlog/backlog/genblk1[14].fifo_departure_inst/RST,
+trigger_backlog/backlog/genblk1[15].fifo_departure_inst/RST,
+trigger_backlog/backlog/genblk1[16].fifo_departure_inst/RST,
+trigger_backlog/backlog/genblk1[17].fifo_departure_inst/RST,
+trigger_backlog/backlog/genblk1[18].fifo_departure_inst/RST,
+trigger_backlog/backlog/genblk1[19].fifo_departure_inst/RST,
+trigger_backlog/backlog/genblk1[1].fifo_departure_inst/RST,
+trigger_backlog/backlog/genblk1[2].fifo_departure_inst/RST,
+trigger_backlog/backlog/genblk1[3].fifo_departure_inst/RST,
+trigger_backlog/backlog/genblk1[4].fifo_departure_inst/RST
+ (the first 15 of 20 listed). The LUT may glitch and trigger an unexpected reset, even if it is a properly timed path.
 Related violations: <none>
 
 TIMING-16#1 Warning
@@ -59,7 +74,7 @@ Related violations: <none>
 
 TIMING-16#3 Warning
 Large setup violation  
-There is a large setup violation of -3.157 ns between slave_fifo/PKTEND_reg/C (clocked by sys_clk) and PKTEND (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
+There is a large setup violation of -3.153 ns between slave_fifo/PKTEND_reg/C (clocked by sys_clk) and PKTEND (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
 Related violations: <none>
 
 TIMING-16#4 Warning
@@ -69,12 +84,12 @@ Related violations: <none>
 
 TIMING-16#5 Warning
 Large setup violation  
-There is a large setup violation of -3.271 ns between slave_fifo/A0_reg/C (clocked by sys_clk) and A[0] (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
+There is a large setup violation of -3.171 ns between slave_fifo/SLCS_reg/C (clocked by sys_clk) and SLCS (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
 Related violations: <none>
 
 TIMING-16#6 Warning
 Large setup violation  
-There is a large setup violation of -3.303 ns between slave_fifo/SLCS_reg/C (clocked by sys_clk) and SLCS (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
+There is a large setup violation of -3.271 ns between slave_fifo/A0_reg/C (clocked by sys_clk) and A[0] (clocked by sys_clk). Large setup violations at the end of those stages might be difficult to fix during the post-placement implementation flow and could be the result of non-optimal XDC constraints or non-optimal design architecture
 Related violations: <none>
 
 

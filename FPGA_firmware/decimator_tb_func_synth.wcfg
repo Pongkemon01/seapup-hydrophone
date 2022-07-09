@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="decimator_tb_func_synth.wdb" id="1">
+         <top_modules>
+            <top_module name="decimator_tb" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="3950000fs"></ZoomStartTime>
+      <ZoomEndTime time="3987761fs"></ZoomEndTime>
+      <Cursor1Time time="3994000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="288"></NameColumnWidth>
+      <ValueColumnWidth column_width="128"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="9" />
+   <wvobject type="logic" fp_name="/decimator_tb/rst">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/decimator_tb/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/decimator_tb/strobe">
+      <obj_property name="ElementShortName">strobe</obj_property>
+      <obj_property name="ObjectShortName">strobe</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/decimator_tb/output_strb">
+      <obj_property name="ElementShortName">output_strb</obj_property>
+      <obj_property name="ObjectShortName">output_strb</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/decimator_tb/counter">
+      <obj_property name="ElementShortName">counter[31:0]</obj_property>
+      <obj_property name="ObjectShortName">counter[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/decimator_tb/t_count">
+      <obj_property name="ElementShortName">t_count</obj_property>
+      <obj_property name="ObjectShortName">t_count</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/decimator_tb/total_data">
+      <obj_property name="ElementShortName">total_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">total_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/decimator_tb/clk_toggle_period">
+      <obj_property name="ElementShortName">clk_toggle_period[31:0]</obj_property>
+      <obj_property name="ObjectShortName">clk_toggle_period[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/decimator_tb/clk_per_strobe">
+      <obj_property name="ElementShortName">clk_per_strobe[31:0]</obj_property>
+      <obj_property name="ObjectShortName">clk_per_strobe[31:0]</obj_property>
+   </wvobject>
+</wave_config>

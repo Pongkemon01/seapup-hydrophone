@@ -37,9 +37,9 @@ module packetizer #(
 	parameter	SAMPLING_PER_PACKET = 1000	// Total sampling in a packet (max 1020)
     ) (
 	// Debug output
-	//output [4:0] debug_main_state,
-	//output debug_strb_d,
-	//output [15:0] pkt_size_counter,
+	output [4:0] debug_main_state,
+	output debug_strb_d,
+	output [15:0] pkt_size_counter,
 	//output reg sending,		// Packetizer is in the middle of sending data
 
 	// Input ports
@@ -70,7 +70,7 @@ module packetizer #(
 	n * 8 bytes: stream of "n" sampled data that satisfied the trigger
 */
 
-	localparam MAX_PKT_SIZE = 4 + (SAMPLING_PER_PACKET * 4);  // Maximum size of a packet
+	localparam MAX_PKT_SIZE = SAMPLING_PER_PACKET * 4;  // Maximum size of a packet exclude header
 
 	// States
 	localparam STATE_IDLE = 5'b00000;				// Waiting for trigged and posedge in_strobe
@@ -104,9 +104,9 @@ module packetizer #(
 	
 	reg [15:0] current_pkt_size;	// size of current packet
 	
-	//assign debug_main_state = main_state;
-	//assign debug_strb_d = in_strb_d;
-	//assign pkt_size_counter = current_pkt_size;
+	assign debug_main_state = main_state;
+	assign debug_strb_d = in_strb_d;
+	assign pkt_size_counter = current_pkt_size;
 
 	initial
 	begin
@@ -137,7 +137,7 @@ module packetizer #(
 	end
 
 	// Edge detector and input latch
-	always @(negedge clk)
+	always @(posedge clk)
 	begin
 		in_strb_d <= in_strobe;
 	end
@@ -150,7 +150,7 @@ module packetizer #(
 	end
 	always @(posedge clk)
 	begin
-		if( in_strobe == 1 && in_strb_d == 0 && trigged )
+		if( in_strobe == 1 && trigged )
 			latched_input <= d_in;
 	end
 
@@ -210,7 +210,7 @@ module packetizer #(
 				STATE_IDLE:
 				begin
 					current_pkt_size <= 16'b0;
-					if( ( trigged && in_strb_d == 0 && in_strobe == 1 ) && !out_full )
+					if( ( trigged && in_strb_d == 1 ) && !out_full )
 					begin
 						current_pkt_size <= 16'd4;
 						seq_cnt <= seq_cnt + 1;
@@ -258,7 +258,7 @@ module packetizer #(
 				STATE_SEND_DATA_CH4:
 				begin
 					out_sel <= OUT_CH4;		// out CH4 sampling, latch ch3
-					if( ( current_pkt_size >= MAX_PKT_SIZE ) || !trigged || out_full )
+					if( ( current_pkt_size > MAX_PKT_SIZE ) || !trigged || out_full )
 					begin
 						// Still have data but packet size reached max.
 						// Close current packet and start new packet
@@ -270,7 +270,7 @@ module packetizer #(
 				begin
 					out_strobe <= 0;
 					pkt_end <= 0;
-					if( ( current_pkt_size >= MAX_PKT_SIZE ) || !trigged )
+					if( ( current_pkt_size > MAX_PKT_SIZE ) || !trigged )
 					begin
 						//sending <= 0;
 						main_state <= STATE_IDLE;
@@ -289,7 +289,7 @@ module packetizer #(
 					end
 					else
 					begin
-						if( in_strobe == 1 && in_strb_d == 0 )
+						if( in_strb_d == 1 )
 						begin
 							main_state <= STATE_SEND_DATA_CH1;
 						end

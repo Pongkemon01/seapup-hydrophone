@@ -5,6 +5,7 @@ verilog xil_defaultlib  \
 "../../../../../sources/fx3s_interface/fx3s_interface.v" \
 "../../../../../sources/hydrophone_trigger/hydrophone_trigger.v" \
 "../../../../../sources/packetizer/packetize.v" \
+"../../../../../sources/dsp/strobe_decimator.v" \
 "../../../../../sources/fx3s_interface_tb.v" \
 
 # Do not sort compile order

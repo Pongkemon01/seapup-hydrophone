@@ -34,9 +34,9 @@
 // --------------------------------------------------------------------------------
 
 module fx3_interface_tb;
-	localparam	FX3S_DMA_Size = 20;	// Size of FX3S receiving DMA buffer (in 16-bit words)
+	localparam	FX3S_DMA_Size = 8191;	// Size of FX3S receiving DMA buffer (in 16-bit words)
 	localparam	total_data = 10000;
-	localparam  clk_per_strobe = 4; // Actual must be 64
+	localparam  clk_per_strobe = 16; // Actual must be 64
 	
 	integer out_file, cycle_count = 0, counter_64MHz = 0, conf_index = 0, DMA_Counter = 0, DMA_Wait = 0, strobe_count = 0;
 
@@ -52,6 +52,7 @@ module fx3_interface_tb;
 	wire output_strb;		// Trigger data srobe
 	reg rst;				// Reset (active high)
 	wire trigged;			// Trigger armed status
+	wire trigger_rdy, trigger_fifo_rdy;
 	
 	// Packetize signals
 	wire [15:0] p_d_out;	// Data output from packetizer
@@ -100,15 +101,55 @@ module fx3_interface_tb;
 	assign DQ = (!SLOE)?DQ_In:16'bz;
 
 	// Module under test
-	hydrophone_trigger ht( .rst(rst), .clk(clk_64MHz), .trigger_level(level), .d_out(t_d_out), .d_in(d_in), .trigged(trigged), 
-		.strb_ch1(strobe), .strb_ch2(strobe), .strb_ch3(strobe), .strb_ch4(strobe), .output_strobe(output_strb), .enable(1'b1) );
-		
-	packetizer #( .SAMPLING_PER_PACKET(4) ) pt(
+    wire trigger_event;
+
+    hydrophone_trigger_backlog #( .PRETRIG_SAMPLING(64), .POSTTRIG_SAMPLING(64) ) 
+        trigger_backlog(
+        .rst(rst),                      // system reset (active high)
+        .clk(clk_64MHz),                  // Master clock
+
+        .rdy(trigger_rdy),              // Debug signal
+        .fifo_rdy(trigger_fifo_rdy),    // Debug signal
+
+        .d_in( d_in ),               // data input (concatenation of 4 16-bit data with channel 1 first)
+        .input_strobe(strobe),       // Strobe from ADC
+        .trigger_event(trigger_event),  // Event from trigger activation
+
+        .d_out(t_d_out),            // data output
+        .output_strobe(output_strb), // Strobe to read from trigger FIFO
+        .trigged(trigged)               // indicates that the data is part of packet of trigged signal
+    );
+
+    hydrophone_simple_trigger simple_trigger (
+	    .abs_data(abs_data),
+	    .abs_trig(abs_trig),
+
+        .rst(rst),                      // system reset (active high)
+        .clk(clk_64MHz),                  // Master clock
+		.enable(1),					// Enable trigger module
+        .d_in( d_in ),               // data input (concatenation of 4 16-bit data with channel 1 first)
+        .input_strobe(strobe),       // Strobe from ADC
+	    .trigger_level(level),		// level of the trigger in 16-bit signed integer in format Q13.2
+	    .trigged(trigger_event)			// indicates that the data is part of packet of trigged signal
+    );
+
+    //
+    // Down sampling
+    //
+    wire down_strb;
+    strobe_decimator #( .MAX_COUNTING(3) ) down_sampling (
+        .clk(clk_64MHz),          // System clock
+        .rst(rst),              // Reset (active high)
+        .in_strobe(output_strb),
+        .out_strobe(down_strb)
+    );
+
+	packetizer #( .SAMPLING_PER_PACKET(1000) ) pt(
 	// Debug ports
 	.debug_main_state(pkt_main_state),
-	.debug_strb_d(pkt_strobe_d),
+	.debug_strb_d(pkt_strb_d),
 	.pkt_size_counter(current_pkt_size),
-	.sending(pkt_sending),
+	//.sending(pkt_sending),
 	// Input ports
 	.d_in( t_d_out),			// Data input from each channel
 	.trigged(trigged),			// Indicates that the system can detect valid data
@@ -118,6 +159,7 @@ module fx3_interface_tb;
 	.d_out(p_d_out),	// Output data
 	.pkt_end(packet_ending),		// 0 = idle, 1 = ending a packet
 	.out_strobe(packetize_strobe),	// Clock to latch the output data (at each posedge)
+	.out_full(if_input_full),
 	
 	// Control ports
 	.rst(rst),				// System reset (active high)
@@ -126,9 +168,13 @@ module fx3_interface_tb;
 
 	fx3s_interface fx3i( 
 		// Debug signals
-		.state(fx3s_state), .TxEmpty(tx_empty), .TxFull(tx_full), .RxEmpty(rx_empty), .RxFull(rx_full),
-		.TxWrEn(tx_wr_en), .TxRdEn(tx_rd_en), .RxWrEn(rx_wr_en), .RxRdEn(rx_rd_en),	.outgoing(is_outgoing),
-		.decision(fx3s_decision), .pkt_end_out(fx3s_pkt_end), .is_sending(sending), .fifo_rst(fx3s_fifo_rst),
+		.state(fx3s_state), 
+		.TxEmpty(tx_empty), 
+		//.TxFull(tx_full), .RxEmpty(rx_empty), .RxFull(rx_full),
+		//.TxWrEn(tx_wr_en), .TxRdEn(tx_rd_en), .RxWrEn(rx_wr_en), .RxRdEn(rx_rd_en),
+		//.decision(fx3s_decision), 
+		.pkt_end_out(fx3s_pkt_end), .is_sending(sending), .outgoing(is_outgoing),
+		//.fifo_rst(fx3s_fifo_rst),
 		// System signals
 		.clk(clk_64MHz), .rst(rst), .rdy(if_ready), 
 		.d_in(p_d_out), .input_strobe(packetize_strobe), .input_full(if_input_full), .trigged(trigged),
@@ -143,8 +189,8 @@ module fx3_interface_tb;
 	wire [2:0] cfg_state;
 
 	hydrophone_config_manager cfg(
-		.dbg(cfg_debug),
-		.current_state(cfg_state),
+		//.dbg(cfg_debug),
+		//.current_state(cfg_state),
 
 	// Interface to slave fifo output buffer
 		.d_in(i_d_out),				// Data from slave FIFO
@@ -230,7 +276,8 @@ module fx3_interface_tb;
 				end
 				else
 				begin
-					strobe = 0;
+					if( strobe_count == 2 )
+						strobe = 0;
 				end
 			end
 		end
@@ -286,13 +333,13 @@ module fx3_interface_tb;
 		  if( !SLRD )
 		  begin
 		      post_rd = 2'b0;
-		      if( pre_rd == 2'd2 )
-		      begin
+		      //if( pre_rd >= 2'd1 )
+		      //begin
 
 		          conf_index = conf_index + 1;
-		      end
-		      else
-		          pre_rd = pre_rd + 1;
+		      //end
+		      //else
+		      //    pre_rd = pre_rd + 1;
 		  end
 		  else
 		  begin

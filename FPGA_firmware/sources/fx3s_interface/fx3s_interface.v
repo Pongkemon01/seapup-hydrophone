@@ -148,11 +148,12 @@ module fx3s_interface #(
     parameter   FX3S_DMA_Size = 4096    // Size of FX3S receiving DMA buffer (in 16-bit words)
     ) (
     // Debug signals
-    //output [3:0] state,
+    output [3:0] state,
     //output reg [2:0] decision,
-    //output TxEmpty, TxFull, RxEmpty, RxFull,
+    output TxEmpty, 
+    // output TxFull, RxEmpty, RxFull,
     //output TxWrEn, TxRdEn, RxWrEn, RxRdEn,
-    //output outgoing, pkt_end_out, is_sending,
+    output outgoing, pkt_end_out, is_sending,
     //output fifo_rst,
 
     // Device pins
@@ -205,6 +206,8 @@ module fx3s_interface #(
     localparam state_read_post_1 = 4'b1001;
     localparam state_read_post_2 = 4'b1010;
 
+    localparam state_zlp = 4'b1011;
+
     // This module use FIFO to store incoming and outgoing data
     // The FIFO size for arrival data is 32 16-bit words.
     // The FIFO size for departure data is 1024 64-bit words.
@@ -219,7 +222,7 @@ module fx3s_interface #(
     reg     [3:0] master_state;     // State of the interface
     wire    pkt_end;                 // Current data in FIFO is the last word
     reg     A0;                      // Address of the operation
-    reg     [5:0] trigged_d;         // Trigged delay line
+    reg     [31:0] trigged_d;         // Trigged delay line
     wire    internal_trigged_line;   // Trigged with delayed end
 
     // Reset signals for 5 clks delay
@@ -231,24 +234,24 @@ module fx3s_interface #(
     //************************************************************
     // Combination logic for debug
     //************************************************************
-    //assign state = master_state;
+    assign state = master_state;
     //assign TxFull = input_full;
-    //assign TxEmpty = tx_empty;
+    assign TxEmpty = tx_empty;
     //assign RxFull = rx_full;
     //assign RxEmpty = rx_empty;
     //assign TxWrEn = tx_wr_en;
     //assign TxRdEn = tx_rd_en;
     //assign RxWrEn = rx_wr_en;
     //assign RxRdEn = output_strobe;
-    //assign outgoing = is_outgoing;
-    //assign pkt_end_out = pkt_end;
-    //assign is_sending = sending;
+    assign outgoing = is_outgoing;
+    assign pkt_end_out = pkt_end;
+    assign is_sending = sending;
     //assign fifo_rst = fifo_rst_internal;
 
     assign fifo_rst_internal = rst | rst_d | rst_dd | rst_3d | rst_4d | rst_5d;
     assign rst_internal = fifo_rst_internal | rst_6d | rst_7d | rst_8d | rst_9d;
     assign output_strobe_internal = output_strobe & ~rst_internal;
-    assign internal_trigged_line = trigged | trigged_d[0] | trigged_d[1] | trigged_d[2] | trigged_d[3] | trigged_d[4] | trigged_d[5];
+    assign internal_trigged_line = trigged | ( trigged_d == 32'b0 ? 0 : 1 );
     assign rx_wr_en_internal = rx_wr_en & FLAGA;
     assign input_full = tx_full;
 
@@ -281,12 +284,7 @@ module fx3s_interface #(
         sending <= 1'b0;
         A0 <= addr_read;
         master_state <= state_idle;
-        trigged_d[0] <= 0;
-        trigged_d[1] <= 0;
-        trigged_d[2] <= 0;
-        trigged_d[3] <= 0;
-        trigged_d[4] <= 0;
-        trigged_d[5] <= 0;
+        trigged_d <= 32'b0;
         rst_9d <= 1;
         rst_8d <= 1;
         rst_7d <= 1;
@@ -318,12 +316,10 @@ module fx3s_interface #(
     // Trigged delay line
     always @(negedge clk)
     begin
-        trigged_d[5] <= trigged_d[4];
-        trigged_d[4] <= trigged_d[3];
-        trigged_d[3] <= trigged_d[2];
-        trigged_d[2] <= trigged_d[1];
-        trigged_d[1] <= trigged_d[0];
-        trigged_d[0] <= trigged;
+        if( rst_internal )
+            trigged_d <= 32'b0;
+        else
+            trigged_d <= { trigged_d[30:0], trigged };
     end
 
 
@@ -349,9 +345,9 @@ module fx3s_interface #(
      *               |                                 |             |       A0 = addr_write, tx_rd_en = 1, PKTEND = 1, sending = 1
      *               | !tx_empty && FLAGB, pkt_end     | stop_write_1| is_outgoing = 1, SLCS = 0, SLWR = 0, SLOE = 1, 
      *               |                                 |             |       A0 = addr_write, tx_rd_en = 1, PKTEND = 0
-     *               | (tx_empty && trigged) || !FLAGB | idle        | is_outgoing = 0, SLCS = 1, SLWR = 1, tx_rd_en = 0
-     *               | tx_empty && !trigged && sending | stop_write_1| is_outgoing = 1, SLCS = 0, SLWR = 1, SLOE = 1, 
-     *               |                                 |             |       A0 = addr_write, tx_rd_en = 0, PKTEND = 0
+     *               | (tx_empty && trigged) || !FLAGB | idle        | is_outgoing = 0, SLCS = 1, SLWR = 1, tx_rd_en = 0, sending = 1
+     *               | tx_empty && !trigged && sending | zlp         | is_outgoing = 1, SLCS = 1, SLWR = 1, SLOE = 1, 
+     *               |                                 |             |       A0 = addr_write, tx_rd_en = 0, PKTEND = 1
      *               | else                            | idle        | -
      * ------------------------------------------------------------------------------------
      *  start_read   | 1                               | read_pre_1  | SLRD = 0
@@ -366,6 +362,9 @@ module fx3s_interface #(
      *  read_post_1  | 1                               | read_post_2 | -
      * ------------------------------------------------------------------------------------
      *  read_post_2  | 1                               | idle        | SLCS = 1, SLOE = 1
+     * ------------------------------------------------------------------------------------
+     *  zlp          | 1                               | stop_write_1| is_outgoing = 1, SLCS = 1, SLWR = 1, SLOE = 1, 
+     *               |                                 |             |       A0 = addr_write, PKTEND = 0
      * ------------------------------------------------------------------------------------
      *  stop_write_1 | 1                               | stop_write_2| PKTEND = 1, tx,rd_en = 0, SLWR = 1 (then wait 3 clocks), 
      *               |                                 |             |       sending = 0
@@ -419,13 +418,13 @@ module fx3s_interface #(
                         //decision <= 3'b100;
                         // Still in sending but nothing more to send then send ZLP
                         is_outgoing <= 1;
-                        SLCS <= 0;
+                        SLCS <= 1;
                         SLWR <= 1;
                         SLOE <= 1;
                         A0 <= addr_write;
+                        PKTEND <= 1;
                         tx_rd_en <= 0;
-                        PKTEND <= 0;
-                        master_state <= state_stop_write_1;
+                        master_state <= state_zlp;
                     end
                     else if( !tx_empty && FLAGB )
                     begin
@@ -457,6 +456,7 @@ module fx3s_interface #(
                         SLCS <= 1;
                         SLWR <= 1;
                         tx_rd_en <= 0;
+                        sending <= 1;
                         master_state <= state_idle;
                     end
                     //else
@@ -501,6 +501,18 @@ module fx3s_interface #(
                 end
 
                 // FPGA -> FX3S finalizing writing process
+                state_zlp:
+                begin
+                    // Generate ZLP
+                    is_outgoing <= 1;
+                    SLCS <= 0;
+                    SLWR <= 1;
+                    SLOE <= 1;
+                    A0 <= addr_write;
+                    PKTEND <= 0;
+                    master_state <= state_stop_write_1;
+                end
+
                 state_stop_write_1:
                 begin
                     PKTEND <= 1;

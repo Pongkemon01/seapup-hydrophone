@@ -94,6 +94,7 @@ read_verilog -library xil_defaultlib {
   /home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/packetizer/packetize.v
   /home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/poten_interface/poten_interface.v
   /home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/reset_subs/reset_subs.v
+  /home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/dsp/strobe_decimator.v
   /home/stp/seapup/zeabus_hydrophone/FPGA_firmware/sources/zeabus_hydrophone.v
 }
 OPTRACE "Adding files" END { }

@@ -47,8 +47,7 @@ module hydrophone_trigger_tb;
 	wire output_strb;		// Strobe output
 	integer strobe_count;
 
-	wire trigger_rdy, trigger_fifo_rdy, trigger_strobe, trigger_full;
-	wire [12:0] backlog_size;
+	wire trigger_rdy, trigger_fifo_rdy, trigger_strobe;
 	wire [63:0] abs_data;
 	wire [15:0] abs_trig;
 	
@@ -56,12 +55,39 @@ module hydrophone_trigger_tb;
 	reg [63:0] cycle_count;
 	
 	// Module under test
-	hydrophone_trigger #( .header(32), .trigged_tailed(32) ) ht( .rst(rst), .clk(clk), .trigger_level(level), .d_out(d_out), .d_in(d_in), .trigged(trigged), 
-		.strb_ch1(strobe), .strb_ch2(strobe), .strb_ch3(strobe), .strb_ch4(strobe), .output_strobe(output_strb), .enable(1),
-		.rdy(trigger_rdy), .fifo_rdy(trigger_fifo_rdy), .abs_data(abs_data), .abs_trig(abs_trig),
-		.backlog_size(backlog_size), .strobe(trigger_strobe), .fifo_full(trigger_full)	// Debug signals
-	);
-	
+    // Concat all channels
+    wire trigger_event;
+
+    hydrophone_trigger_backlog #( .PRETRIG_SAMPLING(25), .POSTTRIG_SAMPLING(25) ) 
+        trigger_backlog(
+        .rst(rst),                      // system reset (active high)
+        .clk(clk),                  // Master clock
+
+        .rdy(trigger_rdy),              // Debug signal
+        .fifo_rdy(trigger_fifo_rdy),    // Debug signal
+
+        .d_in( d_in ),               // data input (concatenation of 4 16-bit data with channel 1 first)
+        .input_strobe(strobe),       // Strobe from ADC
+        .trigger_event(trigger_event),  // Event from trigger activation
+
+        .d_out(d_out),            // data output
+        .output_strobe(trigger_strobe), // Strobe to read from trigger FIFO
+        .trigged(trigged)               // indicates that the data is part of packet of trigged signal
+    );
+
+    hydrophone_simple_trigger simple_trigger (
+	    .abs_data(abs_data),
+	    .abs_trig(abs_trig),
+
+        .rst(rst),                      // system reset (active high)
+        .clk(clk),                  // Master clock
+		.enable(1),					// Enable trigger module
+        .d_in( d_in ),               // data input (concatenation of 4 16-bit data with channel 1 first)
+        .input_strobe(strobe),       // Strobe from ADC
+	    .trigger_level(level),		// level of the trigger in 16-bit signed integer in format Q13.2
+	    .trigged(trigger_event)			// indicates that the data is part of packet of trigged signal
+    );
+
 	initial
 	begin
 		$readmemh( "data.hex", in_data );
