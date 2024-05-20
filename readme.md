@@ -16,11 +16,11 @@ a USB high-speed connection. The basic specifications of the system are:
   - Each coefficient is 2'complement 32-bit integer
 
 ## Concrete specification
-ADC: AD9248BSTZ-65 (65 MSPS max)
-FPGA: Xilinx Artix 7 XC7A15T (ZTEX FPGA v2.14a)
-Clock Buffer: IDT-553S (1:4 Distribute)
-OP-AMP: OPA2365 (Dual Op-Amp), OPA365 (Single Op-Amp) [May use -Q1 version for thougher devices]
-Digital Potentiometer: MAX5413 (10k), MAX5414 (50k), MAX5415 (100k) (May use MAX5387 as alternative)
-ADC Driver: ADA4940-2 to convert single-ended signal to differential signal (Transformer is unsuitable for low freq.)
-Voltage Reference: REF1933 (+3.3v and +1.65v outputs are used only for reference. The device requires 5v input)
-Capacitors along the signal path should be of C0G type.
+- ADC: AD9248BSTZ-65 (65 MSPS max)
+- FPGA: Xilinx Artix 7 XC7A15T (ZTEX FPGA v2.14a)
+- Clock Buffer: IDT-553S (1:4 Distribute)
+- OP-AMP: OPA2365 (Dual Op-Amp), OPA365 (Single Op-Amp) [May use -Q1 version for thougher devices]
+- Digital Potentiometer: MAX5413 (10k), MAX5414 (50k), MAX5415 (100k) (May use MAX5387 as alternative)
+- ADC Driver: ADA4940-2 to convert single-ended signal to differential signal (Transformer is unsuitable for low freq.)
+- Voltage Reference: REF1933 (+3.3v and +1.65v outputs are used only for reference. The device requires 5v input)
+- Capacitors along the signal path should be of C0G type.
