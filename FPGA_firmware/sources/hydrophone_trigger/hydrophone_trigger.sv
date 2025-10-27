@@ -33,6 +33,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // --------------------------------------------------------------------------------
 
+/* verilator lint_off DECLFILENAME */
+
 // Helper module to get absolute value
 module absolute( input logic [15:0] in, output logic [15:0] out );
 	assign out = in[15] ? -in : in;
@@ -50,8 +52,8 @@ module backlog_buffer
 	input logic rd_en,					// read enable
 	input logic [DATA_WIDTH-1:0] din,	// data input
 
-	output logic [DATA_WIDTH-1:0] dout,	// data output
-)
+	output logic [DATA_WIDTH-1:0] dout	// data output
+);
 	logic [DATA_WIDTH-1:0] mem [(2**SIZE_BIT_DEPTH)-1:0];	// Memory array
 	logic [SIZE_BIT_DEPTH-1:0] ptr;							// Write and read pointers
 
@@ -67,21 +69,14 @@ module backlog_buffer
 	end
 
 	// Read operation
-	always_comb begin
-		if( rst || !rd_en ) begin
-			dout = 0;
-		end
-		else begin
-			dout = mem[ptr];
-		end
-	end
+	assign dout = (rst || !rd_en) ? 0 : mem[ptr];
 endmodule
 
 // Main trigger module
 // Outut data is valid at the rising edge of the next clock after the "trigged" signal
 module hydrophone_trigger_fifo
 #(
-	parameter HEAD_TAIL_BIT_DEPTH = 6,	// Bit-depth of the header and tail of d_in samples before a trigged points and after a trigged period
+	parameter HEAD_TAIL_BIT_DEPTH = 6	// Bit-depth of the header and tail of d_in samples before a trigged points and after a trigged period
 ) (
 	input logic clk,				// signal clock (64 MHz)
 	input logic rst,				// system reset (active high)
@@ -89,30 +84,32 @@ module hydrophone_trigger_fifo
 	input logic din_strobe,			// Combined strobe signal from all channels
 	input logic trigger_event,		// Trigger condition met
 	output logic [63:0] dout,		// data output  all in format Q13.2
-	output logic data_strobe,		// Combined strobe signal from all channels plus edge detected
+	output logic dout_strobe,		// Combined strobe signal from all channels plus edge detected
 	output logic trigged			// indicates that the data is part of packet of trigged signal
 );
 	// Constants
-	localparam max_counter = (2**HEAD_TAIL_BIT_DEPTH) - 1;			// Number of samples before and after the trigger period
+	// Number of samples before the trigger period
+	localparam max_h_counter = (2**HEAD_TAIL_BIT_DEPTH) - 1;
+	// Number of samples after the trigger period.  It should be equal to twice of head samples.
+	localparam max_t_counter = (2**(HEAD_TAIL_BIT_DEPTH + 1)) - 1;
 
 	// Variables
 	logic [HEAD_TAIL_BIT_DEPTH-1:0] h_counter;	// Fifo backlog data counter
-	logic [HEAD_TAIL_BIT_DEPTH-1:0] t_counter;	// Counter for packet tailing
+	logic [HEAD_TAIL_BIT_DEPTH:0] t_counter;	// Counter for packet tailing
 	logic output_enable;						// Indicates that the output is enabled
-	logic strb_d, strb_dd;						// Delay line of strobe signal to detect rising edge
-	logic fifo_wr_en;							// Combined read and write enable of all signal
+	logic strb_d;								// Delay line of strobe signal to detect rising edge
+	logic data_strobe;							// Combined strobe signal with edge detection
 	
 	// Generate combined strobe signals
-	assign data_strobe = strb_d & ~strb_dd & ~rst;
+	assign data_strobe = din_strobe & ~strb_d & ~rst;
+	assign dout_strobe = output_enable & data_strobe;
 
 	// Delay line for edge detection
 	always_ff @(posedge clk) begin
 		if( rst )begin
 			strb_d <= 0;
-			strb_dd <= 0;
 		end
 		else begin
-			strb_dd <= strb_d;
 			strb_d <= din_strobe;
 		end
 	end
@@ -121,7 +118,7 @@ module hydrophone_trigger_fifo
 	always_ff @(posedge clk) begin
 		if( rst ) begin
 			// Reset signal asserted. Just initialize state
-			h_counter <= max_counter;
+			h_counter <= max_h_counter;
 			t_counter <= 0;
 			trigged <= 1'b0;
 			output_enable <= 1'b0;
@@ -131,13 +128,14 @@ module hydrophone_trigger_fifo
 				// After reset, we need to fill the FIFO first
 				if( h_counter != 0 ) begin
 					h_counter <= h_counter - 1;
+					output_enable <= 1'b0;	// Disable FIFO reading until having enough backlog
 				end
 				else begin
 					output_enable <= 1'b1;		// Enable FIFO reading after having enough backlog
 					if( trigger_event ) begin
 					   // Trigged
 					   trigged <= 1;
-					   t_counter <= max_counter;	// Reset the tail counter
+					   t_counter <= max_t_counter;	// Reset the tail counter
 					end
 					else begin
 						if( t_counter == 0 ) begin
@@ -162,18 +160,15 @@ module hydrophone_trigger_fifo
 		.rst(rst),
 		.wr_en(data_strobe),
 		.rd_en(output_enable),
-		.d_in(din),
-		.d_out(dout)
+		.din(din),
+		.dout(dout)
 	);
 
 endmodule
 
+// Simple hydrophone trigger mode
 module hydrophone_simple_trigger (
-	// Debug signal
-	output logic [63:0] abs_data,
-	output [15:0] abs_trig,
-
-	input logic clk,					// signal clock (64 MHz)
+//	input logic clk,					// signal clock (64 MHz)
 	input logic rst,					// system reset (active high)
 	input logic enable,					// enable trigger funtion (aka. start of the capture function)
 	input logic [63:0] din,				// data input (concatenation of 4 16-bit data) all in format Q13.6
@@ -186,11 +181,6 @@ module hydrophone_simple_trigger (
 	logic [63:0] abs_d_in;				// Magnetude (aka. absolute) values of d_in
 	logic [15:0] abs_trigger;			// Magnetude of trigger level
 
-	// Debug part
-	//assign abs_data = abs_d_in;
-	assign abs_data = din;
-	assign abs_trig = abs_trigger;
-	
 	// Absolute implementation
 	absolute abs1( .in(din[15:0]), .out(abs_d_in[15:0]) );
 	absolute abs2( .in(din[31:16]), .out(abs_d_in[31:16]) );
@@ -201,7 +191,7 @@ module hydrophone_simple_trigger (
 	// Generate trigged signal
 	always_comb begin
 		if( rst ) begin
-			trigged <= 0;
+			trigged = 0;
 		end
 		else begin
 			if( enable && din_strobe && ( ( abs_d_in[15:0] >= abs_trigger ) ||
@@ -210,10 +200,10 @@ module hydrophone_simple_trigger (
 				( abs_d_in[63:48] >= abs_trigger ) )
 			) begin
 				// Trigged
-				trigged <= 1;
+				trigged = 1;
 			end
 			else begin
-				trigged <= 0;
+				trigged = 0;
 			end
 		end
 	end
