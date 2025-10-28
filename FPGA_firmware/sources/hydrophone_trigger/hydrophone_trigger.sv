@@ -35,11 +35,6 @@
 
 /* verilator lint_off DECLFILENAME */
 
-// Helper module to get absolute value
-module absolute( input logic [15:0] in, output logic [15:0] out );
-	assign out = in[15] ? -in : in;
-endmodule
-
 // Backlog buffer
 module backlog_buffer
 #(
@@ -177,17 +172,22 @@ module hydrophone_simple_trigger (
 	output logic trigged				// indicates that the data is part of packet of trigged signal
 );
 
+	// Helper function to get absolute value
+	function logic [15:0] absolute( input logic [15:0] in );
+		return( in[15] ? -in : in );
+	endfunction
+
 	// Variables
 	logic [63:0] abs_d_in;				// Magnetude (aka. absolute) values of d_in
 	logic [15:0] abs_trigger;			// Magnetude of trigger level
 
 	// Absolute implementation
-	absolute abs1( .in(din[15:0]), .out(abs_d_in[15:0]) );
-	absolute abs2( .in(din[31:16]), .out(abs_d_in[31:16]) );
-	absolute abs3( .in(din[47:32]), .out(abs_d_in[47:32]) );
-	absolute abs4( .in(din[63:48]), .out(abs_d_in[63:48]) );
-	absolute abs5( .in(trigger_level), .out(abs_trigger) );
-	
+	assign abs_d_in[15:0] = absolute( din[15:0] );
+	assign abs_d_in[31:16] = absolute( din[31:16] );
+	assign abs_d_in[47:32] = absolute( din[47:32] );
+	assign abs_d_in[63:48] = absolute( din[63:48] );
+	assign abs_trigger = absolute( trigger_level );
+
 	// Generate trigged signal
 	always_comb begin
 		if( rst ) begin

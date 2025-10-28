@@ -37,10 +37,10 @@ module packetizer #(
 	parameter	SAMPLING_PER_PACKET = 1000	// Total sampling in a packet (max 1020)
     ) (
 	// Debug output
-	output logic [4:0] debug_main_state,
-	output logic debug_strb_d,
-	output logic [15:0] pkt_size_counter,
-	//output reg sending,		// Packetizer is in the middle of sending data
+	// output logic [4:0] debug_main_state,
+	// output logic debug_strb_d,
+	// output logic [15:0] pkt_size_counter,
+	output logic sending,		// Packetizer is in the middle of sending data
 
 	// Control ports
 	input logic clk,			// System clock (64 MHz)
@@ -74,41 +74,43 @@ module packetizer #(
 	localparam MAX_PKT_SIZE = SAMPLING_PER_PACKET * 4;  // Maximum size of a packet exclude header
 
 	// States
-	localparam STATE_IDLE = 5'b00000;				// Waiting for trigged and posedge in_strobe
-	localparam STATE_SEND_HEADER_SEQ = 5'b00001; 	// Sending header data (Sequence)
-	localparam STATE_SEND_HEADER_TIME_H = 5'b00010; // Sending header data (Timestamp MSB)
-	localparam STATE_SEND_HEADER_TIME_L = 5'b00011; // Sending header data (Timestamp LSB)
-	localparam STATE_SEND_DATA_CH1 = 5'b00100; 		// Sending the following data (Channel 1)
-	localparam STATE_SEND_DATA_CH2 = 5'b00101; 		// Sending the following data (Channel 2)
-	localparam STATE_SEND_DATA_CH3 = 5'b00110; 		// Sending the following data (Channel 3)
-	localparam STATE_SEND_DATA_CH4 = 5'b00111; 		// Sending the following data (Channel 4)
-	localparam STATE_LATCH_LAST_WORD = 5'b01000;		// Latching CH4 to the output
-	localparam STATE_WAIT_STROBE = 5'b01001;		// Waiting for input strobe signal
+	typedef enum logic[3:0] {
+		STATE_IDLE,						// Waiting for trigged and posedge in_strobe
+		STATE_SEND_HEADER_SEQ,			// Sending header data (Sequence)
+		STATE_SEND_HEADER_TIME_H,		// Sending header data (Timestamp MSB)
+		STATE_SEND_HEADER_TIME_L,		// Sending header data (Timestamp LSB)
+		STATE_SEND_DATA_CH1,			// Sending the following data (Channel 1)
+		STATE_SEND_DATA_CH2,			// Sending the following data (Channel 2)
+		STATE_SEND_DATA_CH3,			// Sending the following data (Channel 3)
+		STATE_SEND_DATA_CH4,			// Sending the following data (Channel 4)
+		STATE_WAIT_STROBE				// Waiting for input strobe signal
+	} State_t;
 
 	// Output data selection
-	localparam OUT_ID = 3'b000;				// d_out contains signature ID (0xDCB0)
-	localparam OUT_SEQ = 3'b001;			// d_out contains packet sequence number
-	localparam OUT_TIME_L = 3'b010;			// d_out contains low_word of time stamp
-	localparam OUT_TIME_H = 3'b011;			// d_out contains high_word of time stamp
-	localparam OUT_CH1 = 3'b100;			// d_out contains data from channel 1
-	localparam OUT_CH2 = 3'b101;			// d_out contains data from channel 1
-	localparam OUT_CH3 = 3'b110;			// d_out contains data from channel 1
-	localparam OUT_CH4 = 3'b111;			// d_out contains data from channel 1
+	typedef enum logic [2:0] {
+		OUT_ID,				// d_out contains packet ID	
+		OUT_SEQ,			// d_out contains packet sequence number
+		OUT_TIME_L,			// d_out contains low_word of time stamp
+		OUT_TIME_H,			// d_out contains high_word of time stamp
+		OUT_CH1,			// d_out contains data from channel 1
+		OUT_CH2,			// d_out contains data from channel 2
+		OUT_CH3,			// d_out contains data from channel 3
+		OUT_CH4				// d_out contains data from channel 4
+	} Output_Selection_t;
 
-	logic [4:0] main_state, next_state;
+	State_t main_state;
 
 	logic [31:0] timer;
 	logic [15:0] seq_cnt;
 
-	logic [2:0] out_sel;     	// Output data selection
-	logic in_strb_d;
+	Output_Selection_t out_sel;     	// Output data selection
 	
 	logic [15:0] current_pkt_size;	// size of current packet
 	
 	// Debug output
-	assign debug_main_state = main_state;
-	assign debug_strb_d = in_strb_d;
-	assign pkt_size_counter = current_pkt_size;
+	// assign debug_main_state = main_state;
+	// assign debug_strb_d = in_strb_d;
+	// assign pkt_size_counter = current_pkt_size;
 
 	// Time counter
 	logic [15:0] time_cnt;
@@ -147,14 +149,14 @@ module packetizer #(
 	// Select the output
 	always_comb	begin
 		case( out_sel )
-			OUT_ID:		dout <= 16'hDCB0;
-			OUT_SEQ:	dout <= seq_cnt;
-			OUT_TIME_L: dout <= timer[15:0];
-			OUT_TIME_H: dout <= timer[31:16];
-			OUT_CH1:	dout <= latched_input[15:0];
-			OUT_CH2:	dout <= latched_input[31:16];
-			OUT_CH3:	dout <= latched_input[47:32];
-			OUT_CH4:	dout <= latched_input[63:48];
+			OUT_ID:		dout = 16'hDCB0;
+			OUT_SEQ:	dout = seq_cnt;
+			OUT_TIME_L: dout = timer[15:0];
+			OUT_TIME_H: dout = timer[31:16];
+			OUT_CH1:	dout = latched_input[15:0];
+			OUT_CH2:	dout = latched_input[31:16];
+			OUT_CH3:	dout = latched_input[47:32];
+			OUT_CH4:	dout = latched_input[63:48];
 		endcase
 	end
 
@@ -164,8 +166,8 @@ module packetizer #(
 			out_sel <= OUT_ID;
 			pkt_end <= 1'b0;
 			seq_cnt <= 16'b0;
-			//sending <= 0;
-			out_strobe <= 1'b0;
+			sending <= 0;
+			dout_strobe <= 1'b0;
 			main_state <= STATE_IDLE;
 		end
 		else begin
@@ -174,14 +176,14 @@ module packetizer #(
 				begin
 					current_pkt_size <= 16'b0;
 					pkt_end <= 1'b0;
-					out_strobe <= 1'b0;
+					dout_strobe <= 1'b0;
 					out_sel <= OUT_ID;		// out header ID
 					if( ( trigged && din_strobe == 1 ) && !out_full )
 					begin
 						current_pkt_size <= 16'd4;
 						seq_cnt <= seq_cnt + 1;
-						//sending <= 1;
-						out_strobe <= 1;
+						sending <= 1;
+						dout_strobe <= 1;
 						main_state <= STATE_SEND_HEADER_SEQ;
 					end
 				end
@@ -209,7 +211,7 @@ module packetizer #(
 
 				STATE_SEND_DATA_CH1:
 				begin
-					out_strobe <= 1;		// Redundant for data sending loop
+					dout_strobe <= 1;		// Redundant for data sending loop
 					current_pkt_size <= current_pkt_size + 16'd4;
 					out_sel <= OUT_CH1;		// out CH1 sampling, latch ts(lsb), or xxx
 					main_state <= STATE_SEND_DATA_CH2;
@@ -236,7 +238,7 @@ module packetizer #(
 					   	pkt_end <= 1;
 					end
 					if( ( current_pkt_size > MAX_PKT_SIZE ) || !trigged ) begin
-						//sending <= 0;
+						sending <= 0;
 						main_state <= STATE_IDLE;
 					end
 					else begin
@@ -246,10 +248,10 @@ module packetizer #(
 
 				STATE_WAIT_STROBE:
 				begin
-					out_strobe <= 1'b0;
+					dout_strobe <= 1'b0;
 					pkt_end <= 1'b0;
 					if( !trigged ) begin
-						//sending <= 0;
+						sending <= 0;
 						main_state <= STATE_IDLE;
 					end
 					else begin
@@ -263,8 +265,8 @@ module packetizer #(
                 begin
 					out_sel <= OUT_ID;
 					pkt_end <= 1'b0;
-					//sending <= 0;
-					out_strobe <= 1'b0;
+					sending <= 0;
+					dout_strobe <= 1'b0;
 					main_state <= STATE_IDLE;
 				end
 			endcase
