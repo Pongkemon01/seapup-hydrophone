@@ -14,3 +14,4 @@ FPGA_firmware/hp_output.hex
 FPGA_firmware/hp_output1.hex
 FPGA_firmware/hp_output2.hex
 SlaveFIFO_verify/project_1.cache
+FPGA_firmware/sources/obj_dir/
