@@ -48,34 +48,28 @@
  
  module config_manager_tb;
 	// Interface to slave fifo output buffer
-	wire  [15:0] d_in;				// Data from slave FIFO
-	wire  data_valid;				// Indicate that there are some available config data to read
-	wire config_d_clk;			// Clocking for data reading
-	wire config_d_oe;			// Enable read-out data
+	logic  [15:0] d_in;				// Data from slave FIFO
+	logic config_d_oe;			// Enable read-out data
 	
 	// Control
-	reg clk;				// Master clock
-	reg rst;						// Master reset (active high)
-	wire update_trigger;		// Trigger for register updating. (rising edge)
+	logic clk;				// Master clock
+	logic rst;						// Master reset (active high)
+	logic update_trigger;		// Trigger for register updating. (rising edge)
 	
 	// output register
-	wire [15:0] trigger_level;// hydrophone signal level
-	wire [7:0] poten1_value;	// Value of potentiometer 1 (defines gain of channel 1)
-	wire [7:0] poten2_value;	// Value of potentiometer 2 (defines gain of channel 2)
-	wire [7:0] poten3_value;	// Value of potentiometer 3 (defines gain of channel 3)
-	wire [7:0] poten4_value;	// Value of potentiometer 4 (defines gain of channel 4)
+	logic [15:0] trigger_level;// hydrophone signal level
+	logic [7:0] poten1_value;	// Value of potentiometer 1 (defines gain of channel 1)
+	logic [7:0] poten2_value;	// Value of potentiometer 2 (defines gain of channel 2)
+	logic [7:0] poten3_value;	// Value of potentiometer 3 (defines gain of channel 3)
+	logic [7:0] poten4_value;	// Value of potentiometer 4 (defines gain of channel 4)
 	
 	// Operation signal
-	reg [15:0] d_config;		// FIFO incoming data
-	reg wr_en;					// FIFO write enable
-	wire full, empty;			// FIFO full and empty flags
-	wire rd_busy, wr_busy;		// FIFO busy signals for reading and writing circuits
+	logic [15:0] d_config;		// FIFO incoming data
+	logic wr_en;					// FIFO write enable
+	logic full, empty_n;			// FIFO full and empty flags
 	
 	// Clock counter
 	integer counter;
-	
-	// Combination logic
-	assign data_valid = ~empty & ~rd_busy;
 	
 	// Behavioral logic
 	always @(posedge clk)
@@ -199,7 +193,7 @@
 		.rd_en(config_d_oe),      // input wire rd_en
 		.dout(d_in),               // output wire [15 : 0] dout
 		.full(full),        // output wire full
-		.empty(empty),      // output wire empty
+		.empty_n(empty_n),      // output wire empty
 		.almost_full(), // output wire almost_full
 		.almost_empty(), // output wire almost_empty
 		.fifo_filled()  // output wire [3 : 0] fifo_filled
@@ -207,7 +201,7 @@
 	
 	config_manager cf(
 		.din( d_in ),						// Data from slave FIFO
-		.data_valid( data_valid) ,			// Indicate that there are some available config data to read
+		.data_valid( empty_n) ,			// Indicate that there are some available config data to read
 		.config_d_oe( config_d_oe ),		// Enable read-out data
 	
 		// Control

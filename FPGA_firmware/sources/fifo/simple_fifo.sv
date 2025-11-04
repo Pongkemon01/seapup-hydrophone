@@ -64,11 +64,10 @@ module simple_fifo
     logic [SIZE_BIT_DEPTH-1:0] last_ptr;                                	// Read pointer
 
 	// Helpers to improve readability
-    logic [(SIZE_BIT_DEPTH-1):0]	first_plus_one, first_plus_two, last_plus_one, last_minus_one;
+    logic [(SIZE_BIT_DEPTH-1):0]	first_plus_one, first_plus_two, last_plus_one;
 	assign	first_plus_two = first_ptr + {{(SIZE_BIT_DEPTH-2){1'b0}}, 2'b10};
 	assign	first_plus_one = first_ptr + {{(SIZE_BIT_DEPTH-1){1'b0}}, 1'b1};
 	assign	last_plus_one  = last_ptr + {{(SIZE_BIT_DEPTH-1){1'b0}}, 1'b1};
-	assign  last_minus_one = last_ptr - {{(SIZE_BIT_DEPTH-1){1'b0}}, 1'b1};
 
 	//==============================================================
 	// FIFO status logic
@@ -97,7 +96,7 @@ module simple_fifo
 
 	// FIFO Memory Write
 	always_ff @(posedge clk) begin
-		if (wr_en) // Write our new value regardless--on overflow or not
+		if (wr_en && (!full || rd_en)) // Write our new value only when we have space
 			fifo[first_ptr] <= din;
 	end
 
@@ -115,7 +114,14 @@ module simple_fifo
 	end
 
 	// FIFO Memory Read
-	assign dout = fifo[last_minus_one];
+	always_ff @(posedge clk) begin
+		if (rd_en) begin
+			if (empty_n) // Read our value only when we have data
+				dout <= fifo[last_ptr];
+			else if(wr_en) // On underflow, if we are also writing, read the new data
+				dout <= din;
+		end
+	end
 
 	//==============================================================
 // Formal verification properties
