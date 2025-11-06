@@ -36,7 +36,7 @@ module simple_fifo_tb;
 
     // 3. Instantiate DUT (Device Under Test)
     simple_fifo
-    #(.SIZE_BIT_DEPTH(SIZE_BIT_DEPTH), .DATA_WIDTH(DATA_WIDTH))
+    #(.SIZE_BIT_DEPTH(SIZE_BIT_DEPTH), .DATA_WIDTH(DATA_WIDTH), .IS_FIRST_WORD_FALLTHROUGH(1))
     dut
     (
         .clk(clk),
@@ -266,7 +266,7 @@ module simple_fifo_tb;
 
     // 8. Optional: Generate VCD file for waveform viewing
 	initial begin
-   		$dumpfile("test.vcd");
+   		$dumpfile("simple_fifo.vcd");
    		$dumpvars(1);
 	end
 endmodule

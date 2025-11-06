@@ -36,7 +36,8 @@
 module simple_fifo
 #(
 	parameter SIZE_BIT_DEPTH = 6,	// Bit depth of the size of the buffer (2^SIZE_BIT_DEPTH)
-	parameter DATA_WIDTH = 64		// Width of the data (in bits)
+	parameter DATA_WIDTH = 64,		// Width of the data (in bits)
+	parameter IS_FIRST_WORD_FALLTHROUGH = 1	// If set to 1, the first word written to an empty FIFO will appear on the output immediately
 ) (
     input logic clk,					// signal clock (64 MHz)
     input logic rst,					// system reset (active high)
@@ -83,20 +84,20 @@ module simple_fifo
     // FIFO write logic
 
     // Write Pointer (first_ptr)
-	always_ff @(posedge clk) begin
-		if (rst) begin
+	always_ff @( posedge clk ) begin
+		if( rst ) begin
 			first_ptr <= 0;
 		end 
-        else if (wr_en) begin
+        else if( wr_en ) begin
 			// Cowardly refuse to overflow
-			if ((!full) || rd_en) // (first_ptr+1 != last_ptr)
+			if( !full || rd_en ) // (first_ptr+1 != last_ptr)
 				first_ptr <= first_plus_one;
 		end
 	end
 
 	// FIFO Memory Write
-	always_ff @(posedge clk) begin
-		if (wr_en && (!full || rd_en)) // Write our new value only when we have space
+	always_ff @( posedge clk ) begin
+		if ( wr_en && ( !full || rd_en ) ) // Write our new value only when we have space
 			fifo[first_ptr] <= din;
 	end
 
@@ -104,21 +105,21 @@ module simple_fifo
     // FIFO read logic
 
 	// Read Pointers (last_ptr and next_ptr)
-	always_ff @(posedge clk) begin
-		if (rst)
+	always_ff @( posedge clk ) begin
+		if( rst )
 			last_ptr <= 0;
-        else if (rd_en) begin
-			if (empty_n || wr_en)  // (first_ptr != last_ptr)
+        else if( rd_en ) begin
+			if ( empty_n || wr_en )  // (first_ptr != last_ptr)
 				last_ptr <= last_plus_one;
 		end
 	end
 
 	// FIFO Memory Read
-	always_ff @(posedge clk) begin
-		if (rd_en) begin
-			if (empty_n) // Read our value only when we have data
+	always_ff @( posedge clk ) begin
+		if( rd_en || IS_FIRST_WORD_FALLTHROUGH ) begin
+			if( empty_n ) // Read our value only when we have data
 				dout <= fifo[last_ptr];
-			else if(wr_en) // On underflow, if we are also writing, read the new data
+			else if( wr_en ) // On underflow, if we are also writing, read the new data
 				dout <= din;
 		end
 	end

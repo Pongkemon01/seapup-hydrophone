@@ -35,186 +35,276 @@
 
 /* Module to store and manage all settings such as trigger level and poten value.
  * It also parse the configuration setting data from host through FX3S slave FIFO.
- * The configuration packet from host has the format as:
- *    word no. (16-bit word)        value/meaning
- *       1                          16'hDCB0 (prefix)
- *       2                          Bit fileds indicates what config is included
- *										bit 15 : indicates inclusion of trigger level
- *                                      bit 14 : indicates inclusion of potentiometer values
- *                                      bit 13 - 0 : reserved
- *       3                          ADC trigger level (if included)
- *     4 - 5                        Potentiometer values (if included) in the order of 1, 2, 3, and 4. (each is 8 bits)
+ * The input data have the format as
+ *  1 bytes: ID (fixed as 0xDC)
+ *  1 bytes: Configuration fields
+ *      The configuraton fields are Bit-fields indicates which configuration to set.
+ *      This field also indicates what data would follow. Each bit has meaning as:
+ *          bit 7 - 4: Pinger frequency index the list of frequency is shown below
+ *          bit 3: 1 = enable trigger level setting
+ *          bit 2: 1 = enable amplifier gains setting
+ *          bit 1 - bit 0: (Reserved)
+ *  2 bytes: New trigger level. (Exists only when the 3rd bit of the prefix is set)
+ *  4 bytes: New amplifier gain for each channel. Each channel can have it gain different
+ *      from others. (Thie field exists only when 2nd bit of the prefix is set)
+ *
+ * Pinger frequency table (for IQ demodulation)
+ * +---------+-----------+
+ * |  index  | frequency |
+ * +---------+-----------+
+ * | 4'b0000 |   25kHz   |
+ * | 4'b0001 |   26kHz   |
+ * | 4'b0010 |   27kHz   |
+ * | 4'b0011 |   28kHz   |
+ * | 4'b0100 |   29kHz   |
+ * | 4'b0101 |   30kHz   |
+ * | 4'b0110 |   31kHz   |
+ * | 4'b0111 |   32kHz   |
+ * | 4'b1000 |   33kHz   |
+ * | 4'b1001 |   34kHz   |
+ * | 4'b1010 |   35kHz   |
+ * | 4'b1011 |   36kHz   |
+ * | 4'b1100 |   37kHz   |
+ * | 4'b1101 |   38kHz   |
+ * | 4'b1110 |   39kHz   |
+ * | 4'b1111 |   40kHz   |
+ * +---------+-----------+
  */
+
+ /* verilator lint_off UNUSEDSIGNAL */
  
- module config_manager_tb;
-	// Interface to slave fifo output buffer
-	logic  [15:0] d_in;				// Data from slave FIFO
-	logic config_d_oe;			// Enable read-out data
+module config_manager_tb;
+
+	// ----------------------------------------------------------------
+	// Parameters and Defines
+	// ----------------------------------------------------------------
+	localparam FIFO_SIZE_BITS = 4;  // SIZE_BIT_DEPTH for simple_fifo
+	localparam DATA_BUS_WIDTH = 16; // Din width for config_manager
+	localparam FIFO_DATA_WIDTH = DATA_BUS_WIDTH; 
+
+	// ----------------------------------------------------------------
+	// Signals (Wires and Regs)
+	// ----------------------------------------------------------------
+	logic clk;
+	logic rst;
+
+	// Signals for simple_fifo (as the driver/producer)
+	logic wr_en;
+	logic [FIFO_DATA_WIDTH-1:0] din_fifo;
+	logic almost_full_fifo;
+	logic full_fifo;
+	logic [FIFO_SIZE_BITS-1:0] fifo_filled;
+
+	// Signals for config_manager (as the consumer)
+	logic rd_en; // Read enable for simple_fifo / data_valid for config_manager
+	logic almost_empty_fifo;
+	logic empty_n_fifo;
+	logic [FIFO_DATA_WIDTH-1:0] dout_fifo; // din for config_manager
 	
-	// Control
-	logic clk;				// Master clock
-	logic rst;						// Master reset (active high)
-	logic update_trigger;		// Trigger for register updating. (rising edge)
+	// Output signals from config_manager (DUT outputs)
+	logic update_poten;
+	//logic config_d_oe;
+	logic [3:0] pinger_freq;
+	logic [15:0] trigger_level;
+	logic [7:0] poten1_value;
+	logic [7:0] poten2_value;
+	logic [7:0] poten3_value;
+	logic [7:0] poten4_value;
 	
-	// output register
-	logic [15:0] trigger_level;// hydrophone signal level
-	logic [7:0] poten1_value;	// Value of potentiometer 1 (defines gain of channel 1)
-	logic [7:0] poten2_value;	// Value of potentiometer 2 (defines gain of channel 2)
-	logic [7:0] poten3_value;	// Value of potentiometer 3 (defines gain of channel 3)
-	logic [7:0] poten4_value;	// Value of potentiometer 4 (defines gain of channel 4)
+	// ----------------------------------------------------------------
+	// Instances of DUTs (Design Under Test)
+	// ----------------------------------------------------------------
 	
-	// Operation signal
-	logic [15:0] d_config;		// FIFO incoming data
-	logic wr_en;					// FIFO write enable
-	logic full, empty_n;			// FIFO full and empty flags
-	
-	// Clock counter
-	integer counter;
-	
-	// Behavioral logic
-	always @(posedge clk)
-	begin
-		if( !wr_busy && counter < 30 )
-		begin
-			wr_en = 1;
-			d_config = counter[15:0];
-		end
-		
-		if( !wr_busy && counter == 30 )
-		begin
-			wr_en = 1;
-			d_config = 16'hDCB0;
-		end
-		if( !wr_busy && counter == 31 )
-		begin
-			d_config = 16'b1000_0000_0000_0000;
-		end
-		if( !wr_busy && counter == 32 )
-		begin
-			d_config = 16'hB0DC;
-		end
-		if( !wr_busy && counter == 33 )
-		begin
-			d_config = 16'hB0DC;
-		end
-		if( !wr_busy && counter == 34 )
-		begin
-			d_config = 16'hB0DC;
-		end
-		if( !wr_busy && counter == 35 )
-		begin
-			wr_en = 0;
-		end
-		
-		if( !wr_busy && counter == 40 )
-		begin
-			wr_en = 1;
-			d_config = 16'hDCB0;
-		end
-		if( !wr_busy && counter == 41 )
-		begin
-			d_config = 16'b1100_0000_0000_0000;
-		end
-		if( !wr_busy && counter == 42 )
-		begin
-			d_config = 16'h55AA;
-		end
-		if( !wr_busy && counter == 43 )
-		begin
-			d_config = 16'hDCB0;
-		end
-		if( !wr_busy && counter == 44 )
-		begin
-			d_config = 16'hDCB0;
-		end
-		if( !wr_busy && counter == 45 )
-		begin
-			wr_en = 0;
-		end
-		
-		if( !wr_busy && counter == 50 )
-		begin
-			wr_en = 1;
-			d_config = 16'hDCB0;
-		end
-		if( !wr_busy && counter == 51 )
-		begin
-			d_config = 16'b0100_0000_0000_0000;
-		end
-		if( !wr_busy && counter == 52 )
-		begin
-			d_config = 16'hAA55;
-		end
-		if( !wr_busy && counter == 53 )
-		begin
-			d_config = 16'hAA55;
-		end
-		if( !wr_busy && counter == 54 )
-		begin
-			d_config = 16'h55AA;
-		end
-		if( !wr_busy && counter == 55 )
-		begin
-			wr_en = 0;
-		end
-		
-		if( counter >= 200 )
-		begin
-			$finish;
-		end
+	// Instantiate simple_fifo (เป็นตัวป้อนข้อมูล)
+	simple_fifo #(
+		.SIZE_BIT_DEPTH (FIFO_SIZE_BITS),
+		.DATA_WIDTH (FIFO_DATA_WIDTH),
+		.IS_FIRST_WORD_FALLTHROUGH (0)
+	) uut_fifo (
+		.clk (clk),
+		.rst (rst),
+		.fifo_filled (fifo_filled),
+		.wr_en (wr_en),
+		.din (din_fifo),
+		.almost_full (almost_full_fifo),
+		.full (full_fifo),
+		.rd_en (rd_en),
+		.almost_empty (almost_empty_fifo),
+		.empty_n (empty_n_fifo),
+		.dout (dout_fifo)
+	);
+
+	// Instantiate config_manager (เป็นตัวรับข้อมูล)
+	config_manager #(
+		.config_prefix (8'hDC),
+		.rst_delay (2)
+	) uut_config_manager (
+		.clk (clk),
+		.rst (rst),
+		.update_poten (update_poten),
+		.din (dout_fifo),
+		.data_valid (empty_n_fifo), // FIFO not empty (data available) acts as data_valid
+		.config_d_oe (rd_en),       // config_d_oe (read enable) connects to FIFO's rd_en
+		.pinger_freq (pinger_freq),
+		.trigger_level (trigger_level),
+		.poten1_value (poten1_value),
+		.poten2_value (poten2_value),
+		.poten3_value (poten3_value),
+		.poten4_value (poten4_value)
+	);
+
+	// ----------------------------------------------------------------
+	// Clock Generation
+	// ----------------------------------------------------------------
+	initial begin
+		clk = 1'b0;
+		forever #1 clk = ~clk; // 1ns clock period (1GHz)
 	end
 
-	// Initialization
+	// ----------------------------------------------------------------
+	// Stimulus Generation (การสร้างลำดับการป้อนข้อมูล)
+	// ----------------------------------------------------------------
 	initial begin
-		clk <= 0;
-		wr_en <= 0;
-		counter <= 0;
-		rst = 1; #8 rst = 0;
+		$dumpfile("config_manager.vcd");
+		$dumpvars(1);
+
+		// 1. Initial Reset
+		rst = 1'b1;
+		wr_en = 1'b0;
+		din_fifo = 16'h0000;
+		rd_en = 1'b0; 
+		#5 rst = 1'b0; // Active High Reset
+
+		$display("Time=%0t: Start Test. Waiting for reset to finish...", $time);
+		repeat (5) @(posedge clk); // Wait for reset_delay + a few cycles
+
+		// ----------------------------------------------------------------
+		// Test Case 1: Full Configuration Burst (ป้อนข้อมูลครบรวดเดียว)
+		// Enable Trigger Level (bit 3) และ Amplifier Gains (bit 2)
+		// Configuration data (5 cycles total: Prefix, Trig_L, Poten1_2, Poten3_4)
+		// ----------------------------------------------------------------
+		
+		$display("------------------------------------------------");
+		$display("Time=%0t: --- Test Case 1: Full Config (Burst) ---", $time);
+
+		// Data 1: Prefix and fields (ID=0xDC, Fields=0b11xx_xxxx)
+		// Pinger Freq Index = 4'b1001 (34kHz)
+		// Enable Trigger (bit 3) = 1
+		// Enable Poten (bit 2) = 1
+		// Data: 16'hDC9C (0xDC for ID, 0xF4 for Fields: 1001_1100)
+		din_fifo = 16'hDC9C; 
+		wr_en = 1'b1;
+		@(posedge clk); 
+		wr_en = 1'b0;
+		$display("Time=%0t: Wrote Prefix: 0x%H", $time, din_fifo);
+
+		// Data 2: New Trigger Level (2 bytes)
+		din_fifo = 16'd10000; // New trigger level
+		wr_en = 1'b1;
+		@(posedge clk); 
+		wr_en = 1'b0;
+		$display("Time=%0t: Wrote Trigger Level: %0d", $time, din_fifo);
+
+		// Data 3: Potentiometer 1 and 2 (4 bytes, packed into 16 bits)
+		// Poten 1 = 8'd200, Poten 2 = 8'd150
+		din_fifo = {8'd200, 8'd150}; 
+		wr_en = 1'b1;
+		@(posedge clk); 
+		wr_en = 1'b0;
+		$display("Time=%0t: Wrote Poten 1&2: 0x%H", $time, din_fifo);
+
+		// Data 4: Potentiometer 3 and 4 (4 bytes, packed into 16 bits)
+		// Poten 3 = 8'd100, Poten 4 = 8'd50
+		din_fifo = {8'd100, 8'd50}; 
+		wr_en = 1'b1;
+		@(posedge clk); 
+		wr_en = 1'b0;
+		$display("Time=%0t: Wrote Poten 3&4: 0x%H", $time, din_fifo);
+
+		// Wait for config_manager to process the full configuration
+		repeat (10) @(posedge clk); 
+		
+		$display("Time=%0t: Config Manager Outputs after Burst:", $time);
+		$display("  pinger_freq: %0d (Expected: 9)", pinger_freq);
+		$display("  trigger_level: %0d (Expected: 10000)", trigger_level);
+		$display("  poten1_value: %0d (Expected: 200)", poten1_value);
+		$display("  poten2_value: %0d (Expected: 150)", poten2_value);
+		$display("  poten3_value: %0d (Expected: 100)", poten3_value);
+		$display("  poten4_value: %0d (Expected: 50)", poten4_value);
+		$display("  update_poten: %0b (Expected: 1)", update_poten);
+
+		// ----------------------------------------------------------------
+		// Test Case 2: Paced Configuration (ป้อนแบบเว้นช่วง)
+		// Enable Trigger Level ONLY (bit 3)
+		// Configuration data (3 cycles total: Prefix, Trig_L)
+		// ----------------------------------------------------------------
+		
+		repeat (5) @(posedge clk); // Delay before next test
+		$display("------------------------------------------------");
+		$display("Time=%0t: --- Test Case 2: Trigger Only (Paced) ---", $time);
+
+		// Data 1: Prefix and fields (ID=0xDC, Fields=0b0001_xxxx)
+		// Pinger Freq Index = 4'b0010 (27kHz)
+		// Enable Trigger (bit 3) = 1
+		// Enable Poten (bit 2) = 0
+		// Data: 16'hDC28 (0xDC for ID, 0x28 for Fields: 0010_1000)
+		din_fifo = 16'hDC28; 
+		wr_en = 1'b1;
+		@(posedge clk); 
+		wr_en = 1'b0;
+		$display("Time=%0t: Wrote Prefix: 0x%H", $time, din_fifo);
+
+		repeat (5) @(posedge clk); // Pause (config_manager should wait)
+		
+		// Data 2: New Trigger Level (2 bytes)
+		din_fifo = 16'd5000; 
+		wr_en = 1'b1;
+		@(posedge clk); 
+		wr_en = 1'b0;
+		$display("Time=%0t: Wrote Trigger Level: %0d", $time, din_fifo);
+
+		repeat (10) @(posedge clk); // Wait for config_manager to finish
+
+		$display("Time=%0t: Config Manager Outputs after Paced Test:", $time);
+		$display("  pinger_freq: %0d (Expected: 2)", pinger_freq);
+		$display("  trigger_level: %0d (Expected: 5000)", trigger_level);
+		$display("  poten1_value: %0d (Expected: 200 - Unchanged)", poten1_value);
+		$display("  poten2_value: %0d (Expected: 150 - Unchanged)", poten2_value);
+		$display("  poten3_value: %0d (Expected: 100 - Unchanged)", poten3_value);
+		$display("  poten4_value: %0d (Expected: 50 - Unchanged)", poten4_value);
+		$display("  update_poten: %0b (Expected: 0)", update_poten);
+
+
+		// ----------------------------------------------------------------
+		// Test Case 3: Invalid Prefix
+		// ----------------------------------------------------------------
+
+		repeat (10) @(posedge clk); // Delay
+		$display("------------------------------------------------");
+		$display("Time=%0t: --- Test Case 3: Invalid Prefix ---", $time);
+
+		// Invalid Prefix: 16'hABCD (Should be 16'hDCxx)
+		din_fifo = 16'hABCD; 
+		wr_en = 1'b1;
+		@(posedge clk); 
+		wr_en = 1'b0;
+		$display("Time=%0t: Wrote Invalid Prefix: 0x%H", $time, din_fifo);
+
+		repeat (5) @(posedge clk); // Wait for config_manager to reject and return to WAIT_PREFIX
+
+		$display("Time=%0t: Config Manager Outputs after Invalid Prefix:", $time);
+		$display("  pinger_freq: %0d (Expected: 2 - Unchanged)", pinger_freq);
+		$display("  trigger_level: %0d (Expected: 5000 - Unchanged)", trigger_level);
+
+
+		// ----------------------------------------------------------------
+		// End Simulation
+		// ----------------------------------------------------------------
+
+		@(posedge clk);
+		$display("------------------------------------------------");
+		$display("Time=%0t: Simulation finished.", $time);
+		$finish;
 	end
-	
-	// Clk counter
-	always @(posedge clk)
-	begin
-		counter = counter + 1;
-	end
-	
-	// Clk gen
-	always 
-	begin
-		#1 clk = ~clk; 
-	end
-	
-	// Device under test
-	simple_fifo fifo_arrival #(SIZE_BIT_DEPTH = 4, DATA_WIDTH = 16) (
-		.rst(rst),                  // input wire rst
-		.clk(clk),         // input wire wr_clk
-		.din(d_config),         // input wire [15 : 0] din
-		.wr_en(wr_en),      // input wire wr_en
-		.rd_en(config_d_oe),      // input wire rd_en
-		.dout(d_in),               // output wire [15 : 0] dout
-		.full(full),        // output wire full
-		.empty_n(empty_n),      // output wire empty
-		.almost_full(), // output wire almost_full
-		.almost_empty(), // output wire almost_empty
-		.fifo_filled()  // output wire [3 : 0] fifo_filled
-	);
-	
-	config_manager cf(
-		.din( d_in ),						// Data from slave FIFO
-		.data_valid( empty_n) ,			// Indicate that there are some available config data to read
-		.config_d_oe( config_d_oe ),		// Enable read-out data
-	
-		// Control
-		.clk( clk ),			// Master clock
-		.rst( rst ),						// Master reset (active high)
-		.update_poten( update_trigger ),	// Trigger for register updating. (rising edge)
-	
-		// Register
-		.trigger_level( trigger_level ),	// hydrophone signal level
-		.poten1_value( poten1_value ),		// Value of potentiometer 1 (defines gain of channel 1)
-		.poten2_value( poten2_value ),		// Value of potentiometer 2 (defines gain of channel 2)
-		.poten3_value( poten3_value ),		// Value of potentiometer 3 (defines gain of channel 3)
-		.poten4_value( poten4_value )		// Value of potentiometer 4 (defines gain of channel 4)
-	);
 
 endmodule

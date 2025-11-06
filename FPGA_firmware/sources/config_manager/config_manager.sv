@@ -97,20 +97,25 @@ module config_manager #(
 	output logic [7:0] poten3_value,	// Value of potentiometer 3 (defines gain of channel 3)
 	output logic [7:0] poten4_value	// Value of potentiometer 4 (defines gain of channel 4)
 );
-	localparam DEFAULT_POTEN = 8'd230;		// Default value of potentiometers (making gain = 1)
+	localparam DEFAULT_PINGER_FREQ = 4'b1111;	// Default pinger frequency index (40kHz)
+	localparam DEFAULT_POTEN = 8'd230;			// Default value of potentiometers (making gain = 1)
 	localparam DEFAULT_TRIG_LEVEL = 16'd16383;	// Default trigger level
 
 	// State value
-	typedef enum logic [2:0] {
+	typedef enum logic [3:0] {
 		STATE_WAIT_PREFIX,				// Waiting for the prefix
+		STATE_WAIT_FIFO_PREFIX,			// Waiting for data from FIFO after enabling OE
 		STATE_READ_PREFIX,				// Read the prefix
-		STATE_WAIT_TRIGGER,				// Waiting for trigger level
+		STATE_WAIT_TRIGGER,				// Wait for trigger level data to be available
+		STATE_WAIT_FIFO_TRIGGER,		// Wait for data from FIFO after enabling OE
 		STATE_READ_TRIGGER,				// Read trigger level from input
-		STATE_WAIT_POTEN1_2,			// Waiting for potentiometer 1 and 2 values
+		STATE_WAIT_POTEN1_2,			// Wait for potentiometer 1 and 2 data to be available
+		STATE_WAIT_FIFO_POTEN1_2,		// Wait for data from FIFO after enabling OE
 		STATE_READ_POTEN1_2,			// Read values of potentiometer 1 and 2 from input
-		STATE_WAIT_POTEN3_4,			// Waiting for potentiometer 3 and 4 values
+		STATE_WAIT_POTEN3_4,			// Wait for potentiometer 3 and 4 data to be available
+		STATE_WAIT_FIFO_POTEN3_4,		// Wait for data from FIFO after enabling OE
 		STATE_READ_POTEN3_4				// Read values of potentiometer 3 and 4 from input
-	} state_t;
+	} State_t;
 	
 	// Variables
 	State_t state;
@@ -130,7 +135,7 @@ module config_manager #(
 			config_d_oe <= 1'b0;
 			update_poten <= 1'b0;
 			is_update_poten <= 1'b0;
-			pinger_freq <= 4'b1111;
+			pinger_freq <= DEFAULT_PINGER_FREQ;
 			trigger_level <= DEFAULT_TRIG_LEVEL;
 			poten1_value <= DEFAULT_POTEN;
 			poten2_value <= DEFAULT_POTEN;
@@ -138,43 +143,49 @@ module config_manager #(
 			poten4_value <= DEFAULT_POTEN;
 		end
 		else begin
-			if( counter < rst_delay )begin
+			if( counter < rst_delay ) begin
 				counter <= counter + 1;
 			end
 			else begin
 				case( state )
-					STATE_WAIT_PREFIX:
+					STATE_WAIT_PREFIX:				// Wait for prefix data to be available
 					begin
 						update_poten <= 1'b1;
 						if( data_valid ) begin
 							config_d_oe <= 1;
-							state <= STATE_READ_PREFIX;
+							state <= STATE_WAIT_FIFO_PREFIX;
 						end
 					end
+
+					STATE_WAIT_FIFO_PREFIX:			// Wait for data from FIFO after enabling OE
+					begin
+						state <= STATE_READ_PREFIX;
+					end
 					
-					STATE_READ_PREFIX:
+					STATE_READ_PREFIX:				// Read the prefix
 					begin
 						is_update_poten <= din[2];
 						if( din[15:8] == config_prefix ) begin
-							$display("Config : Start config");
 							pinger_freq <= din[7:4];	// Get pinger frequency
 							if( din[3] ) begin
 								if( data_valid ) begin
+									config_d_oe <= 1'b1;
 									state <= STATE_READ_TRIGGER;
 								end
 								else begin
+									config_d_oe <= 1'b0;
 									state <= STATE_WAIT_TRIGGER;
 								end
 							end
-							else begin
-								if( din[2] ) begin
-									update_poten <= 1'b0;
-									if( data_valid ) begin
-										state <= STATE_READ_POTEN1_2;
-									end
-									else begin
-										state <= STATE_WAIT_POTEN1_2;
-									end
+							else if( din[2] ) begin
+								update_poten <= 1'b0;
+								if( data_valid ) begin
+									config_d_oe <= 1'b1;
+									state <= STATE_READ_POTEN1_2;
+								end
+								else begin
+									config_d_oe <= 1'b0;
+									state <= STATE_WAIT_POTEN1_2;
 								end
 							end
 						end
@@ -184,22 +195,29 @@ module config_manager #(
 						end
 					end
 
-					STATE_WAIT_TRIGGER:
+					STATE_WAIT_TRIGGER:				// Wait for trigger level data to be available
 					begin
 						if( data_valid ) begin
-							state <= STATE_READ_TRIGGER;
+							config_d_oe <= 1'b1;
+							state <= STATE_WAIT_FIFO_TRIGGER;
 						end
 					end
-								
-					STATE_READ_TRIGGER:	// Read trigger level from input
+
+					STATE_WAIT_FIFO_TRIGGER:		// Wait for data from FIFO after enabling OE
+					begin
+						state <= STATE_READ_TRIGGER;
+					end
+
+					STATE_READ_TRIGGER:				// Read trigger level from input, when data is available
 					begin
 						trigger_level <= din;
 						if( is_update_poten ) begin
-							update_poten <= 1'b0;
 							if( data_valid ) begin
+								config_d_oe <= 1'b1;
 								state <= STATE_READ_POTEN1_2;
 							end
 							else begin
+								config_d_oe <= 1'b0;
 								state <= STATE_WAIT_POTEN1_2;
 							end
 						end
@@ -209,37 +227,58 @@ module config_manager #(
 						end
 					end
 
-					STATE_WAIT_POTEN1_2:	// Waiting for potentiometer 1 and 2 values
+					STATE_WAIT_POTEN1_2:			// Wait for potentiometer 1 and 2 data to be available
 					begin
 						if( data_valid ) begin
-							state <= STATE_READ_POTEN1_2;
+							config_d_oe <= 1'b1;
+							state <= STATE_WAIT_FIFO_POTEN1_2;
 						end
 					end
-					
-					STATE_READ_POTEN1_2:	// Read values of potentiometer 1 and 2 from input
+
+					STATE_WAIT_FIFO_POTEN1_2:		// Wait for data from FIFO after enabling OE
 					begin
-						{ poten1_value, poten2_value } <= din;
+						state <= STATE_READ_POTEN1_2;
+					end
+					
+					STATE_READ_POTEN1_2:			// Read values of potentiometer 1 and 2 from input
+					begin
+						update_poten <= 1'b0;
+						{ poten1_value, poten2_value } <= din;	// Get poten 1 and 2 values
 						if( data_valid ) begin
+							config_d_oe <= 1'b1;
 							state <= STATE_READ_POTEN3_4;
 						end
 						else begin
+							config_d_oe <= 1'b0;
 							state <= STATE_WAIT_POTEN3_4;
 						end
 					end
 
-					STATE_WAIT_POTEN3_4:	// Waiting for potentiometer 3 and 4 values
+					STATE_WAIT_POTEN3_4:			// Wait for potentiometer 3 and 4 data to be available
 					begin
 						if( data_valid ) begin
-							state <= STATE_READ_POTEN3_4;
+							config_d_oe <= 1'b1;
+							state <= STATE_WAIT_FIFO_POTEN3_4;
 						end
 					end
-					
-					STATE_READ_POTEN3_4: // Read values of potentiometer 3 and 4 from input
+
+					STATE_WAIT_FIFO_POTEN3_4:		// Wait for data from FIFO after enabling OE
 					begin
-						{ poten3_value, poten4_value } <= din;
+						state <= STATE_READ_POTEN3_4;
+					end
+
+					STATE_READ_POTEN3_4: 			// Read values of potentiometer 3 and 4 from input
+					begin
+						{ poten3_value, poten4_value } <= din;	// Get poten 3 and 4 values
 						config_d_oe <= 1'b0;
 						state <= STATE_WAIT_PREFIX;
-					end				
+					end
+
+					default:						// Should not happen
+					begin
+						config_d_oe <= 1'b0;
+						state <= STATE_READ_PREFIX;
+					end
 				endcase
 			end
 		end
