@@ -49,6 +49,8 @@ module packetizer_tb;
 	logic output_strb;		// Strobe output
 	integer strobe_count;
 	logic sending, packetize_strobe, pkt_end;
+	logic fifo_rd_en, empty_n, almost_empty, full, almost_full;
+	logic [16:0] fifo_dout;
 	
 	// Debug output
 	//logic [4:0]debug_main_state;
@@ -114,8 +116,34 @@ module packetizer_tb;
 		.rst(rst),				// System reset (active high)
 		.clk(clk),			// System clock
 
-		.out_full(1'b0)			// Output buffer is almost full
+		.out_full(almost_full)			// Output buffer is almost full
     );
+
+	logic [10:0] fifo_filled;
+	// Output FIFO
+	simple_fifo  #(
+		.SIZE_BIT_DEPTH(11),
+		.DATA_WIDTH(17),
+		.IS_FIRST_WORD_FALLTHROUGH(0)
+	) output_fifo (
+		.clk(clk),					// signal clock (64 MHz)
+		.rst(rst),					// system reset (active high)
+
+		// FIFO fill count (number of elements in the FIFO)
+		.fifo_filled(fifo_filled),	
+
+		// Write interface
+		.wr_en(packetize_strobe),		// write enable
+		.din({pkt_end, d_out}),			// data input
+		.almost_full(almost_full),			// fifo almost full indicator, indicating that only one space is left or full
+		.full(full),			   			// fifo full indicator
+
+		// Read interface
+		.rd_en(fifo_rd_en),					// read enable
+		.almost_empty(almost_empty),				// fifo almost empty indicator, indicating that only one data is left or empty
+		.empty_n(empty_n),			   			// fifo empty indicator (0 = empty, 1 = not empty)
+		.dout(fifo_dout)							// data output
+	);
 	
 	initial begin
 		$readmemh( "data.hex", in_data );
@@ -144,8 +172,20 @@ module packetizer_tb;
 	end
 	
 	// Generate output waveform
+	always_ff @(posedge clk)begin
+		if( rst ) begin
+			fifo_rd_en <= 0;
+		end
+		else if( empty_n ) begin
+			fifo_rd_en <= 1;
+		end
+		else begin
+			fifo_rd_en <= 0;
+		end
+	end
+
 	initial begin
-   		$dumpfile("test.vcd");
+   		$dumpfile("packetizer.vcd");
    		$dumpvars(1);
 	end
 	always_ff @(posedge clk) begin
