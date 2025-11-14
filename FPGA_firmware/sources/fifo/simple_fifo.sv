@@ -37,6 +37,8 @@ module simple_fifo
 #(
 	parameter SIZE_BIT_DEPTH = 6,	// Bit depth of the size of the buffer (2^SIZE_BIT_DEPTH)
 	parameter DATA_WIDTH = 64,		// Width of the data (in bits)
+	parameter ALMOST_FULL_THRESHOLD = 1,	// Number of free spaces left to assert almost_full
+	parameter ALMOST_EMPTY_THRESHOLD = 1,	// Number of data left to assert almost_empty
 	parameter IS_FIRST_WORD_FALLTHROUGH = 1	// If set to 1, the first word written to an empty FIFO will appear on the output immediately
 ) (
     input logic clk,					// signal clock (64 MHz)
@@ -64,9 +66,13 @@ module simple_fifo
     logic [SIZE_BIT_DEPTH-1:0] first_ptr;                               	// Write pointer
     logic [SIZE_BIT_DEPTH-1:0] last_ptr;                                	// Read pointer
 
+	// Verify the threshold parameters
+	logic [SIZE_BIT_DEPTH-1:0] almost_full_threshold_val, almost_empty_threshold_val;
+	assign	almost_full_threshold_val  = (ALMOST_FULL_THRESHOLD >= FIFO_SIZE) ? FIFO_SIZE - 1 : ALMOST_FULL_THRESHOLD;
+	assign	almost_empty_threshold_val = (ALMOST_EMPTY_THRESHOLD >= FIFO_SIZE) ? FIFO_SIZE - 1 : ALMOST_EMPTY_THRESHOLD;
+
 	// Helpers to improve readability
-    logic [(SIZE_BIT_DEPTH-1):0]	first_plus_one, first_plus_two, last_plus_one;
-	assign	first_plus_two = first_ptr + {{(SIZE_BIT_DEPTH-2){1'b0}}, 2'b10};
+    logic [(SIZE_BIT_DEPTH-1):0]	last_plus_one, first_plus_one;
 	assign	first_plus_one = first_ptr + {{(SIZE_BIT_DEPTH-1){1'b0}}, 1'b1};
 	assign	last_plus_one  = last_ptr + {{(SIZE_BIT_DEPTH-1){1'b0}}, 1'b1};
 
@@ -74,8 +80,8 @@ module simple_fifo
 	// FIFO status logic
 
 	// Generate status signals combinationally
-	assign almost_full  = (first_plus_one == last_ptr) || (first_plus_two == last_ptr);
-	assign almost_empty = (last_ptr == first_ptr)||(last_plus_one == first_ptr);
+	assign almost_full 	= (fifo_filled >= (FIFO_SIZE - almost_full_threshold_val - 1));
+	assign almost_empty = (fifo_filled <= almost_empty_threshold_val);
 	assign empty_n     	= (first_ptr != last_ptr);
 	assign full        	= (first_plus_one == last_ptr);
 	assign fifo_filled  = first_ptr - last_ptr;
@@ -90,7 +96,7 @@ module simple_fifo
 		end 
         else if( wr_en ) begin
 			// Cowardly refuse to overflow
-			if( !full || rd_en ) // (first_ptr+1 != last_ptr)
+			if( !full || rd_en ) 
 				first_ptr <= first_plus_one;
 		end
 	end
@@ -109,7 +115,7 @@ module simple_fifo
 		if( rst )
 			last_ptr <= 0;
         else if( rd_en ) begin
-			if ( empty_n || wr_en )  // (first_ptr != last_ptr)
+			if ( empty_n || wr_en ) 
 				last_ptr <= last_plus_one;
 		end
 	end

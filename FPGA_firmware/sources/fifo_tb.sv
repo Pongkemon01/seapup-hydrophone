@@ -36,7 +36,8 @@ module simple_fifo_tb;
 
     // 3. Instantiate DUT (Device Under Test)
     simple_fifo
-    #(.SIZE_BIT_DEPTH(SIZE_BIT_DEPTH), .DATA_WIDTH(DATA_WIDTH), .IS_FIRST_WORD_FALLTHROUGH(1))
+    #(.SIZE_BIT_DEPTH(SIZE_BIT_DEPTH), .DATA_WIDTH(DATA_WIDTH), .IS_FIRST_WORD_FALLTHROUGH(1), 
+    .ALMOST_FULL_THRESHOLD(3), .ALMOST_EMPTY_THRESHOLD(1))
     dut
     (
         .clk(clk),
